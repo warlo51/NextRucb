@@ -2,7 +2,7 @@ import { Box, CardContent, Grid, ImageList, ImageListItem, Typography } from "@m
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
-import Layout from "../../components/Layout";
+import {Layout} from "../../components/Layout";
 export default function Complexe() {
   return (
     <Layout>

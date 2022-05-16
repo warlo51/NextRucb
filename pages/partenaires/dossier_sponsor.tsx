@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { Box, Button, CardContent, Container, IconButton, Input, Typography } from "@mui/material";
 import React from "react";
-import Layout from "../../components/Layout";
+import {Layout} from "../../components/Layout";
 
 export default function DossierSponsor() {
 

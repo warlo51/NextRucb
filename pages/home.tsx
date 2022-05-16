@@ -1,7 +1,7 @@
 import { CardActionArea, CardContent, CardMedia, Grid, Paper, Typography } from "@mui/material";
 import { ReactElement, JSXElementConstructor, ReactFragment, ReactPortal, useState } from "react";
 import {Navbar,Container,Nav,NavDropdown, Card, Button} from "react-bootstrap";
-import Layout from "../components/Layout";
+import {Layout} from "../components/Layout";
 import styles from '../styles/Home.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Caroussel from "../components/Caroussel";
