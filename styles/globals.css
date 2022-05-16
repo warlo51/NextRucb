@@ -99,6 +99,12 @@ background-color: #3c1d79;
  max-height: 500px;
  width: 100%;
 }
+a.dropdown-item:hover{
+  background-color: #f77300;
+}
+a.dropdown-item:focus{
+  background-color: transparent;
+}
 .contenuHome{
   display: flex;
   flex-direction: row;
