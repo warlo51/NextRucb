@@ -1,6 +1,6 @@
 import { Carousel } from "react-bootstrap";
 
-export default function Caroussel() {
+export default function Test() {
     return (
         <Carousel >
               <Carousel.Item interval={3000} className="carouselHome">
