@@ -5,66 +5,42 @@ import React from "react";
 import {Layout} from "../../components/Layout";
 export default function info() {
   const itemData = [
-    {img:"../../sponsors/CD51.png"},
-    {img:"../../sponsors/LogoVilledeReims.jpg"},
-    {img:"../../sponsors/liguegdestbasket.png"},
-    {img:"../../sponsors/ffbb.png"},
-    {img:"../../sponsors/logocomitemarne.png"}
+    "../../sponsors/CD51.png",
+    "../../sponsors/LogoVilledeReims.jpg",
+    "../../sponsors/liguegdestbasket.png",
+    "../../sponsors/ffbb.png",
+    "../../sponsors/logocomitemarne.png"
   ]
   const itemDataPrive = [
-    {img:"../../sponsors/NouveauLogoNorauto.jpg"},
-    {img:"../../sponsors/LOGOMAISONKIKEL.jpg"},
-    {img:"../../sponsors/logocarrefour.png"},
-    {img:"../../sponsors/logoBuffaloGrill.png"},
-    {img:"../../sponsors/Charpentiersdumassif.png"},
-    {img:"../../sponsors/logoCIC.jpg"},
-    {img:"../../sponsors/TAYLOR.jpg"},
-    {img:"../../sponsors/JSRDRUM.jpg"}
+    "../../sponsors/NouveauLogoNorauto.jpg",
+    "../../sponsors/LOGOMAISONKIKEL.jpg",
+    "../../sponsors/logocarrefour.png",
+    "../../sponsors/logoBuffaloGrill.png",
+    "../../sponsors/Charpentiersdumassif.png",
+    "../../sponsors/logoCIC.jpg",
+    "../../sponsors/TAYLOR.jpg",
+    "../../sponsors/JSRDRUM.jpg"
   ]
   return (
     <Layout>
-        <Container >
-          <Box className="boxOrange">
-            <CardContent>
-              <Typography variant="h5" component="div">
-                Les partenaires institutionnels
-              </Typography>
-              <p></p>
-              <ImageList sx={{ height: 450}} cols={3} rowHeight={164}>
-                {itemData.map((item) => (
-                  <ImageListItem key={item.img}>
-                    <img
-                      className="imagesSponsorInfo"
-                      src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-                      srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                      loading="lazy"
-                    />
-                  </ImageListItem>
-                ))}
-              </ImageList>
-            </CardContent>
+         <div style={{padding:"20px",marginTop:"40px" ,display:"flex",justifyContent:"center",flexDirection:"column"}}> 
+          <Box className="boxPartenaires">
+            <h1>Les partenaires institutionnels</h1>
+            <div className="containerImgPartenaires">
+              {itemData.map((element,index)=>{
+                return <img className="imgBoxPartenaires" key={index} src={`${element}`}/>
+              })}
+            </div>
           </Box>
-          <Box className="boxOrange">
-            <CardContent>
-              <Typography variant="h5" component="div">
-                Les partenaires privés
-              </Typography>
-              <p></p>
-              <ImageList sx={{ height: 700}} cols={3} rowHeight={200}>
-                {itemDataPrive.map((item) => (
-                  <ImageListItem key={item.img}>
-                    <img
-                      className="imagesSponsorInfo"
-                      src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-                      srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                      loading="lazy"
-                    />
-                  </ImageListItem>
-                ))}
-              </ImageList>  
-            </CardContent>
+          <Box className="boxPartenaires">
+            <h1>Les partenaires privés</h1>
+            <div className="containerImgPartenaires">
+              {itemDataPrive.map((element,index)=>{
+                return <img className="imgBoxPartenaires" key={index}  src={`${element}`}/>
+              })}
+            </div>
           </Box>
-      </Container>
+      </div>
     </Layout>
   );
 }

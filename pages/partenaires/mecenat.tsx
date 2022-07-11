@@ -6,8 +6,8 @@ import {Layout} from "../../components/Layout";
 export default function Mecenat() {
   return (
     <Layout>
-        <Container >
-          <Box className="boxOrange">
+        <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
+          <Box className="boxMecenat">
             <CardContent>
               <Typography variant="h5" component="div">
                 LE RUCB et le mécénat (Partenaires et futurs partenaires)
@@ -33,7 +33,7 @@ export default function Mecenat() {
               </Typography>
             </CardContent>
           </Box>
-          <Box className="boxOrange">
+          <Box className="boxMecenat">
             <CardContent>
               <Typography variant="h5" component="div">
                 LE RUCB et le mécénat (Particuliers - Supporters du RUCB)
@@ -47,7 +47,7 @@ export default function Mecenat() {
               </Typography>
             </CardContent>
           </Box>
-      </Container>
+      </div>
     </Layout>
   );
 }

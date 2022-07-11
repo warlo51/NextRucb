@@ -1,18 +1,16 @@
-import {Layout} from "../../components/Layout";
 import * as React from 'react';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
 import { Box, Container, Grid, Typography } from "@mui/material";
-import styles from '../../styles/Home.module.css';
+import Header from '../../components/Header';
+import NavBar from '../../components/NavBar';
+import { Layout } from '../../components/Layout';
 
 
-export default function Historique() {
+
+export default function Historique():JSX.Element {
   return (
-    <Layout>
-        <Container >
+       <Layout>
+        <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
         <Box className="boxHistoriquePage">
           <CardContent>
             <Typography variant="h5" component="div">
@@ -54,7 +52,7 @@ export default function Historique() {
             </Typography>
           </CardContent>
         </Box>
-        </Container>
-    </Layout>
+        </div>
+        </Layout>
   );
 }
