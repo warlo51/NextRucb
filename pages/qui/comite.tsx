@@ -3,7 +3,9 @@ import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import { Button, Card, Container } from "react-bootstrap";
-import {Layout} from "../../components/Layout";
+import Header from "../../components/Header";
+import { Layout } from "../../components/Layout";
+import NavBar from "../../components/NavBar";
 import styles from '../../styles/Home.module.css';
 
 interface MediaProps {
@@ -14,9 +16,8 @@ export default function Comite(props: MediaProps) {
   const { loading = false } = props;
 
   return (
-    <Layout>
-        <Grid container spacing={2} className="gridComite">
-          <Grid item xs={12} md={12} >
+       <Layout>
+        <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>  
             <Box className="BoxComite">
               <CardContent >
                 <Typography variant="h5" component="div">
@@ -29,8 +30,6 @@ export default function Comite(props: MediaProps) {
                 </Typography>
               </CardContent>
             </Box>
-          </Grid>
-          <Grid item xs={12} md={12} >
             <Box className="BoxComite">
               <CardContent>
                 <Typography variant="h5" component="div">
@@ -43,8 +42,6 @@ export default function Comite(props: MediaProps) {
                 </Typography>
               </CardContent>
             </Box>
-          </Grid>
-          <Grid item xs={12} md={12} >
             <Box className="BoxComite">
               <CardContent>
                 <Typography variant="h5" component="div">
@@ -57,8 +54,6 @@ export default function Comite(props: MediaProps) {
                 </Typography>
               </CardContent>
             </Box>
-          </Grid>
-          <Grid item xs={12} md={12} >
             <Box className="BoxComite">
               <CardContent>
                 <Typography variant="h5" component="div">
@@ -71,8 +66,6 @@ export default function Comite(props: MediaProps) {
                 </Typography>
               </CardContent>
             </Box>
-          </Grid>
-          <Grid item xs={12} md={12} >
             <Box className="BoxComite">
               <CardContent>
                 <Typography variant="h5" component="div">
@@ -85,8 +78,7 @@ export default function Comite(props: MediaProps) {
                 </Typography>
               </CardContent>
             </Box>
-          </Grid>
-        </Grid>
-    </Layout>
+        </div>
+        </Layout>
   );
 }
