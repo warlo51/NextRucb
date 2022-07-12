@@ -20,7 +20,7 @@ export default function Comite(props: MediaProps) {
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>  
             <Box className="BoxComite">
               <CardContent >
-                <Typography variant="h5" component="div">
+                <Typography variant="h5" component="div" style={{color:"#3d1e7b"}}>
                   Gerard Baudesson (Vice Président)
                 </Typography>
                 <p></p>
@@ -32,7 +32,7 @@ export default function Comite(props: MediaProps) {
             </Box>
             <Box className="BoxComite">
               <CardContent>
-                <Typography variant="h5" component="div">
+                <Typography variant="h5" component="div" style={{color:"#3d1e7b"}}>
                 Sonia Aufray (Trésorière)
                 </Typography>
                 <p></p>
@@ -44,7 +44,7 @@ export default function Comite(props: MediaProps) {
             </Box>
             <Box className="BoxComite">
               <CardContent>
-                <Typography variant="h5" component="div">
+                <Typography variant="h5" component="div" style={{color:"#3d1e7b"}}>
                   Claudia Parizel (Secrétaire)
                 </Typography>
                 <p></p>
@@ -56,7 +56,7 @@ export default function Comite(props: MediaProps) {
             </Box>
             <Box className="BoxComite">
               <CardContent>
-                <Typography variant="h5" component="div">
+                <Typography variant="h5" component="div" style={{color:"#3d1e7b"}}>
                   Franck Mansuy (Président)
                 </Typography>
                 <p></p>
@@ -68,7 +68,7 @@ export default function Comite(props: MediaProps) {
             </Box>
             <Box className="BoxComite">
               <CardContent>
-                <Typography variant="h5" component="div">
+                <Typography variant="h5" component="div" style={{color:"#3d1e7b"}}>
                   Florent Aubry (Responsable du secteur jeunes)
                 </Typography>
                 <p></p>

@@ -9,7 +9,7 @@ export default function Mecenat() {
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
           <Box className="boxMecenat">
             <CardContent>
-              <Typography variant="h5" component="div">
+              <Typography variant="h5" component="div" style={{color:"#3d1e7b"}}>
                 LE RUCB et le mécénat (Partenaires et futurs partenaires)
               </Typography>
               <p></p>
@@ -35,7 +35,7 @@ export default function Mecenat() {
           </Box>
           <Box className="boxMecenat">
             <CardContent>
-              <Typography variant="h5" component="div">
+              <Typography variant="h5" component="div" style={{color:"#3d1e7b"}}>
                 LE RUCB et le mécénat (Particuliers - Supporters du RUCB)
               </Typography>
               <p></p>

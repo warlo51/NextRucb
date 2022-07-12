@@ -13,7 +13,7 @@ export default function Historique():JSX.Element {
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
         <Box className="boxHistoriquePage">
           <CardContent>
-            <Typography variant="h5" component="div">
+            <Typography variant="h5" component="div" style={{color:"#3d1e7b"}}>
               NOTRE HISTOIRE
             </Typography>
             <p></p>
@@ -29,7 +29,7 @@ export default function Historique():JSX.Element {
         </Box>
         <Box className="boxHistoriquePage">
           <CardContent>
-            <Typography variant="h5" component="div">
+            <Typography variant="h5" component="div" style={{color:"#3d1e7b"}}>
             LE PRESENT
             </Typography>
             <p></p>

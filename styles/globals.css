@@ -11,7 +11,7 @@ a:link
 }
 /* HEADER */
 .Header ul{
-  z-index: 1;
+  z-index: 2;
   list-style:none;
   display: flex;
   padding-top: 10px;
@@ -73,7 +73,8 @@ z-index: 2;
 .footer{
   background: linear-gradient(to bottom right, #3d1e7b, orange);
   color: #fff;
-  position: relative;
+  position:static;
+  width: 100%;
   bottom: 0;
 }
 /* Bandeau */
@@ -209,9 +210,21 @@ z-index: 2;
 }
 
 /* page complexe sportif */
-#carteGoogleMap{
-  width:"1200";
-  height:"400";
+.boxComplexeImage{
+  border:solid #3d1e7b;
+  box-shadow: 5px 5px 5px #3d1e7b;
+  margin-top: 60px;
+  border-radius: 20px;
+  padding: 40px;
+  background-color: #fff;
+}
+.divImageComplexe{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.imgComplexeBox{
+  width: 400px;
 }
 /* page mecenat */
 .boxMecenat{
@@ -243,6 +256,23 @@ z-index: 2;
 .containerImgPartenaires{
   text-align: center;
 }
+
+/* page formation */
+.boxFormation{
+  border:solid #3d1e7b;
+  box-shadow: 5px 5px 5px #3d1e7b;
+  margin-top: 60px;
+  border-radius: 20px;
+  padding: 40px;
+  background-color: #fff;
+}
+.divRegleBasket{
+  display:flex;
+  flex-direction:row;
+  justify-content: space-between;
+}
+
+
  /* media */
  @media screen and (max-width: 1024px) {
   .navbar>.container{
@@ -260,6 +290,25 @@ z-index: 2;
   }
 
 }
+@media screen and (max-width: 425px) {
+  .Bandeau{
+    display: none;
+  }
+  .divRegleBasket{
+    display:flex;
+    flex-direction:column;
+  }
+  .videoRegleBasket{
+    height: 150px;
+    width: 200px;
+  }
+  .imgComplexeBox{
+    width: 300px;
+  }
+  .imgGoogleMap{
+    width: 300px;
+  }
+}
 @media screen and (max-width: 375px) {
   .Bandeau{
     display: none;
@@ -267,5 +316,11 @@ z-index: 2;
   .imgBoxPartenaires{
     height:100px;
     width:200px;
+  }
+  .imgComplexeBox{
+    width: 200px;
+  }
+  .imgGoogleMap{
+    width: 200px;
   }
 }
