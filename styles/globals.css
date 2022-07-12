@@ -9,6 +9,13 @@ a:link
 #__next{
   background-color: #a3a2a4;
 }
+.css-5x2uyw-MuiBadge-badge{
+  width: 300px;
+  height: 40px;
+  font-size: 18px;
+  margin-left: 100px;
+  background-color: #dc8d32;
+}
 /* HEADER */
 .Header ul{
   z-index: 2;
@@ -166,6 +173,14 @@ z-index: 2;
   color:white;
   cursor: pointer;
 }
+.containerActu{
+  padding:40px;
+  text-align:center;
+}
+#rowActu{
+  margin-top:40px;
+  margin-left:20px;
+}
 /* divHoraire */
 
 .divHoraires{
@@ -175,11 +190,28 @@ z-index: 2;
   background-color: #fff;
   box-shadow: 5px 5px 5px #3d1e7b;
   padding: 40px;
-  margin: 40px;
+  margin-top: 30px;
   border-radius: 20px;
 }
-.divHoraires h1{
-  color: #3d1e7b;
+.divActualite{
+  display: flex;
+  flex-direction: column;
+  border:solid #3d1e7b;
+  background-color: #fff;
+  box-shadow: 5px 5px 5px #3d1e7b;
+  padding: 40px;
+  margin-top: 30px;
+  border-radius: 20px;
+}
+.divSponsors{
+  display: flex;
+  flex-direction: column;
+  border:solid #3d1e7b;
+  background-color: #fff;
+  box-shadow: 5px 5px 5px #3d1e7b;
+  padding: 40px;
+  margin-top: 30px;
+  border-radius: 20px;
 }
 .divHoraires img{
   transition: transform .1s;
@@ -197,6 +229,7 @@ z-index: 2;
   box-shadow: 5px 5px 5px #3d1e7b;
   margin-top: 60px;
   border-radius: 20px;
+  padding: 20px;
   background-color: #fff;
 }
 
@@ -206,6 +239,7 @@ z-index: 2;
   box-shadow: 5px 5px 5px #3d1e7b;
   margin-top: 60px;
   border-radius: 20px;
+  padding: 20px;
   background-color: #fff;
 }
 
@@ -255,6 +289,7 @@ z-index: 2;
 }
 .containerImgPartenaires{
   text-align: center;
+  margin-top: 30px;
 }
 
 /* page formation */
@@ -288,7 +323,7 @@ z-index: 2;
   .Bandeau{
     display: none;
   }
-
+  
 }
 @media screen and (max-width: 425px) {
   .Bandeau{
@@ -307,6 +342,9 @@ z-index: 2;
   }
   .imgGoogleMap{
     width: 300px;
+  }
+  #rowActu{
+    width: 90%;
   }
 }
 @media screen and (max-width: 375px) {

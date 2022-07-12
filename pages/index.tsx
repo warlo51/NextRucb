@@ -1,9 +1,9 @@
-import { Grid } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Button } from 'react-bootstrap'
+import { Button, Col, Container, Row } from 'react-bootstrap'
 import Actualite from '../components/Actualite'
 import BandeauIMG from '../components/BandeauIMG'
 import Horaires from '../components/Horaires'
@@ -16,17 +16,15 @@ const Home: NextPage = () => {
   return (
     <Layout>
    <BandeauIMG/>
-   <Grid container spacing={2}>
-    <Grid item xs={12} md={6}>
-    <Horaires/>
-    </Grid>
-    <Grid item xs={12} md={6}>
-    <div className="BoxInfo">
-      <Actualite/>
-      <Sponsors/>
-     </div>
-    </Grid>
-   </Grid>
+   <Container className="containerActu">
+    <Row>
+      <Col xs={12} sm={6}><Horaires/></Col>
+      <Col xs={12} sm={6}>
+        <Row id="rowActu"><Actualite/></Row>
+        <Row id="rowActu"><Sponsors/></Row>
+      </Col>
+    </Row>
+    </Container>
  </Layout>
   );
 }

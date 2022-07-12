@@ -1,4 +1,4 @@
-import { Box, CardContent, Typography } from "@mui/material";
+import { Badge, Box, CardContent, Typography } from "@mui/material";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
@@ -6,13 +6,11 @@ import {Layout} from "../components/Layout";
 export default function Arbitrage() {
   return (
     <Layout>
-        <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
+        <div style={{padding:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
       <Box className="boxFormation">
+      <Badge badgeContent={"Apprendre les règles de basket"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
             <div className="divRegleBasket">
             <CardContent>
-              <Typography variant="h5" component="div" style={{color:"#3d1e7b"}}>
-                Apprendre les règles de basket
-              </Typography>
               <p></p>
               <Typography variant="body2" color="text.secondary">
                 L'essentiel des règles du basket en video avec Sikana Apprentissage <br></br>
@@ -26,21 +24,17 @@ export default function Arbitrage() {
             </div>
       </Box>
       <Box className="boxFormation">
+      <Badge badgeContent={"Les Catégories"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
         <CardContent>
-          <Typography variant="h5" component="div" style={{color:"#3d1e7b"}}>
-                Les Catégories
-          </Typography>
               <p></p>
           <Typography variant="body2" color="text.secondary">
           </Typography>
         </CardContent>
       </Box>
       <Box className="boxFormation">
+      <Badge badgeContent={"Découvrir l'E-Marque"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
       <div className="divRegleBasket">
             <CardContent>
-              <Typography variant="h5" component="div" style={{color:"#3d1e7b"}}>
-                Découvrir l'E-Marque
-              </Typography>
               <p></p>
               <Typography variant="body2" color="text.secondary">
                 Grâce à cette vidéo, découvrez l'e-marque en quelques minutes
@@ -51,6 +45,12 @@ export default function Arbitrage() {
               </div>
             </div>
       </Box>
+      <br></br>
+      <br></br>
+      <br></br>
+      <br></br>
+      <br></br>
+      <br></br>
       </div>
     </Layout>
   );
