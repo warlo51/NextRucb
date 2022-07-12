@@ -1,4 +1,4 @@
-import { Box, CardContent, Container, ImageList, ImageListItem, Typography } from "@mui/material";
+import { Badge, Box, CardContent, Container, ImageList, ImageListItem, Typography } from "@mui/material";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
@@ -23,24 +23,28 @@ export default function info() {
   ]
   return (
     <Layout>
-         <div style={{padding:"20px",marginTop:"40px" ,display:"flex",justifyContent:"center",flexDirection:"column"}}> 
+      
+         <div style={{padding:"20px",marginTop:"40px" ,display:"flex",justifyContent:"center",flexDirection:"column"}}>
           <Box className="boxPartenaires">
-            <h1>Les partenaires institutionnels</h1>
+          <Badge badgeContent={"Les partenaires institutionnels"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
             <div className="containerImgPartenaires">
               {itemData.map((element,index)=>{
-                return <img className="imgBoxPartenaires" key={index} src={`${element}`}/>
+                return <img className="imgBoxPartenaires" key={index} style={{marginRight:"20px"}} src={`${element}`}/>
               })}
             </div>
           </Box>
+          
           <Box className="boxPartenaires">
-            <h1>Les partenaires privés</h1>
+          <Badge badgeContent={"Les partenaires privés"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
             <div className="containerImgPartenaires">
               {itemDataPrive.map((element,index)=>{
-                return <img className="imgBoxPartenaires" key={index}  src={`${element}`}/>
+                return <img className="imgBoxPartenaires" key={index} style={{marginRight:"20px",marginBottom:"20px"}} src={`${element}`}/>
               })}
             </div>
           </Box>
+          
       </div>
+     
     </Layout>
   );
 }

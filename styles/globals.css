@@ -7,11 +7,18 @@ a:link
  text-decoration:none; 
 } 
 #__next{
-  background-color: #a3a2a4;
+  background-color: #fff;
+}
+.css-5x2uyw-MuiBadge-badge{
+  width: 300px;
+  height: 40px;
+  font-size: 18px;
+  margin-left: 100px;
+  background-color: #dc8d32;
 }
 /* HEADER */
 .Header ul{
-  z-index: 1;
+  z-index: 2;
   list-style:none;
   display: flex;
   padding-top: 10px;
@@ -26,7 +33,7 @@ a:link
   margin-left: 5px;
 }
 .navbar img{
-  height: 100px;
+  height: 150px;
 }
 
 /* NavBar */
@@ -39,6 +46,9 @@ a:link
 
 #basic-nav-dropdown{
   color:white;
+}
+#basic-nav-dropdown-black{
+  color:black;
 }
 
 #linkDropdown{
@@ -73,7 +83,8 @@ z-index: 2;
 .footer{
   background: linear-gradient(to bottom right, #3d1e7b, orange);
   color: #fff;
-  position: relative;
+  position:static;
+  width: 100%;
   bottom: 0;
 }
 /* Bandeau */
@@ -91,14 +102,14 @@ z-index: 2;
 .carousel .carousel-status{
   display: none;
 }
-.carousel *{
-  height: 500px;
-}
+
 .carousel .slide{
-  height: 500px;
+  height: 550px;
+  
 }
 .carousel div img{
   opacity: 0.7;
+  
 }
 
 .carousel .slide .title{
@@ -116,11 +127,12 @@ z-index: 2;
   font-size: 50px;
   text-align: left;
 }
+
 .buttonSlide{
   transition: all .5s ease-in-out;
   position: absolute;
-  height: 80px;
-  bottom: 10px;
+  height: 50px;
+  bottom: 20px;
   left: 50%;
   margin-left: -45%;
   border-radius: 10px;
@@ -130,13 +142,18 @@ z-index: 2;
   border-color: white;
   padding-left: 10px;
   padding-right: 10px;
-  font-size: 50px;
+  font-size: 30px;
   text-align: left;
 }
 .buttonSlide:hover{
   background:#dc8d32;
+  text-decoration: none;
+  color:white;
 }
-
+.buttonSlide a:link{
+  text-decoration: none;
+  color:white
+}
 .BoxInfo{
   display: flex;
   flex-direction: column;
@@ -165,20 +182,46 @@ z-index: 2;
   color:white;
   cursor: pointer;
 }
+.containerActu{
+  padding:40px;
+  text-align:center;
+}
+#rowActu{
+  margin-top:40px;
+  margin-left:20px;
+}
 /* divHoraire */
 
 .divHoraires{
+  height: 681px;
   display: flex;
   flex-direction: column;
   border:solid #3d1e7b;
   background-color: #fff;
   box-shadow: 5px 5px 5px #3d1e7b;
   padding: 40px;
-  margin: 40px;
+  margin-top: 30px;
   border-radius: 20px;
 }
-.divHoraires h1{
-  color: #3d1e7b;
+.divActualite{
+  display: flex;
+  flex-direction: column;
+  border:solid #3d1e7b;
+  background-color: #fff;
+  box-shadow: 5px 5px 5px #3d1e7b;
+  padding: 40px;
+  margin-top: 30px;
+  border-radius: 20px;
+}
+.divSponsors{
+  display: flex;
+  flex-direction: column;
+  border:solid #3d1e7b;
+  background-color: #fff;
+  box-shadow: 5px 5px 5px #3d1e7b;
+  padding: 40px;
+  margin-top: 30px;
+  border-radius: 20px;
 }
 .divHoraires img{
   transition: transform .1s;
@@ -196,6 +239,7 @@ z-index: 2;
   box-shadow: 5px 5px 5px #3d1e7b;
   margin-top: 60px;
   border-radius: 20px;
+  padding: 20px;
   background-color: #fff;
 }
 
@@ -205,13 +249,26 @@ z-index: 2;
   box-shadow: 5px 5px 5px #3d1e7b;
   margin-top: 60px;
   border-radius: 20px;
+  padding: 20px;
   background-color: #fff;
 }
 
 /* page complexe sportif */
-#carteGoogleMap{
-  width:"1200";
-  height:"400";
+.boxComplexeImage{
+  border:solid #3d1e7b;
+  box-shadow: 5px 5px 5px #3d1e7b;
+  margin-top: 60px;
+  border-radius: 20px;
+  padding: 40px;
+  background-color: #fff;
+}
+.divImageComplexe{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.imgComplexeBox{
+  width: 400px;
 }
 /* page mecenat */
 .boxMecenat{
@@ -242,7 +299,25 @@ z-index: 2;
 }
 .containerImgPartenaires{
   text-align: center;
+  margin-top: 30px;
 }
+
+/* page formation */
+.boxFormation{
+  border:solid #3d1e7b;
+  box-shadow: 5px 5px 5px #3d1e7b;
+  margin-top: 60px;
+  border-radius: 20px;
+  padding: 40px;
+  background-color: #fff;
+}
+.divRegleBasket{
+  display:flex;
+  flex-direction:row;
+  justify-content: space-between;
+}
+
+
  /* media */
  @media screen and (max-width: 1024px) {
   .navbar>.container{
@@ -258,7 +333,35 @@ z-index: 2;
   .Bandeau{
     display: none;
   }
-
+  .css-5x2uyw-MuiBadge-badge{
+    width: 200px;
+    height: 40px;
+    font-size: 18px;
+    margin-left: 50px;
+    background-color: #dc8d32;
+  }
+}
+@media screen and (max-width: 425px) {
+  .Bandeau{
+    display: none;
+  }
+  .divRegleBasket{
+    display:flex;
+    flex-direction:column;
+  }
+  .videoRegleBasket{
+    height: 150px;
+    width: 200px;
+  }
+  .imgComplexeBox{
+    width: 300px;
+  }
+  .imgGoogleMap{
+    width: 300px;
+  }
+  #rowActu{
+    width: 90%;
+  }
 }
 @media screen and (max-width: 375px) {
   .Bandeau{
@@ -267,5 +370,11 @@ z-index: 2;
   .imgBoxPartenaires{
     height:100px;
     width:200px;
+  }
+  .imgComplexeBox{
+    width: 200px;
+  }
+  .imgGoogleMap{
+    width: 200px;
   }
 }

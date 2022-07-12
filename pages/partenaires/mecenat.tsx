@@ -1,4 +1,4 @@
-import { Box, CardContent, Container, Typography } from "@mui/material";
+import { Badge, Box, CardContent, Container, Typography } from "@mui/material";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
@@ -8,10 +8,8 @@ export default function Mecenat() {
     <Layout>
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
           <Box className="boxMecenat">
+          <Badge badgeContent={"LE RUCB et le mécénat (Partenaires et futurs partenaires)"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
             <CardContent>
-              <Typography variant="h5" component="div">
-                LE RUCB et le mécénat (Partenaires et futurs partenaires)
-              </Typography>
               <p></p>
               <Typography variant="body2" color="text.secondary">          
               Dans une décision récente de la Direction Générale des Finances, notre club s’est vu reconnaître le statut d’Association d’intérêt général d’ordre sportif, et par conséquent éligible au régime du Mécénat.
@@ -34,10 +32,8 @@ export default function Mecenat() {
             </CardContent>
           </Box>
           <Box className="boxMecenat">
+          <Badge badgeContent={"LE RUCB et le mécénat (Particuliers - Supporters du RUCB)"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
             <CardContent>
-              <Typography variant="h5" component="div">
-                LE RUCB et le mécénat (Particuliers - Supporters du RUCB)
-              </Typography>
               <p></p>
               <Typography variant="body2" color="text.secondary">          
                 Comme beaucoup d&apos;association, le club souffre financièrement des baisses des subventions ainsi que des difficultés rencontrées par nos partenaires. Le plus souvent les subventions et les sponsors ne suffisent pas à faire vivre une association. Il est impératif de diversifier les types de ressources.

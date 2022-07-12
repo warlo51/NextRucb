@@ -1,6 +1,6 @@
 import * as React from 'react';
 import CardContent from '@mui/material/CardContent';
-import { Box, Container, Grid, Typography } from "@mui/material";
+import { Badge, Box, Container, Grid, Typography } from "@mui/material";
 import Header from '../../components/Header';
 import NavBar from '../../components/NavBar';
 import { Layout } from '../../components/Layout';
@@ -13,9 +13,7 @@ export default function Historique():JSX.Element {
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
         <Box className="boxHistoriquePage">
           <CardContent>
-            <Typography variant="h5" component="div">
-              NOTRE HISTOIRE
-            </Typography>
+          <Badge badgeContent={"Notre Histoire"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
             <p></p>
             <Typography variant="body2" color="text.secondary">          
                 Le RUC Basket est né il y a 35 ans de la dissolution de la section basket de l&apos;Université de Reims, le Reims Université Club.
@@ -29,9 +27,7 @@ export default function Historique():JSX.Element {
         </Box>
         <Box className="boxHistoriquePage">
           <CardContent>
-            <Typography variant="h5" component="div">
-            LE PRESENT
-            </Typography>
+          <Badge badgeContent={"Le Présent"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
             <p></p>
             <Typography variant="body2" color="text.secondary">          
               Le RUC Basket, pour cette saison 2018-2019 c&apos;est :
@@ -52,6 +48,20 @@ export default function Historique():JSX.Element {
             </Typography>
           </CardContent>
         </Box>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
         </div>
         </Layout>
   );

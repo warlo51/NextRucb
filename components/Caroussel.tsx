@@ -6,7 +6,7 @@ export default function Test() {
               <Carousel.Item interval={3000} className="carouselHome">
                 <img
                   className="imgCarousel"
-                  src="../../bannerHome3.jpg"
+                  src="../../ballon.jpg"
                   alt="First slide"
                 />
                 <Carousel.Caption>

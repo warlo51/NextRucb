@@ -1,4 +1,4 @@
-import { Avatar, Box, CardActionArea, CardContent, CardHeader, CardMedia, Grid, IconButton, Skeleton, Typography } from "@mui/material";
+import { Avatar, Badge, Box, CardActionArea, CardContent, CardHeader, CardMedia, Grid, IconButton, Skeleton, Typography } from "@mui/material";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
@@ -20,9 +20,7 @@ export default function Comite(props: MediaProps) {
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>  
             <Box className="BoxComite">
               <CardContent >
-                <Typography variant="h5" component="div">
-                  Gerard Baudesson (Vice Président)
-                </Typography>
+              <Badge badgeContent={"Gerard Baudesson (Vice Président)"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
                 <p></p>
                 <Typography variant="body2" color="text.secondary">
                   Tél. : 07-60-75-99-77
@@ -32,9 +30,7 @@ export default function Comite(props: MediaProps) {
             </Box>
             <Box className="BoxComite">
               <CardContent>
-                <Typography variant="h5" component="div">
-                Sonia Aufray (Trésorière)
-                </Typography>
+              <Badge badgeContent={"Sonia Aufray (Trésorière)"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
                 <p></p>
                 <Typography variant="body2" color="text.secondary">  
                   Tél. : 06-19-54-43-75
@@ -44,9 +40,7 @@ export default function Comite(props: MediaProps) {
             </Box>
             <Box className="BoxComite">
               <CardContent>
-                <Typography variant="h5" component="div">
-                  Claudia Parizel (Secrétaire)
-                </Typography>
+              <Badge badgeContent={"Claudia Parizel (Secrétaire)"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
                 <p></p>
                 <Typography variant="body2" color="text.secondary">
                   Tél. : 06-25-30-48-07
@@ -56,9 +50,7 @@ export default function Comite(props: MediaProps) {
             </Box>
             <Box className="BoxComite">
               <CardContent>
-                <Typography variant="h5" component="div">
-                  Franck Mansuy (Président)
-                </Typography>
+              <Badge badgeContent={"Franck Mansuy (Président)"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
                 <p></p>
                 <Typography variant="body2" color="text.secondary">
                   Tél. : 06-68-20-27-34
@@ -68,9 +60,7 @@ export default function Comite(props: MediaProps) {
             </Box>
             <Box className="BoxComite">
               <CardContent>
-                <Typography variant="h5" component="div">
-                  Florent Aubry (Responsable du secteur jeunes)
-                </Typography>
+              <Badge badgeContent={"Florent Aubry (Responsable du secteur jeunes)"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
                 <p></p>
                 <Typography variant="body2" color="text.secondary">
                   Tél. : 06-82-30-16-71

@@ -1,5 +1,5 @@
 import Head from "next/head";
-import React from "react";
+import React, { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import HomeIcon from "@mui/icons-material/Home";
 import Link from "next/link";
@@ -22,12 +22,31 @@ import Footer from "./Footer";
 
 export const Layout: React.FC<any> = ({ children }) => {
 
+  const [currentLocation,setCurrentLocation] = useState("init");
+  
+  React.useEffect(()=>{
+    window.location.href ? setCurrentLocation(window.location.href.split("/")[3]) : setCurrentLocation("null");
+  },[])
+
+if(currentLocation.length === 0){
+  console.log("ici")
   return (
     <>
       <Header/>
-      <NavBar/>
+      <NavBar colorText="white"/>
       {children}
       <Footer/>
     </>
   );
+}else{
+  return (
+    <>
+      <Header/>
+      <NavBar colorText="black"/>
+      {children}
+      <Footer/>
+    </>
+  );
+}
+  
 };
