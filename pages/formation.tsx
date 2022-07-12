@@ -5,7 +5,7 @@ import React from "react";
 import {Layout} from "../components/Layout";
 export default function Arbitrage() {
   return (
-    <Layout>
+    <Layout >
         <div style={{padding:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
       <Box className="boxFormation">
       <Badge badgeContent={"Apprendre les règles de basket"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 

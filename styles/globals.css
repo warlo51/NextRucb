@@ -7,7 +7,7 @@ a:link
  text-decoration:none; 
 } 
 #__next{
-  background-color: #a3a2a4;
+  background-color: #fff;
 }
 .css-5x2uyw-MuiBadge-badge{
   width: 300px;
@@ -33,7 +33,7 @@ a:link
   margin-left: 5px;
 }
 .navbar img{
-  height: 100px;
+  height: 150px;
 }
 
 /* NavBar */
@@ -46,6 +46,9 @@ a:link
 
 #basic-nav-dropdown{
   color:white;
+}
+#basic-nav-dropdown-black{
+  color:black;
 }
 
 #linkDropdown{
@@ -99,14 +102,14 @@ z-index: 2;
 .carousel .carousel-status{
   display: none;
 }
-.carousel *{
-  height: 500px;
-}
+
 .carousel .slide{
-  height: 500px;
+  height: 550px;
+  
 }
 .carousel div img{
   opacity: 0.7;
+  
 }
 
 .carousel .slide .title{
@@ -124,11 +127,12 @@ z-index: 2;
   font-size: 50px;
   text-align: left;
 }
+
 .buttonSlide{
   transition: all .5s ease-in-out;
   position: absolute;
-  height: 80px;
-  bottom: 10px;
+  height: 50px;
+  bottom: 20px;
   left: 50%;
   margin-left: -45%;
   border-radius: 10px;
@@ -138,13 +142,18 @@ z-index: 2;
   border-color: white;
   padding-left: 10px;
   padding-right: 10px;
-  font-size: 50px;
+  font-size: 30px;
   text-align: left;
 }
 .buttonSlide:hover{
   background:#dc8d32;
+  text-decoration: none;
+  color:white;
 }
-
+.buttonSlide a:link{
+  text-decoration: none;
+  color:white
+}
 .BoxInfo{
   display: flex;
   flex-direction: column;
@@ -184,6 +193,7 @@ z-index: 2;
 /* divHoraire */
 
 .divHoraires{
+  height: 681px;
   display: flex;
   flex-direction: column;
   border:solid #3d1e7b;
@@ -323,7 +333,13 @@ z-index: 2;
   .Bandeau{
     display: none;
   }
-  
+  .css-5x2uyw-MuiBadge-badge{
+    width: 200px;
+    height: 40px;
+    font-size: 18px;
+    margin-left: 50px;
+    background-color: #dc8d32;
+  }
 }
 @media screen and (max-width: 425px) {
   .Bandeau{
