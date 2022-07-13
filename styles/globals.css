@@ -10,11 +10,12 @@ a:link
   background-color: #fff;
 }
 
-.MuiBadge-badge{
-  width: 300px;
+#badge{
+  width: 200px;
   height: 40px;
   font-size: 18px;
-  margin-left: 100px;
+  margin-bottom: 20px;
+  border-radius: 20px;
   color:white;
   background-color: #dc8d32;
 }
@@ -212,7 +213,6 @@ z-index: 2;
   border-radius: 20px;
 }
 .divActualite{
-  display: flex;
   flex-direction: column;
   border:solid #3d1e7b;
   background-color: #fff;
@@ -222,7 +222,6 @@ z-index: 2;
   border-radius: 20px;
 }
 .divFfbb{
-  display: flex;
   flex-direction: column;
   border:solid #3d1e7b;
   background-color: #fff;
@@ -232,7 +231,6 @@ z-index: 2;
   border-radius: 20px;
 }
 .divEquipe{
-  display: flex;
   flex-direction: column;
   border:solid #3d1e7b;
   background-color: #fff;
@@ -242,7 +240,6 @@ z-index: 2;
   border-radius: 20px;
 }
 .divSponsors{
-  display: flex;
   flex-direction: column;
   border:solid #3d1e7b;
   background-color: #fff;
@@ -382,14 +379,7 @@ z-index: 2;
   .Bandeau{
     display: none;
   }
-  .MuiBadge-badge{
-    width: 200px;
-    height: 40px;
-    font-size: 18px;
-    margin-left: 50px;
-    color:white;
-    background-color: #dc8d32;
-  }
+  
   #imgActu img{
     height:  180px;
     margin-left: 20px;
@@ -398,11 +388,12 @@ z-index: 2;
 
 }
 @media screen and (max-width: 990px) {
-  .MuiBadge-badge{
-    width: 200px;
+  #badge{
+    width: 150px;
     height: 40px;
-    font-size: 18px;
-    margin-left: 50px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    border-radius: 20px;
     color:white;
     background-color: #dc8d32;
   }
@@ -451,6 +442,15 @@ z-index: 2;
     height:  120px;
     margin-left: 2px;
     transition: transform .1s;
+  }
+  #badge{
+    width: 130px;
+    height: 40px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    color:white;
+    background-color: #dc8d32;
   }
   .NavBar{
     background: linear-gradient(to bottom right, #3d1e7b, orange);

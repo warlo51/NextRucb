@@ -1,6 +1,7 @@
 import * as React from 'react';
+import { Button } from "react-bootstrap";
 import CardContent from '@mui/material/CardContent';
-import { Badge, Box, Container, Grid, Typography } from "@mui/material";
+import { Box, Container, Grid, Typography } from "@mui/material";
 import Header from '../../components/Header';
 import NavBar from '../../components/NavBar';
 import { Layout } from '../../components/Layout';
@@ -14,7 +15,7 @@ export default function ActuRUCB():JSX.Element {
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
         <Box className="boxHistoriquePage">
           <CardContent>
-          <Badge badgeContent={"Une page se tourne"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
+          <Button id="badge">Une page se tourne</Button>
             <p></p>
             <Box className="boxHistoriquePage">
               <Row >

@@ -1,9 +1,9 @@
-import { Badge } from "@mui/material";
+import { Button } from "react-bootstrap";
 
 export default function Equipes() {
     return (
         <div className="divActualite">
-        <Badge badgeContent={"Nos Equipes"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
+        <Button id="badge">Nos Equipes</Button>
         <ul id="ulEquipe">
             <li>Sénior 1 : Pre région</li>
             <li>Senior 2 : Département</li>

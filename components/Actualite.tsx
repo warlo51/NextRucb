@@ -1,9 +1,9 @@
-import { Badge } from "@mui/material";
+import { Button } from "react-bootstrap";
 
 export default function Actualite() {
     return (
         <div className="divActualite">
-        <Badge badgeContent={"Le RUC Recrute !"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} style={{marginBottom:"40px",marginLeft:"20px"}} />
+        <Button id="badge">Le RUC Recrute !</Button>
         <h5><a style={{color:"black"}} href="" download=''>Téléchargez le dossier de licence</a></h5>
         </div>
     );

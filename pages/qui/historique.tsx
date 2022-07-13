@@ -1,8 +1,7 @@
 import * as React from 'react';
 import CardContent from '@mui/material/CardContent';
-import { Badge, Box, Container, Grid, Typography } from "@mui/material";
-import Header from '../../components/Header';
-import NavBar from '../../components/NavBar';
+import { Box, Container, Grid, Typography } from "@mui/material";
+import { Button } from "react-bootstrap";
 import { Layout } from '../../components/Layout';
 
 
@@ -13,7 +12,7 @@ export default function Historique():JSX.Element {
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
         <Box className="boxHistoriquePage">
           <CardContent>
-          <Badge badgeContent={"Notre Histoire"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
+          <Button id="badge">Notre Histoire</Button>
             <p></p>
             <Typography variant="body2" color="text.secondary">          
                 Le RUC Basket est né il y a 35 ans de la dissolution de la section basket de l&apos;Université de Reims, le Reims Université Club.
@@ -27,7 +26,7 @@ export default function Historique():JSX.Element {
         </Box>
         <Box className="boxHistoriquePage">
           <CardContent>
-          <Badge badgeContent={"Le Présent"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
+          <Button id="badge">Le Présent</Button>
             <p></p>
             <Typography variant="body2" color="text.secondary">          
               Le RUC Basket, pour cette saison 2018-2019 c&apos;est :

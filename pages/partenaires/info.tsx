@@ -1,6 +1,5 @@
-import { Badge, Box, CardContent, Container, ImageList, ImageListItem, Typography } from "@mui/material";
-import Head from "next/head";
-import Link from "next/link";
+import { Box, CardContent, Container, ImageList, ImageListItem, Typography } from "@mui/material";
+import { Button } from "react-bootstrap";
 import React from "react";
 import {Layout} from "../../components/Layout";
 export default function info() {
@@ -26,7 +25,7 @@ export default function info() {
       
          <div style={{padding:"20px",marginTop:"40px" ,display:"flex",justifyContent:"center",flexDirection:"column"}}>
           <Box className="boxPartenaires">
-          <Badge badgeContent={"Les partenaires institutionnels"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
+          <Button id="badge">Les partenaires institutionnels</Button>
             <div className="containerImgPartenaires">
               {itemData.map((element,index)=>{
                 return <img className="imgBoxPartenaires" key={index} style={{marginRight:"20px"}} src={`${element}`}/>
@@ -35,7 +34,7 @@ export default function info() {
           </Box>
           
           <Box className="boxPartenaires">
-          <Badge badgeContent={"Les partenaires privés"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
+          <Button id="badge">Les partenaires privés</Button>
             <div className="containerImgPartenaires">
               {itemDataPrive.map((element,index)=>{
                 return <img className="imgBoxPartenaires" key={index} style={{marginRight:"20px",marginBottom:"20px"}} src={`${element}`}/>
