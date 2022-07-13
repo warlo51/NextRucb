@@ -16,6 +16,10 @@ a:link
   margin-left: 100px;
   background-color: #dc8d32;
 }
+#colBox{
+  text-align: center;
+  align-self: center;
+}
 /* HEADER */
 .Header ul{
   z-index: 2;
@@ -29,6 +33,7 @@ a:link
   justify-content: flex-end;
   background: linear-gradient(to bottom right, #3d1e7b, orange);
 }
+
 .Header ul li{
   margin-left: 5px;
 }
@@ -191,9 +196,10 @@ z-index: 2;
   margin-left:20px;
 }
 /* divHoraire */
-
+#colHomeCentre{
+ padding-top:100px;
+}
 .divHoraires{
-  height: 681px;
   display: flex;
   flex-direction: column;
   border:solid #3d1e7b;
@@ -204,6 +210,26 @@ z-index: 2;
   border-radius: 20px;
 }
 .divActualite{
+  display: flex;
+  flex-direction: column;
+  border:solid #3d1e7b;
+  background-color: #fff;
+  box-shadow: 5px 5px 5px #3d1e7b;
+  padding: 40px;
+  margin-top: 30px;
+  border-radius: 20px;
+}
+.divFfbb{
+  display: flex;
+  flex-direction: column;
+  border:solid #3d1e7b;
+  background-color: #fff;
+  box-shadow: 5px 5px 5px #3d1e7b;
+  padding: 40px;
+  margin-top: 30px;
+  border-radius: 20px;
+}
+.divEquipe{
   display: flex;
   flex-direction: column;
   border:solid #3d1e7b;
@@ -237,7 +263,7 @@ z-index: 2;
 .boxHistoriquePage{
   border:solid #3d1e7b;
   box-shadow: 5px 5px 5px #3d1e7b;
-  margin-top: 60px;
+  margin-top: 70px;
   border-radius: 20px;
   padding: 20px;
   background-color: #fff;
@@ -316,9 +342,28 @@ z-index: 2;
   flex-direction:row;
   justify-content: space-between;
 }
+/* page Actu */
+#imgActu{
+  text-align: center;
+}
+#imgActu img{
+  height:  200px;
+  margin-left: 10px;
+  transition: transform .1s;
+}
+#imgActu img:hover{
+  -ms-transform: scale(1.2); /* IE 9 */
+  -webkit-transform: scale(1.2); /* Safari 3-8 */
+  transform: scale(1.2);
+}
 
-
+#ulEquipe{
+  list-style:none;
+  text-align:justify;
+}
  /* media */
+
+
  @media screen and (max-width: 1024px) {
   .navbar>.container{
     padding-left: 80px;
@@ -327,7 +372,9 @@ z-index: 2;
     .navbar a{
       margin-left: 50px;
     }
-   
+    #colHomeCentre{
+      padding-top:50px;
+     }
 }
 @media screen and (max-width: 768px) {
   .Bandeau{
@@ -340,6 +387,12 @@ z-index: 2;
     margin-left: 50px;
     background-color: #dc8d32;
   }
+  #imgActu img{
+    height:  180px;
+    margin-left: 20px;
+    transition: transform .1s;
+  }
+
 }
 @media screen and (max-width: 425px) {
   .Bandeau{
@@ -361,6 +414,11 @@ z-index: 2;
   }
   #rowActu{
     width: 90%;
+  }
+  #imgActu img{
+    height:  120px;
+    margin-left: 2px;
+    transition: transform .1s;
   }
 }
 @media screen and (max-width: 375px) {
