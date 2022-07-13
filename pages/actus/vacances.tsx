@@ -16,7 +16,7 @@ export default function Vacance():JSX.Element {
           <Badge badgeContent={"RUCB en vacance"}  anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
             <p></p>
             <Typography variant="body2" color="text.secondary"> 
-                <h6 style={{textDecoration:"underline"}}>Ami Basketteurs !!</h6>    
+                <p style={{textDecoration:"underline",fontSize:"20px"}}>Ami Basketteurs !!</p>    
                 <p>La saison 2021/2022 vient de se terminer. Le RUCB prend quelques jours de repos.</p>     
                 <p>L&apos;idée étant de revenir encore plus fort à la rentrée !!</p>  
                 <p>Une permanence se met toutefois en place :</p>
@@ -31,6 +31,9 @@ export default function Vacance():JSX.Element {
                 </Typography>
           </CardContent>
         </Box>
+        <br></br>
+        <br></br>
+        <br></br>
         <br></br>
         <br></br>
         <br></br>
