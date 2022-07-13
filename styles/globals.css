@@ -135,7 +135,7 @@ z-index: 2;
   text-align: left;
 }
 
-.buttonSlide{
+#buttonSlide{
   transition: all .5s ease-in-out;
   position: absolute;
   height: 40px;
@@ -149,15 +149,15 @@ z-index: 2;
   border-color: white;
   padding-left: 10px;
   padding-right: 10px;
-  font-size: 30px;
+  font-size: 20px;
   text-align: left;
 }
-.buttonSlide:hover{
+#buttonSlide:hover{
   background:#dc8d32;
   text-decoration: none;
   color:white;
 }
-.buttonSlide a:link{
+#buttonSlide a:link{
   text-decoration: none;
   color:white
 }
