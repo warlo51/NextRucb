@@ -9,7 +9,7 @@ export default function Entraineurs() {
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>  
             <Box className="BoxComite">
               <CardContent >
-              <Badge badgeContent={"Florent Aubry"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
+              <Badge badgeContent={"Florent Aubry"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
                 <p></p>
                 <Typography variant="body2" color="text.secondary">
                   Tél. : 06-82-30-16-71         
@@ -18,7 +18,7 @@ export default function Entraineurs() {
             </Box>
             <Box className="BoxComite">
               <CardContent >
-              <Badge badgeContent={"Aurelien Valentin"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
+              <Badge badgeContent={"Aurelien Valentin"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
                 <p></p>
                 <Typography variant="body2" color="text.secondary">
                   Tél. : 06-79-46-47-07        
@@ -27,7 +27,7 @@ export default function Entraineurs() {
             </Box>
             <Box className="BoxComite">
               <CardContent >
-              <Badge badgeContent={""} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
+              <Badge badgeContent={""} anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
                 <p></p>
                 <Typography variant="body2" color="text.secondary">
                          
@@ -36,7 +36,7 @@ export default function Entraineurs() {
             </Box>
             <Box className="BoxComite">
               <CardContent >
-              <Badge badgeContent={""} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
+              <Badge badgeContent={""} anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
                 <p></p>
                 <Typography variant="body2" color="text.secondary">
                           

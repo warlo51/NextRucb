@@ -8,7 +8,7 @@ export default function Mecenat() {
     <Layout>
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
           <Box className="boxMecenat">
-          <Badge badgeContent={"LE RUCB et le mécénat (Partenaires et futurs partenaires)"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
+          <Badge badgeContent={"LE RUCB et le mécénat (Partenaires et futurs partenaires)"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
             <CardContent>
               <p></p>
               <Typography variant="body2" color="text.secondary">          
@@ -32,7 +32,7 @@ export default function Mecenat() {
             </CardContent>
           </Box>
           <Box className="boxMecenat">
-          <Badge badgeContent={"LE RUCB et le mécénat (Particuliers - Supporters du RUCB)"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
+          <Badge badgeContent={"LE RUCB et le mécénat (Particuliers - Supporters du RUCB)"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
             <CardContent>
               <p></p>
               <Typography variant="body2" color="text.secondary">          

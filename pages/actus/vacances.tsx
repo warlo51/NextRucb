@@ -13,7 +13,7 @@ export default function Vacance():JSX.Element {
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
         <Box className="boxHistoriquePage">
           <CardContent>
-          <Badge badgeContent={"RUCB en vacance"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
+          <Badge badgeContent={"RUCB en vacance"}  anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
             <p></p>
             <Typography variant="body2" color="text.secondary"> 
                 <h6 style={{textDecoration:"underline"}}>Ami Basketteurs !!</h6>    
