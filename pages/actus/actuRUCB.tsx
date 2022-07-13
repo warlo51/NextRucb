@@ -14,7 +14,7 @@ export default function ActuRUCB():JSX.Element {
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
         <Box className="boxHistoriquePage">
           <CardContent>
-          <Badge badgeContent={"Une page se tourne"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
+          <Badge badgeContent={"Une page se tourne"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
             <p></p>
             <Box className="boxHistoriquePage">
               <Row >

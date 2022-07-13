@@ -13,7 +13,7 @@ export default function Historique():JSX.Element {
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
         <Box className="boxHistoriquePage">
           <CardContent>
-          <Badge badgeContent={"Notre Histoire"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
+          <Badge badgeContent={"Notre Histoire"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
             <p></p>
             <Typography variant="body2" color="text.secondary">          
                 Le RUC Basket est né il y a 35 ans de la dissolution de la section basket de l&apos;Université de Reims, le Reims Université Club.
@@ -27,7 +27,7 @@ export default function Historique():JSX.Element {
         </Box>
         <Box className="boxHistoriquePage">
           <CardContent>
-          <Badge badgeContent={"Le Présent"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
+          <Badge badgeContent={"Le Présent"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
             <p></p>
             <Typography variant="body2" color="text.secondary">          
               Le RUC Basket, pour cette saison 2018-2019 c&apos;est :

@@ -26,7 +26,7 @@ export default function info() {
       
          <div style={{padding:"20px",marginTop:"40px" ,display:"flex",justifyContent:"center",flexDirection:"column"}}>
           <Box className="boxPartenaires">
-          <Badge badgeContent={"Les partenaires institutionnels"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
+          <Badge badgeContent={"Les partenaires institutionnels"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
             <div className="containerImgPartenaires">
               {itemData.map((element,index)=>{
                 return <img className="imgBoxPartenaires" key={index} style={{marginRight:"20px"}} src={`${element}`}/>
@@ -35,7 +35,7 @@ export default function info() {
           </Box>
           
           <Box className="boxPartenaires">
-          <Badge badgeContent={"Les partenaires privés"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
+          <Badge badgeContent={"Les partenaires privés"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
             <div className="containerImgPartenaires">
               {itemDataPrive.map((element,index)=>{
                 return <img className="imgBoxPartenaires" key={index} style={{marginRight:"20px",marginBottom:"20px"}} src={`${element}`}/>

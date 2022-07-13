@@ -8,7 +8,7 @@ export default function Arbitrage() {
     <Layout >
         <div style={{padding:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
       <Box className="boxFormation">
-      <Badge badgeContent={"Apprendre les règles de basket"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
+      <Badge badgeContent={"Apprendre les règles de basket"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
             <div className="divRegleBasket">
             <CardContent>
               <p></p>
@@ -24,7 +24,7 @@ export default function Arbitrage() {
             </div>
       </Box>
       <Box className="boxFormation">
-      <Badge badgeContent={"Les Catégories"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
+      <Badge badgeContent={"Les Catégories"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
         <CardContent>
               <p></p>
           <Typography variant="body2" color="text.secondary">
@@ -32,7 +32,7 @@ export default function Arbitrage() {
         </CardContent>
       </Box>
       <Box className="boxFormation">
-      <Badge badgeContent={"Découvrir l'E-Marque"} color="primary" anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
+      <Badge badgeContent={"Découvrir l'E-Marque"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
       <div className="divRegleBasket">
             <CardContent>
               <p></p>
