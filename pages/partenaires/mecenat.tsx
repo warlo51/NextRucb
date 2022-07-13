@@ -1,6 +1,5 @@
-import { Badge, Box, CardContent, Container, Typography } from "@mui/material";
-import Head from "next/head";
-import Link from "next/link";
+import { Box, CardContent, Container, Typography } from "@mui/material";
+import { Button } from "react-bootstrap";
 import React from "react";
 import {Layout} from "../../components/Layout";
 export default function Mecenat() {
@@ -8,7 +7,7 @@ export default function Mecenat() {
     <Layout>
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
           <Box className="boxMecenat">
-          <Badge badgeContent={"LE RUCB et le mécénat (Partenaires et futurs partenaires)"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
+          <Button id="badge">LE RUCB et le mécénat (Partenaires et futurs partenaires)</Button>
             <CardContent>
               <p></p>
               <Typography variant="body2" color="text.secondary">          
@@ -32,7 +31,7 @@ export default function Mecenat() {
             </CardContent>
           </Box>
           <Box className="boxMecenat">
-          <Badge badgeContent={"LE RUCB et le mécénat (Particuliers - Supporters du RUCB)"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
+          <Button id="badge">LE RUCB et le mécénat (Particuliers - Supporters du RUCB)</Button>
             <CardContent>
               <p></p>
               <Typography variant="body2" color="text.secondary">          

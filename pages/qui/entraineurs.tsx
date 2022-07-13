@@ -1,6 +1,5 @@
-import { Badge, Box, CardContent, Typography } from "@mui/material";
-import Head from "next/head";
-import Link from "next/link";
+import { Box, CardContent, Typography } from "@mui/material";
+import { Button } from "react-bootstrap";
 import React from "react";
 import {Layout} from "../../components/Layout";
 export default function Entraineurs() {
@@ -9,7 +8,7 @@ export default function Entraineurs() {
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>  
             <Box className="BoxComite">
               <CardContent >
-              <Badge badgeContent={"Florent Aubry"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
+              <Button id="badge">Florent Aubry</Button>
                 <p></p>
                 <Typography variant="body2" color="text.secondary">
                   Tél. : 06-82-30-16-71         
@@ -18,7 +17,7 @@ export default function Entraineurs() {
             </Box>
             <Box className="BoxComite">
               <CardContent >
-              <Badge badgeContent={"Aurelien Valentin"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
+              <Button id="badge">Aurelien Valentin</Button>
                 <p></p>
                 <Typography variant="body2" color="text.secondary">
                   Tél. : 06-79-46-47-07        
@@ -27,7 +26,7 @@ export default function Entraineurs() {
             </Box>
             <Box className="BoxComite">
               <CardContent >
-              <Badge badgeContent={""} anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
+              <Button id="badge"></Button>
                 <p></p>
                 <Typography variant="body2" color="text.secondary">
                          
@@ -36,7 +35,7 @@ export default function Entraineurs() {
             </Box>
             <Box className="BoxComite">
               <CardContent >
-              <Badge badgeContent={""} anchorOrigin={{vertical: 'top',horizontal: 'left'}} />
+              <Button id="badge"></Button>
                 <p></p>
                 <Typography variant="body2" color="text.secondary">
                           

@@ -1,8 +1,9 @@
 import * as React from 'react';
 import CardContent from '@mui/material/CardContent';
-import { Badge, Box, Container, Grid, Typography } from "@mui/material";
+import { Box, Container, Grid, Typography } from "@mui/material";
 import Header from '../../components/Header';
 import NavBar from '../../components/NavBar';
+import { Button } from "react-bootstrap";
 import { Layout } from '../../components/Layout';
 
 
@@ -13,7 +14,7 @@ export default function Vacance():JSX.Element {
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
         <Box className="boxHistoriquePage">
           <CardContent>
-          <Badge badgeContent={"RUCB en vacance"}  anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
+          <Button id="badge">RUCB en vacance</Button>
             <p></p>
             <Typography variant="body2" color="text.secondary"> 
                 <p style={{textDecoration:"underline",fontSize:"20px"}}>Ami Basketteurs !!</p>    

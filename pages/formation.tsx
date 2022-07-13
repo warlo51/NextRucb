@@ -1,6 +1,5 @@
 import { Badge, Box, CardContent, Typography } from "@mui/material";
-import Head from "next/head";
-import Link from "next/link";
+import { Button } from "react-bootstrap";
 import React from "react";
 import {Layout} from "../components/Layout";
 export default function Arbitrage() {
@@ -8,7 +7,7 @@ export default function Arbitrage() {
     <Layout >
         <div style={{padding:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
       <Box className="boxFormation">
-      <Badge badgeContent={"Apprendre les règles de basket"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
+      <Button id="badge">Apprendre les règles de basket</Button>
             <div className="divRegleBasket">
             <CardContent>
               <p></p>
@@ -24,7 +23,7 @@ export default function Arbitrage() {
             </div>
       </Box>
       <Box className="boxFormation">
-      <Badge badgeContent={"Les Catégories"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
+      <Button id="badge">Les Catégories</Button>
         <CardContent>
               <p></p>
           <Typography variant="body2" color="text.secondary">
@@ -32,7 +31,7 @@ export default function Arbitrage() {
         </CardContent>
       </Box>
       <Box className="boxFormation">
-      <Badge badgeContent={"Découvrir l'E-Marque"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
+      <Button id="badge">Découvrir l'E-Marque</Button>
       <div className="divRegleBasket">
             <CardContent>
               <p></p>

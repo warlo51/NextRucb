@@ -1,10 +1,9 @@
-import { Badge } from "@mui/material";
-import { Table } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 
 export default function Horaires() {
     return (
        <div className="divHoraires">
-        <Badge badgeContent={"Entrainements"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} style={{marginBottom:"40px"}} /> 
+        <Button id="badge">Entrainements</Button>
         <img src="../HorairesEntrainements.png"/>
        </div>
     
