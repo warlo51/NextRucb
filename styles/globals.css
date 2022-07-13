@@ -138,8 +138,8 @@ z-index: 2;
 .buttonSlide{
   transition: all .5s ease-in-out;
   position: absolute;
-  height: 50px;
-  bottom: 20px;
+  height: 40px;
+  bottom: 60px;
   left: 50%;
   margin-left: -45%;
   border-radius: 10px;
@@ -397,6 +397,35 @@ z-index: 2;
   }
 
 }
+@media screen and (max-width: 990px) {
+  .MuiBadge-badge{
+    width: 200px;
+    height: 40px;
+    font-size: 18px;
+    margin-left: 50px;
+    color:white;
+    background-color: #dc8d32;
+  }
+
+  .Bandeau{
+    display: none;
+  }
+  .NavBar{
+    background: linear-gradient(to bottom right, #3d1e7b, orange);
+    height: 200px;
+    width: 100%;
+    z-index: 2;
+  }
+  .NavBar a{
+    margin-right: 0;
+  }
+  .NavBar img{
+    display: none;
+  }
+  .NavBar.fixed{
+   display: none;
+  }
+}
 @media screen and (max-width: 425px) {
   .Bandeau{
     display: none;
@@ -423,6 +452,21 @@ z-index: 2;
     margin-left: 2px;
     transition: transform .1s;
   }
+  .NavBar{
+    background: linear-gradient(to bottom right, #3d1e7b, orange);
+    height: 200px;
+    width: 100%;
+    z-index: 2;
+  }
+  .NavBar a{
+    margin-right: 0;
+  }
+  .NavBar img{
+    display: none;
+  }
+  .NavBar.fixed{
+   display: none;
+  }
 }
 @media screen and (max-width: 375px) {
   .Bandeau{
@@ -437,5 +481,20 @@ z-index: 2;
   }
   .imgGoogleMap{
     width: 200px;
+  }
+  .NavBar{
+    background: linear-gradient(to bottom right, #3d1e7b, orange);
+    height: 200px;
+    width: 100%;
+    z-index: 2;
+  }
+  .NavBar a{
+    margin-right: 0;
+  }
+  .NavBar img{
+    display: none;
+  }
+  .NavBar.fixed{
+   display: none;
   }
 }

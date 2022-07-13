@@ -21,7 +21,7 @@ export default function Historique():JSX.Element {
                 Pendant plusieurs années, le club a organisé une compétition de basket inédite dans la région : les 60h du RUCB.
                 Ce tournoi sans commune mesure rassemblait sur presque 3 jours de nombreuses équipes féminines et masculines de différentes régions. La dernière édition a eu lieu en 2014.
                 L&apos;équipe Seniors évolue en championnat pré-national et joue les premiers rôles. Elle a atteint en 2016 et 2017 le dernier carré pour l&apos;accession en National 3 (finale perdue en 2016 contre Vitry le François, demi-finale en 2017 contre l&apos;Etoile de Charleville Mézières), championnat dans lequel elle a évolué lors de la saision 2014-2015.
-                Le RUCB c&apos;est aussi des équipes `&quot;`jeunes`&quot;` qui participent à la notoriété de la politique de formation du club. En 2018, c&apos;est l&apos;équipe U11 (Poussins) qui a garni le palmarès du club en remportant la coupe de la Marne.
+                Le RUCB c&apos;est aussi des équipes jeunes qui participent à la notoriété de la politique de formation du club. En 2018, c&apos;est l&apos;équipe U11 (Poussins) qui a garni le palmarès du club en remportant la coupe de la Marne.
               </Typography>
           </CardContent>
         </Box>

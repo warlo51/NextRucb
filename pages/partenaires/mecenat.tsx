@@ -43,6 +43,11 @@ export default function Mecenat() {
               </Typography>
             </CardContent>
           </Box>
+          <br></br>
+          <br></br>
+          <br></br>
+          <br></br>
+          <br></br>
       </div>
     </Layout>
   );
