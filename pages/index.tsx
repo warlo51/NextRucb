@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Button, Col, Container, Row } from 'react-bootstrap'
 import Actualite from '../components/Actualite'
 import BandeauIMG from '../components/BandeauIMG'
+import Equipes from '../components/Equipes'
 import Ffbb from '../components/Ffbb'
 import Horaires from '../components/Horaires'
 import { Layout } from '../components/Layout'
@@ -21,8 +22,11 @@ const Home: NextPage = () => {
    <BandeauIMG/>
    <Container className="containerActu">
     <Row>
-      <Col xs={12} sm={4}><Horaires/></Col>
-      <Col xs={12} sm={4}>
+      <Col xs={12} sm={4} >
+        <Horaires/>
+        <Equipes/>
+      </Col>
+      <Col xs={12} sm={4} id="colHomeCentre">
         <Row id="rowActu"><Actualite/></Row>
         <Row id="rowActu"><Sponsors/></Row>
         <Row id="rowActu"><Partenaires/></Row>
