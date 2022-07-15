@@ -28,15 +28,15 @@ export default function Complexe() {
             <Badge badgeContent={"QUELQUES IMAGES"} anchorOrigin={{vertical: 'top',horizontal: 'left'}} /> 
               <CardContent >
                 <Row>
-                  <Col><img src="../../gymnase5.jpg" className="imgComplexeBox"/></Col>
-                  <Col><img src="../../gymnase1.jpg" className="imgComplexeBox"/></Col>
+                  <Col><img alt="imageComplexeRUCB" src="../../gymnase5.jpg" className="imgComplexeBox"/></Col>
+                  <Col><img alt="imageComplexeRUCB" src="../../gymnase1.jpg" className="imgComplexeBox"/></Col>
                 </Row>
                 <Row>
-                  <Col><img src="../../gymnase2.jpg" className="imgComplexeBox"/></Col>
-                  <Col><img src="../../gymnase3.jpg" className="imgComplexeBox"/></Col>
+                  <Col><img alt="imageComplexeRUCB" src="../../gymnase2.jpg" className="imgComplexeBox"/></Col>
+                  <Col><img alt="imageComplexeRUCB" src="../../gymnase3.jpg" className="imgComplexeBox"/></Col>
                 </Row>
                 <Row>
-                  <Col><img src="../../gymnase4.jpg" className="imgComplexeBox"/></Col>
+                  <Col><img alt="imageComplexeRUCB" src="../../gymnase4.jpg" className="imgComplexeBox"/></Col>
                 </Row>
               </CardContent>
             </Box>

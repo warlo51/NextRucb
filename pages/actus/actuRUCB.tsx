@@ -24,7 +24,7 @@ export default function ActuRUCB():JSX.Element {
                   <p>L&apos;occasion pour Gérard BAUDESSON de lui remettre le maillot officiel du club pour le souvenir !!</p>
                   <p>Bonne chance à lui !!</p>
                 </Col>
-                <Col id="imgActu" xs={12} sm={6}><img src='../divers/gabrielDepart.jpg'/></Col>
+                <Col id="imgActu"  xs={12} sm={6}><img alt="imageActuRUCB" src='../divers/gabrielDepart.jpg'/></Col>
               </Row>
               </Box>
             <Box className="boxHistoriquePage">
@@ -34,7 +34,7 @@ export default function ActuRUCB():JSX.Element {
                   <p>Comment saluer plus simplement l&apos;énorme travail effectué par nos bénévoles et joueurs qui partent aujourd'hui vers d&apos;autres aventures. (JH,NAS,STANIE,JUJU,REMI ...)</p>
                   <p>Bonne continuation sur les parquets pour certains et bonne retraite sportive pour d&apos;autres ... et si vous vous ennuyer en septembre revenez nous voir !</p>
                 </Col>
-                <Col id="imgActu" style={{justifyContent:"flex-end"}} sm={6} xs={12}><img  src='../divers/ancienDepart.jpg'/></Col>
+                <Col id="imgActu"  style={{justifyContent:"flex-end"}} sm={6} xs={12}><img  alt="imageActuRUCB" src='../divers/ancienDepart.jpg'/></Col>
               </Row>
             </Box>
             <Box className="boxHistoriquePage">
@@ -47,7 +47,7 @@ export default function ActuRUCB():JSX.Element {
                   <p>L&apos;occasion était donc bien choisie pour lui remettre le trophée de président d&apos;honneur pour saluer l&apos;ensemble de son oeuvre !</p>
                   <p>MERCI GERARD</p>
                 </Col>
-                <Col id="imgActu" sm={6} xs={12}><img  src='../divers/gerardDepart.jpg'/><img  src='../divers/tropheePresident.jpg'/></Col>
+                <Col id="imgActu" sm={6} xs={12}><img  src='../divers/gerardDepart.jpg'/><img  alt="imageActuRUCB" src='../divers/tropheePresident.jpg'/></Col>
               </Row>
             </Box>
           </CardContent>

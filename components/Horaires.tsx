@@ -4,7 +4,7 @@ export default function Horaires() {
     return (
        <div className="divHoraires">
         <Button id="badge">Entrainements</Button>
-        <img src="../HorairesEntrainements.png"/>
+        <img alt="horairesEntrainementRUCB" src="../HorairesEntrainements.png"/>
        </div>
     
     );

@@ -28,7 +28,7 @@ export default function info() {
           <Button id="badge">Les partenaires institutionnels</Button>
             <div className="containerImgPartenaires">
               {itemData.map((element,index)=>{
-                return <img className="imgBoxPartenaires" key={index} style={{marginRight:"20px"}} src={`${element}`}/>
+                return <img alt="imagePartenairesRUCB" className="imgBoxPartenaires" key={index} style={{marginRight:"20px"}} src={`${element}`}/>
               })}
             </div>
           </Box>
@@ -38,7 +38,7 @@ export default function info() {
 
             <div className="containerImgPartenaires">
               {itemDataPrive.map((element,index)=>{
-                return <img className="imgBoxPartenaires" key={index} style={{marginRight:"20px",marginBottom:"20px"}} src={`${element}`}/>
+                return <img alt="imagePartenairesRUCB" className="imgBoxPartenaires" key={index} style={{marginRight:"20px",marginBottom:"20px"}} src={`${element}`}/>
               })}
             </div>
           </Box>
