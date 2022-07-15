@@ -14,7 +14,7 @@ const FooterPage = () => {
       <div className="footer-copyright text-center py-3">
         <MDBContainer fluid>
           &copy; {new Date().getFullYear()} Copyright: <a> RucBasket Reims </a><br></br>
-          &copy;  Developper: <a> Mansuy Maxime </a>
+          &copy;  développé par <a> Mansuy Maxime </a>
         </MDBContainer>
       </div>
     </MDBFooter>
