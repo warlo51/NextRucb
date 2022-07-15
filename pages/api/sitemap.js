@@ -20,7 +20,6 @@ export default async (req, res) => {
 
   // Create a stream to write to
   const stream = new SitemapStream({ hostname: `https://${req.headers.host}` });
-console.log(`https://${req.headers.host}`)
   res.writeHead(200, {
     "Content-Type": "application/xml",
   });
