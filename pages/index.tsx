@@ -1,8 +1,4 @@
-import { Box, Grid } from '@mui/material'
 import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import Link from 'next/link'
 import { Button, Col, Container, Row } from 'react-bootstrap'
 import Actualite from '../components/Actualite'
 import BandeauIMG from '../components/BandeauIMG'

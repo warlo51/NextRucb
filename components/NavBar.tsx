@@ -26,7 +26,7 @@ export default function NavBar(props: any) {
             <Nav id="nav" className={fix ? "NavBar fixed" : "NavBar"}>
               <Nav.Link href="/" style={{color:`${props.colorText}`}}>Accueil</Nav.Link>
               <Nav.Link href="/formation" style={{color:`${props.colorText}`}}>Formation</Nav.Link>
-              <Nav.Link href="" ><img src="../logoruc.png"/></Nav.Link>
+              <Nav.Link href="" ><img alt="logoRUCB" src="../logoruc.png"/></Nav.Link>
               <NavDropdown title="Qui Sommes Nous" id="basic-nav-dropdown" >
                 <NavDropdown.Item id="linkDropdown" href="/qui/historique" >Histoire Du RUC</NavDropdown.Item>
                 <NavDropdown.Item id="linkDropdown" href="/qui/comite">Comité Directeur</NavDropdown.Item>
@@ -49,7 +49,7 @@ export default function NavBar(props: any) {
             <Nav id="nav" className={fix ? "NavBar fixed" : "NavBar"}>
               <Nav.Link href="/" style={{color:`${props.colorText}`}}>Accueil</Nav.Link>
               <Nav.Link href="/formation" style={{color:`${props.colorText}`}}>Formation</Nav.Link>
-              <Nav.Link href="" ><img src="../logoruc.png"/></Nav.Link>
+              <Nav.Link href="" ><img alt="logoRUCB" src="../logoruc.png"/></Nav.Link>
               <NavDropdown title="Qui Sommes Nous" id="basic-nav-dropdown-black" >
                 <NavDropdown.Item id="linkDropdown" href="/qui/historique" >Histoire Du RUC</NavDropdown.Item>
                 <NavDropdown.Item id="linkDropdown" href="/qui/comite">Comité Directeur</NavDropdown.Item>
