@@ -4,21 +4,21 @@ import React from "react";
 import {Layout} from "../../components/Layout";
 export default function info() {
   const itemData = [
-    "../../sponsors/CD51.png",
-    "../../sponsors/LogoVilledeReims.jpg",
-    "../../sponsors/liguegdestbasket.png",
-    "../../sponsors/ffbb.png",
-    "../../sponsors/logocomitemarne.png"
+    "../CD51.png",
+    "../LogoVilledeReims.jpg",
+    "../liguegdestbasket.png",
+    "../ffbb.png",
+    "../logocomitemarne.png"
   ]
   const itemDataPrive = [
-    "../../sponsors/NouveauLogoNorauto.jpg",
-    "../../sponsors/LOGOMAISONKIKEL.jpg",
-    "../../sponsors/logocarrefour.png",
-    "../../sponsors/logoBuffaloGrill.png",
-    "../../sponsors/Charpentiersdumassif.png",
-    "../../sponsors/logoCIC.jpg",
-    "../../sponsors/TAYLOR.jpg",
-    "../../sponsors/JSRDRUM.jpg"
+    "../NouveauLogoNorauto.jpg",
+    "../LOGOMAISONKIKEL.jpg",
+    "../logocarrefour.png",
+    "../logoBuffaloGrill.png",
+    "../Charpentiersdumassif.png",
+    "../logoCIC.jpg",
+    "../TAYLOR.jpg",
+    "../JSRDRUM.jpg"
   ]
   return (
     <Layout>
