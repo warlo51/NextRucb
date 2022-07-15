@@ -2,6 +2,7 @@ import { Box, CardContent, Container, ImageList, ImageListItem, Typography } fro
 import { Button } from "react-bootstrap";
 import React from "react";
 import {Layout} from "../../components/Layout";
+import Head from "next/head";
 export default function info() {
   const itemData = [
     "../../sponsors/CD51.png",
@@ -22,7 +23,11 @@ export default function info() {
   ]
   return (
     <Layout>
-      
+        <Head>
+        <title>Partenaires</title>
+        <meta name="description" content="Les partenaires du RUCB basket"/>
+        <meta name="google-site-verification" content="g-JktWG1_hWPLXMEXwsoblRJTiPvWl8QbmLFIvt_8aU" />
+    </Head>
          <div style={{padding:"20px",marginTop:"40px" ,display:"flex",justifyContent:"center",flexDirection:"column"}}>
           <Box className="boxPartenaires">
           <Button id="badge">Les partenaires institutionnels</Button>

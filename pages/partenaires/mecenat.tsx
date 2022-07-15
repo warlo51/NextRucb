@@ -2,9 +2,15 @@ import { Box, CardContent, Container, Typography } from "@mui/material";
 import { Button } from "react-bootstrap";
 import React from "react";
 import {Layout} from "../../components/Layout";
+import Head from "next/head";
 export default function Mecenat() {
   return (
     <Layout>
+      <Head>
+        <title>Mécenat</title>
+        <meta name="description" content="Les mécenat du RUCB basket"/>
+        <meta name="google-site-verification" content="g-JktWG1_hWPLXMEXwsoblRJTiPvWl8QbmLFIvt_8aU" />
+      </Head>
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
           <Box className="boxMecenat">
           <Button id="badge">LE RUCB et le mécénat (Partenaires et futurs partenaires)</Button>

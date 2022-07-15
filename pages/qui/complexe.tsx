@@ -3,6 +3,7 @@ import { Button } from "react-bootstrap";
 import React from "react";
 import { Col, Row } from "react-bootstrap";
 import { Layout } from "../../components/Layout";
+import Head from "next/head";
 
 export default function Complexe() {
 
@@ -15,6 +16,11 @@ export default function Complexe() {
   ]
   return (
       <Layout>
+        <Head>
+        <title>Complexe</title>
+        <meta name="description" content="Quelques informations sur le gymnase du RUCB basket"/>
+        <meta name="google-site-verification" content="g-JktWG1_hWPLXMEXwsoblRJTiPvWl8QbmLFIvt_8aU" />
+    </Head>
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
         <Box className="boxComplexeImage">
         <Button id="badge">PLAN D'ACCES</Button>

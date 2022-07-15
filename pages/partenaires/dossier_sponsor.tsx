@@ -8,6 +8,11 @@ export default function DossierSponsor() {
 
   return (
     <Layout>
+      <Head>
+        <title>Sponsoring</title>
+        <meta name="description" content="Le dossier sponsors du RUCB basket"/>
+        <meta name="google-site-verification" content="g-JktWG1_hWPLXMEXwsoblRJTiPvWl8QbmLFIvt_8aU" />
+    </Head>
         <Container >
           <Box className="boxOrange">
             <CardContent>

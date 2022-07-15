@@ -6,12 +6,18 @@ import Header from '../../components/Header';
 import NavBar from '../../components/NavBar';
 import { Layout } from '../../components/Layout';
 import { Col, Row } from 'react-bootstrap';
+import Head from 'next/head';
 
 
 
 export default function ActuRUCB():JSX.Element {
   return (
        <Layout>
+        <Head>
+        <title>Actualités</title>
+        <meta name="description" content="Les actualités du RUCB basket"/>
+        <meta name="google-site-verification" content="g-JktWG1_hWPLXMEXwsoblRJTiPvWl8QbmLFIvt_8aU" />
+    </Head>
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
         <Box className="boxHistoriquePage">
           <CardContent>
