@@ -5,12 +5,18 @@ import Header from '../../components/Header';
 import NavBar from '../../components/NavBar';
 import { Button } from "react-bootstrap";
 import { Layout } from '../../components/Layout';
+import Head from 'next/head';
 
 
 
 export default function Vacance():JSX.Element {
   return (
        <Layout>
+        <Head>
+        <title>Vacances</title>
+        <meta name="description" content="Le RUCB basket est en vacance"/>
+        <meta name="google-site-verification" content="g-JktWG1_hWPLXMEXwsoblRJTiPvWl8QbmLFIvt_8aU" />
+       </Head>
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
         <Box className="boxHistoriquePage">
           <CardContent>

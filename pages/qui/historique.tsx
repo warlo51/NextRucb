@@ -3,12 +3,18 @@ import CardContent from '@mui/material/CardContent';
 import { Box, Container, Grid, Typography } from "@mui/material";
 import { Button } from "react-bootstrap";
 import { Layout } from '../../components/Layout';
+import Head from 'next/head';
 
 
 
 export default function Historique():JSX.Element {
   return (
        <Layout>
+        <Head>
+        <title>Historique</title>
+        <meta name="description" content="L'historique du RUCB basket"/>
+        <meta name="google-site-verification" content="g-JktWG1_hWPLXMEXwsoblRJTiPvWl8QbmLFIvt_8aU" />
+    </Head>
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
         <Box className="boxHistoriquePage">
           <CardContent>

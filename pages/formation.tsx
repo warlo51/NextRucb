@@ -2,9 +2,15 @@ import { Badge, Box, CardContent, Typography } from "@mui/material";
 import { Button } from "react-bootstrap";
 import React from "react";
 import {Layout} from "../components/Layout";
+import Head from "next/head";
 export default function Arbitrage() {
   return (
     <Layout >
+      <Head>
+        <title>Formation</title>
+        <meta name="description" content="Apprenez les règles du basket ! (RUCB basket)"/>
+        <meta name="google-site-verification" content="g-JktWG1_hWPLXMEXwsoblRJTiPvWl8QbmLFIvt_8aU" />
+    </Head>
         <div style={{padding:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
       <Box className="boxFormation">
       <Button id="badge">Apprendre les règles de basket</Button>

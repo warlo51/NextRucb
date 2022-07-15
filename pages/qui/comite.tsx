@@ -1,4 +1,5 @@
 import { Box, CardContent, Typography } from "@mui/material";
+import Head from "next/head";
 import React from "react";
 import { Button } from "react-bootstrap";
 import { Layout } from "../../components/Layout";
@@ -12,6 +13,11 @@ export default function Comite(props: MediaProps) {
 
   return (
        <Layout>
+        <Head>
+        <title>Comité Directeur</title>
+        <meta name="description" content="Le comité directeur du RUCB basket"/>
+        <meta name="google-site-verification" content="g-JktWG1_hWPLXMEXwsoblRJTiPvWl8QbmLFIvt_8aU" />
+    </Head>
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>  
             <Box className="BoxComite">
               <CardContent >
