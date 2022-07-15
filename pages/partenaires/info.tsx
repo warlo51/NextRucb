@@ -35,6 +35,7 @@ export default function info() {
           
           <Box className="boxPartenaires">
           <Button id="badge">Les partenaires privés</Button>
+
             <div className="containerImgPartenaires">
               {itemDataPrive.map((element,index)=>{
                 return <img className="imgBoxPartenaires" key={index} style={{marginRight:"20px",marginBottom:"20px"}} src={`${element}`}/>
