@@ -379,6 +379,16 @@ z-index: 2;
     #colHomeCentre{
       padding-top:50px;
      }
+     .carousel .slide .title{
+      bottom: 90px;
+      height: 80px;
+      left: 50%;
+      margin-left: -45%;
+      width: 50%;
+      padding: 10px;
+      font-size: 40px;
+      text-align: left;
+    }
      #badge{
     width: 200px;
     height: 43px;
