@@ -56,13 +56,12 @@ a:link
   color:white;
 }
 #basic-nav-dropdown-black{
-  color:black;
+  color:black; 
 }
 
 #linkDropdown{
   color: black;
-  margin-left: 0;
-  
+  margin-left: 0; 
 }
 .dropdown-menu.show {
   margin-left: 100px;
@@ -361,7 +360,13 @@ z-index: 2;
   text-align:justify;
 }
  /* media */
-
+#buttonToggle{
+ position: fixed;
+ z-index: 3;
+ top:0;
+ background-color: #fff;
+ margin: 4px;
+}
 
  @media screen and (max-width: 1024px) {
   .navbar>.container{
@@ -374,42 +379,55 @@ z-index: 2;
     #colHomeCentre{
       padding-top:50px;
      }
-}
-@media screen and (max-width: 768px) {
-  .Bandeau{
-    display: none;
-  }
-  
-  #imgActu img{
-    height:  180px;
-    margin-left: 20px;
-    transition: transform .1s;
-  }
-
-}
-@media screen and (max-width: 990px) {
-  #badge{
-    width: 150px;
-    height: 40px;
-    font-size: 16px;
+     #badge{
+    width: 200px;
+    height: 43px;
+    font-size: 12px;
     margin-bottom: 20px;
     border-radius: 20px;
     color:white;
     background-color: #dc8d32;
   }
-
+}
+@media screen and (max-width: 768px) {
+  .Bandeau{
+    display: none;
+  }
+  #imgActu img{
+    height:  180px;
+    margin-left: 20px;
+    transition: transform .1s;
+  }
+}
+@media screen and (max-width: 990px) {
+  #badge{
+    width: 200px;
+    height: 43px;
+    margin-left: -30px;
+    font-size: 12px;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    color:white;
+    background-color: #dc8d32;
+  }
+ 
   .Bandeau{
     display: none;
   }
   .NavBar{
     background: linear-gradient(to bottom right, #3d1e7b, orange);
-    height: 200px;
+    height: 350px;
     width: 100%;
     z-index: 2;
+    position: fixed;
+    font-size: 18px;
   }
-  .NavBar a{
-    margin-right: 0;
+  .dropdown-menu.show{
+    margin-left: 50px;
+    width: 150px;
+    color:white;
   }
+
   .NavBar img{
     display: none;
   }
@@ -444,9 +462,9 @@ z-index: 2;
     transition: transform .1s;
   }
   #badge{
-    width: 130px;
-    height: 40px;
-    font-size: 14px;
+    width: 200px;
+    height: 43px;
+    font-size: 12px;
     margin-bottom: 20px;
     border-radius: 20px;
     color:white;
@@ -454,7 +472,7 @@ z-index: 2;
   }
   .NavBar{
     background: linear-gradient(to bottom right, #3d1e7b, orange);
-    height: 200px;
+    height: 400px;
     width: 100%;
     z-index: 2;
   }
@@ -484,7 +502,7 @@ z-index: 2;
   }
   .NavBar{
     background: linear-gradient(to bottom right, #3d1e7b, orange);
-    height: 200px;
+    height: 400px;
     width: 100%;
     z-index: 2;
   }
@@ -496,5 +514,14 @@ z-index: 2;
   }
   .NavBar.fixed{
    display: none;
+  }
+  #badge{
+    width: 150px;
+    height: 40px;
+    font-size: 12px;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    color:white;
+    background-color: #dc8d32;
   }
 }
