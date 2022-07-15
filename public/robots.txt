@@ -1,4 +1,4 @@
-Sitemap: https://domain.com/api/sitemap
+Sitemap: https://www.rucb-basket.com/api/sitemap
 
 User-agent: *
 Allow: /*
