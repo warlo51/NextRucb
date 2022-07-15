@@ -4,21 +4,21 @@ import React from "react";
 import {Layout} from "../../components/Layout";
 export default function info() {
   const itemData = [
-    "../comite51.png",
-    "../LogoVilledeReims.jpg",
-    "../liguegdestbasket.png",
-    "../ffbb.png",
-    "../logocomitemarne.png"
+    "../../sponsors/CD51.png",
+    "../../sponsors/LogoVilledeReims.jpg",
+    "../../sponsors/liguegdestbasket.png",
+    "../../sponsors/ffbb.png",
+    "../../sponsors/logocomitemarne.png"
   ]
   const itemDataPrive = [
-    "../NouveauLogoNorauto.jpg",
-    "../LOGOMAISONKIKEL.jpg",
-    "../logocarrefour.png",
-    "../logoBuffaloGrill.png",
-    "../Charpentiersdumassif.png",
-    "../logoCIC.jpg",
-    "../TAYLOR.jpg",
-    "../JSRDRUM.jpg"
+    "../../sponsors/NouveauLogoNorauto.jpg",
+    "../../sponsors/LOGOMAISONKIKEL.jpg",
+    "../../sponsors/logocarrefour.png",
+    "../../sponsors/logoBuffaloGrill.png",
+    "../../sponsors/Charpentiersdumassif.png",
+    "../../sponsors/logoCIC.jpg",
+    "../../sponsors/TAYLOR.jpg",
+    "../../sponsors/JSRDRUM.jpg"
   ]
   return (
     <Layout>
@@ -35,6 +35,7 @@ export default function info() {
           
           <Box className="boxPartenaires">
           <Button id="badge">Les partenaires privés</Button>
+
             <div className="containerImgPartenaires">
               {itemDataPrive.map((element,index)=>{
                 return <img className="imgBoxPartenaires" key={index} style={{marginRight:"20px",marginBottom:"20px"}} src={`${element}`}/>
