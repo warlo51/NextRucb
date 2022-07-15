@@ -79,6 +79,10 @@ a:link
   z-index: 2;
 }
 
+#badge{
+  cursor:default;
+  box-shadow: none;
+}
 .NavBar.fixed{
   width: 100%;
   height: 50px;
