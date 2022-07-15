@@ -4,7 +4,7 @@ import React from "react";
 import {Layout} from "../../components/Layout";
 export default function info() {
   const itemData = [
-    "../CD51.png",
+    "../comite51.png",
     "../LogoVilledeReims.jpg",
     "../liguegdestbasket.png",
     "../ffbb.png",
