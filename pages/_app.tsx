@@ -9,7 +9,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <title>RUCB Basket</title>
         <meta name="description" content="Site web du RUCB, club de basket REIMS"/>
-        <meta name="google-site-verification" content="g-JktWG1_hWPLXMEXwsoblRJTiPvWl8QbmLFIvt_8aU" />
       </Head>
       <Component {...pageProps} />
     </div>
