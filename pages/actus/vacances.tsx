@@ -6,10 +6,24 @@ import NavBar from '../../components/NavBar';
 import { Button } from "react-bootstrap";
 import { Layout } from '../../components/Layout';
 import Head from 'next/head';
+import { GetServerSideProps } from 'next';
+import { getDatabase } from '../../src/database/database';
 
+export const getServerSideProps: GetServerSideProps = async () =>{
+  const mongodb = await getDatabase();
 
+  const articles = await mongodb.db().collection("Vacances").find().toArray();
+  const articlesConvert = JSON.stringify(articles)
 
-export default function Vacance():JSX.Element {
+  return {
+    props: {
+      articles: articlesConvert
+    }
+  };
+}
+
+export default function Vacance({articles}: any):JSX.Element {
+  const articlesJSON = JSON.parse(articles);
   return (
        <Layout>
         <Head>
@@ -18,26 +32,20 @@ export default function Vacance():JSX.Element {
         <meta name="google-site-verification" content="g-JktWG1_hWPLXMEXwsoblRJTiPvWl8QbmLFIvt_8aU" />
        </Head>
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
-        <Box className="boxHistoriquePage">
-          <CardContent>
-          <Button id="badge">RUCB en vacance</Button>
-            <p></p>
-            <Typography variant="body2" color="text.secondary"> 
-                <p style={{textDecoration:"underline",fontSize:"20px"}}>Ami Basketteurs !!</p>    
-                <p>La saison 2021/2022 vient de se terminer. Le RUCB prend quelques jours de repos.</p>     
-                <p>L&apos;idée étant de revenir encore plus fort à la rentrée !!</p>  
-                <p>Une permanence se met toutefois en place :</p>
-                <ul>
-                    <li>Info Joueurs (projets horaires, entraînements, essais): merci de contacter <u>Aurelien VALENTIN (06-79-46-47-07)</u> ou <u>Florent Aubry (06-82-30-16-71)</u></li>
-                    <li>Infos Licences: vous pouvez contacter <u>Gérard BAUDESSON (07-60-75-99-77)</u> ou <u>Sophie AUFRAY (06-19-54-43-75)</u></li>
-                    <li>Infos Sponsoring/Recrutement/Dirigeants/Entraineurs: merci de contacter <u>Franck MANSUY (06-68-20-27-34)</u> </li>
-                </ul>
-                <p>
-                    Belles vacances à toutes et tous et rendez vous en septembre !!
-                </p>
-                </Typography>
-          </CardContent>
-        </Box>
+        {articlesJSON.map((article: any, index: number) =>{
+              return (
+                <Box key={index} className="boxHistoriquePage">
+                  <Button id="badge">{article.titre}</Button>
+                  <div className="divRegleBasket">
+                    <CardContent>
+                      <p></p>
+                      <Typography variant="body2" color="text.secondary">          
+                        {article.contenu}
+                      </Typography>
+                    </CardContent>
+                  </div>
+                </Box>
+              );})}
         <br></br>
         <br></br>
         <br></br>

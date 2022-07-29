@@ -7,10 +7,25 @@ import NavBar from '../../components/NavBar';
 import { Layout } from '../../components/Layout';
 import { Col, Row } from 'react-bootstrap';
 import Head from 'next/head';
+import { GetServerSideProps } from 'next';
+import { getDatabase } from '../../src/database/database';
 
 
+export const getServerSideProps: GetServerSideProps = async () =>{
+  const mongodb = await getDatabase();
 
-export default function ActuRUCB():JSX.Element {
+  const articles = await mongodb.db().collection("Actualites").find().toArray();
+  const articlesConvert = JSON.stringify(articles)
+
+  return {
+    props: {
+      articles: articlesConvert
+    }
+  };
+}
+
+export default function ActuRUCB({articles}: any) {
+  const articlesJSON = JSON.parse(articles)
   return (
        <Layout>
         <Head>
@@ -19,45 +34,25 @@ export default function ActuRUCB():JSX.Element {
         <meta name="google-site-verification" content="g-JktWG1_hWPLXMEXwsoblRJTiPvWl8QbmLFIvt_8aU" />
     </Head>
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
-        <Box className="boxHistoriquePage">
-          <CardContent>
-          <Button id="badge">Une page se tourne</Button>
-            <p></p>
-            <Box className="boxHistoriquePage">
-              <Row >
-                <Col xs={12} sm={6} id="colBox">
-                  <p>Quelle émotion au moment de dire au revoir à Gabriel MANSUY, joueur du RUCB qui est arrivé en 2015 au club et qui signe aujourd'hui un contrat à la JDA DIJON.</p>
-                  <p>L&apos;occasion pour Gérard BAUDESSON de lui remettre le maillot officiel du club pour le souvenir !!</p>
-                  <p>Bonne chance à lui !!</p>
-                </Col>
-                <Col id="imgActu"  xs={12} sm={6}><img alt="imageActuRUCB" src='../divers/gabrielDepart.jpg'/></Col>
-              </Row>
-              </Box>
-            <Box className="boxHistoriquePage">
-              <Row>
-                <Col id="colBox" xs={12} sm={6}>
-                  <p>Merci !!</p>
-                  <p>Comment saluer plus simplement l&apos;énorme travail effectué par nos bénévoles et joueurs qui partent aujourd'hui vers d&apos;autres aventures. (JH,NAS,STANIE,JUJU,REMI ...)</p>
-                  <p>Bonne continuation sur les parquets pour certains et bonne retraite sportive pour d&apos;autres ... et si vous vous ennuyer en septembre revenez nous voir !</p>
-                </Col>
-                <Col id="imgActu"  style={{justifyContent:"flex-end"}} sm={6} xs={12}><img  alt="imageActuRUCB" src='../divers/ancienDepart.jpg'/></Col>
-              </Row>
-            </Box>
-            <Box className="boxHistoriquePage">
-              <Row>
-                <Col id="colBox" xs={12} sm={6}>
-                  <p>C&apos;est l&apos;heure des grandes décisions au sein de notre club.</p>
-                  <p>Après plusieurs décennie de présidence, Monsieur Gérard BAUDESSON a décidé de céder sa place de président.</p>
-                  <p>Séisme dans le milieu du basket grand EST !!</p>
-                  <p>Rassurons nous, il ne sera pas loin car il reste bien évidemment au sein du club !!</p>
-                  <p>L&apos;occasion était donc bien choisie pour lui remettre le trophée de président d&apos;honneur pour saluer l&apos;ensemble de son oeuvre !</p>
-                  <p>MERCI GERARD</p>
-                </Col>
-                <Col id="imgActu" sm={6} xs={12}><img  src='../divers/gerardDepart.jpg'/><img  alt="imageActuRUCB" src='../divers/tropheePresident.jpg'/></Col>
-              </Row>
-            </Box>
-          </CardContent>
-        </Box>
+         
+            {articlesJSON.map((article: any) =>{
+              return (
+                <Box className="boxHistoriquePage">
+                 <Button id="badge">{article.titre}</Button>
+                  <Row >
+                    <Col xs={12} sm={6} id="colBox">
+                      {article.contenu}
+                    </Col>
+                    <Col id="imgActu"  xs={12} sm={6}>
+                      {article.image.map((item: any, index:number)=>{
+                        return (<img key={index} alt={item.alt} src={item}/>);
+                      })}
+                    </Col>
+                  </Row>
+                </Box>
+              );
+            })}
+
         </div>
         </Layout>
   );
