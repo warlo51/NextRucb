@@ -24,7 +24,7 @@ export const getServerSideProps: GetServerSideProps = async () =>{
     })
 }).then((res)=> res.json());
   const articlesConvert = JSON.stringify(articles.documents)
-
+console.log("article",articles)
   return {
     props: {
       articles: articlesConvert
