@@ -6,7 +6,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const queryCode = req.query.code;
-console.log("coucou")
+
   const auth0 = await fetch(`${process.env.AUTH0_TOKEN}`, {
     method: "POST",
     headers: { "Content-type": "application/x-www-form-urlencoded" },
@@ -15,10 +15,12 @@ console.log("coucou")
     .then((data) => data.json())
     .then((token) => token)
     .catch((error) => console.log(error));
-
+console.log("authO",auth0)
   const tokenAccess = auth0.access_token;
   const tokenId = auth0.id_token;
-
+  console.log("tokenAccess",tokenAccess)
+  console.log("tokenId",tokenId)
+  console.log("${process.env.AUTH0_DOMAIN}",process.env.AUTH0_DOMAIN);
   const auth0searchUser = await fetch(
     `https://${process.env.AUTH0_DOMAIN}/userinfo`,
     {
