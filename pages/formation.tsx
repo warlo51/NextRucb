@@ -7,10 +7,23 @@ import { GetServerSideProps } from "next";
 import { getDatabase } from "../src/database/database";
 
 export const getServerSideProps: GetServerSideProps = async () =>{
-  const mongodb = await getDatabase();
-
-  const articles = await mongodb.db().collection("Formation").find().toArray();
-  const articlesConvert = JSON.stringify(articles)
+  // const mongodb = await getDatabase();
+  // const articles = await mongodb.db().collection("Formation").find().toArray();
+  const articles = await fetch('https://data.mongodb-api.com/app/data-ofzlo/endpoint/data/v1/action/find', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Request-Headers': '*',
+        'api-key': `${process.env.API_KEY}`
+    },
+    // body: '{\n    "collection":"Formation",\n    "database":"RUCB",\n    "dataSource":"DataBases" \n}',
+    body: JSON.stringify({
+        'collection': 'Formation',
+        'database': 'RUCB',
+        'dataSource': 'DataBases'
+    })
+}).then((res)=> res.json());
+  const articlesConvert = JSON.stringify(articles.documents)
 
   return {
     props: {
