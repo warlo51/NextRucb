@@ -8,7 +8,7 @@ import axios from "axios";
 
 
 export const getServerSideProps: GetServerSideProps = async (context) =>{
-  const accessTokken = context.req.cookies.IdToken;
+  const accessTokken = context.req.cookies.AccessToken;
   let decoded: any;
   let profile;
 
