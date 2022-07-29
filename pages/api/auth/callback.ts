@@ -15,12 +15,7 @@ export default async function handler(
     .then((data) => data.json())
     .then((token) => token)
     .catch((error) => console.log(error));
-console.log("authO",auth0)
   const tokenAccess = auth0.access_token;
-  const tokenId = auth0.id_token;
-  console.log("tokenAccess",tokenAccess)
-  console.log("tokenId",tokenId)
-  console.log("${process.env.AUTH0_DOMAIN}",process.env.AUTH0_DOMAIN);
   const auth0searchUser = await fetch(
     `https://${process.env.AUTH0_DOMAIN}/userinfo`,
     {
@@ -30,19 +25,11 @@ console.log("authO",auth0)
       },
     }
   ).then((data) => data.json());
-console.log("user",auth0searchUser)
   const mailUserAuth0 = auth0searchUser.email;
 
   if (mailUserAuth0) {
     const cookies = res.setHeader("Set-Cookie", [
       cookie.serialize("AccessToken", tokenAccess, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV !== "development",
-        maxAge: 60 * 60,
-        sameSite: "lax",
-        path: "/",
-      }),
-      cookie.serialize("IdToken", tokenId, {
         httpOnly: true,
         secure: process.env.NODE_ENV !== "development",
         maxAge: 60 * 60,
