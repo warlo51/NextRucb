@@ -1,16 +1,31 @@
 import { Box, CardContent, Typography } from "@mui/material";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 import React from "react";
 import { Button } from "react-bootstrap";
 import { Layout } from "../../components/Layout";
+import { getDatabase } from "../../src/database/database";
 
 interface MediaProps {
   loading?: boolean;
 }
 
-export default function Comite(props: MediaProps) {
-  const { loading = false } = props;
+export const getServerSideProps: GetServerSideProps = async () =>{
+  const mongodb = await getDatabase();
 
+  const fiches = await mongodb.db().collection("Comite").find().toArray();
+  const fichesConvert = JSON.stringify(fiches)
+
+  return {
+    props: {
+      fiches: fichesConvert
+    }
+  };
+}
+
+export default function Comite({fiches}: any){
+  const fichesJSON = JSON.parse(fiches);
+console.log(fichesJSON)
   return (
        <Layout>
         <Head>
@@ -18,57 +33,21 @@ export default function Comite(props: MediaProps) {
         <meta name="description" content="Le comité directeur du RUCB basket"/>
         <meta name="google-site-verification" content="g-JktWG1_hWPLXMEXwsoblRJTiPvWl8QbmLFIvt_8aU" />
     </Head>
-        <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>  
-            <Box className="BoxComite">
-              <CardContent >
-              <Button id="badge">Gerard Baudesson (Vice Président)</Button>
-                <p></p>
-                <Typography variant="body2" color="text.secondary">
-                  Tél. : 07-60-75-99-77
-                  E-mail : gbreims51@gmail.com          
-                </Typography>
-              </CardContent>
-            </Box>
-            <Box className="BoxComite">
-              <CardContent>
-              <Button id="badge">Sonia Aufray (Trésorière)</Button>
-                <p></p>
-                <Typography variant="body2" color="text.secondary">  
-                  Tél. : 06-19-54-43-75
-                  E-mail : aufrays@hotmail.fr        
-                </Typography>
-              </CardContent>
-            </Box>
-            <Box className="BoxComite">
-              <CardContent>
-              <Button id="badge">Claudia Parizel (Secrétaire)</Button> 
-                <p></p>
-                <Typography variant="body2" color="text.secondary">
-                  Tél. : 06-25-30-48-07
-                  E-mail : claudiapir@gmail.com          
-                </Typography>
-              </CardContent>
-            </Box>
-            <Box className="BoxComite">
-              <CardContent>
-              <Button id="badge">Franck Mansuy (Président)</Button>
-                <p></p>
-                <Typography variant="body2" color="text.secondary">
-                  Tél. : 06-68-20-27-34
-                  E-mail : gfkmansuy@sfr.fr          
-                </Typography>
-              </CardContent>
-            </Box>
-            <Box className="BoxComite">
-              <CardContent>
-              <Button id="badge">Florent Aubry (Responsable du secteur jeunes)</Button>
-                <p></p>
-                <Typography variant="body2" color="text.secondary">
-                  Tél. : 06-82-30-16-71
-                  E-mail : florent.aubry@gmx.fr         
-                </Typography>
-              </CardContent>
-            </Box>
+        <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}> 
+        {fichesJSON.map((fiche: any) =>{
+              return (
+              <Box className="BoxComite">
+                <CardContent >
+                <Button id="badge">{fiche.nom}</Button>
+                  <p></p>
+                  <Typography variant="body2" color="text.secondary">
+                    <p>Tél. : {fiche.telephone}</p>
+                    <p>E-mail : {fiche.mail} </p>       
+                  </Typography>
+                </CardContent>
+              </Box>
+              );
+        })}; 
         </div>
         </Layout>
   );

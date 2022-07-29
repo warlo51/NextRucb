@@ -3,7 +3,24 @@ import { Button } from "react-bootstrap";
 import React from "react";
 import {Layout} from "../../components/Layout";
 import Head from "next/head";
-export default function Entraineurs() {
+import { GetServerSideProps } from "next";
+import { getDatabase } from "../../src/database/database";
+
+export const getServerSideProps: GetServerSideProps = async () =>{
+  const mongodb = await getDatabase();
+
+  const fiches = await mongodb.db().collection("Entraineurs").find().toArray();
+  const fichesConvert = JSON.stringify(fiches)
+
+  return {
+    props: {
+      fiches: fichesConvert
+    }
+  };
+}
+
+export default function Entraineurs({fiches}: any) {
+  const fichesJSON = JSON.parse(fiches);
   return (
     <Layout>
       <Head>
@@ -11,43 +28,19 @@ export default function Entraineurs() {
         <meta name="description" content="Les entraineurs du RUCB basket"/>
         <meta name="google-site-verification" content="g-JktWG1_hWPLXMEXwsoblRJTiPvWl8QbmLFIvt_8aU" />
     </Head>
-        <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>  
-            <Box className="BoxComite">
+        <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}> 
+        {fichesJSON.map((fiche: any) =>{
+              return (
+                <Box className="BoxComite">
               <CardContent >
-              <Button id="badge">Florent Aubry</Button>
+              <Button id="badge">{fiche.nom}</Button>
                 <p></p>
                 <Typography variant="body2" color="text.secondary">
-                  Tél. : 06-82-30-16-71         
+                  <p>Tél. : {fiche.telephone}  </p>       
                 </Typography>
               </CardContent>
-            </Box>
-            <Box className="BoxComite">
-              <CardContent >
-              <Button id="badge">Aurelien Valentin</Button>
-                <p></p>
-                <Typography variant="body2" color="text.secondary">
-                  Tél. : 06-79-46-47-07        
-                </Typography>
-              </CardContent>
-            </Box>
-            <Box className="BoxComite">
-              <CardContent >
-              <Button id="badge"></Button>
-                <p></p>
-                <Typography variant="body2" color="text.secondary">
-                         
-                </Typography>
-              </CardContent>
-            </Box>
-            <Box className="BoxComite">
-              <CardContent >
-              <Button id="badge"></Button>
-                <p></p>
-                <Typography variant="body2" color="text.secondary">
-                          
-                </Typography>
-              </CardContent>
-            </Box>
+              </Box>
+              )})} 
         </div>
         <br></br>
         <br></br>
