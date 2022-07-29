@@ -5,7 +5,7 @@ export default function Actualite() {
     return (
         <div className="divActualite">
         <Button id="badge">Le RUC Recrute !</Button>
-        
+        <h5><a style={{color:"black"}} href="../DossierLicence.pdf" download='../DossierLicence.pdf'>Téléchargez le dossier Ici</a></h5>
         </div>
     );
 }
