@@ -88,13 +88,13 @@ export default function Administration(props: any) {
           setData(dataReceive) 
         }, 500);     
       }else if (select === "Historique"){
-        dataReceive.push({"titre": "Titre","contenu": "", "images": "","color":"red"})   
+        dataReceive.push({"titre": "Titre","contenu": "", "images": [],"color":"red"})   
         setData([]) 
         setTimeout(() => {
           setData(dataReceive) 
         }, 500);   
       }else{
-        dataReceive.push({"contenu": "", "images": "","color":"red"})
+        dataReceive.push({"contenu": "", "images": [],"color":"red"})
         setData([])
         setTimeout(() => {
           setData(dataReceive) 

@@ -13,7 +13,8 @@ export default async function handler(
     body: `grant_type=authorization_code&client_id=${process.env.AUTH0_CLIENTID}&client_secret=${process.env.AUTH0_CLIENTSECRET}&code=${queryCode}&redirect_uri=${process.env.AUTH0_LOCAL}`,
   })
     .then((data) => data.json())
-    .then((token) => token);
+    .then((token) => token)
+    .catch((error) => console.log(error));
 
   const tokenAccess = auth0.access_token;
   const tokenId = auth0.id_token;
@@ -27,7 +28,7 @@ export default async function handler(
       },
     }
   ).then((data) => data.json());
-
+console.log("user",auth0searchUser)
   const mailUserAuth0 = auth0searchUser.email;
 
   if (mailUserAuth0) {
