@@ -22,7 +22,6 @@ export default function Arbitrage() {
    }
    loadData();
   },[]);
-  //const articlesJSON = JSON.parse(articles);
   return (
     <Layout >
       <Head>

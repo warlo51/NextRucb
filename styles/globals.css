@@ -124,7 +124,7 @@ z-index: 2;
 }
 
 .carousel .slide .title{
-  transition: all .5s ease-in-out;
+  transition: all .7s ease-in-out;
   position: absolute;
   bottom: 90px;
   height: 80px;
@@ -140,7 +140,7 @@ z-index: 2;
 }
 
 #buttonSlide{
-  transition: all .5s ease-in-out;
+  transition: all .7s ease-in-out;
   position: absolute;
   height: 40px;
   bottom: 60px;
@@ -155,6 +155,15 @@ z-index: 2;
   padding-right: 10px;
   font-size: 20px;
   text-align: left;
+  animation-duration: .8s;
+   animation-name: clignoter;
+   animation-iteration-count: infinite;
+   transition: none;
+}
+@keyframes clignoter {
+  0%   { opacity:1; }
+  40%   {opacity:0; }
+  100% { opacity:1; }
 }
 #buttonSlide:hover{
   background:#dc8d32;
@@ -255,10 +264,9 @@ z-index: 2;
   transition: transform .1s;
 }
 .divHoraires img:hover{
-  -ms-transform: scale(1.2); /* IE 9 */
-  -webkit-transform: scale(1.2); /* Safari 3-8 */
-  transform: scale(1.2);
-
+  -ms-transform: scale(1.6); /* IE 9 */
+  -webkit-transform: scale(1.6); /* Safari 3-8 */
+  transform: scale(1.6);
 }
 
 /* page historique */
@@ -354,9 +362,9 @@ z-index: 2;
   transition: transform .1s;
 }
 #imgActu img:hover{
-  -ms-transform: scale(1.2); /* IE 9 */
-  -webkit-transform: scale(1.2); /* Safari 3-8 */
-  transform: scale(1.2);
+  -ms-transform: scale(2); /* IE 9 */
+  -webkit-transform: scale(2); /* Safari 3-8 */
+  transform: scale(2);
 }
 
 #ulEquipe{

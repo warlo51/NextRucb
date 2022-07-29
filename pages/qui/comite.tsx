@@ -1,31 +1,26 @@
 import { Box, CardContent, Typography } from "@mui/material";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { Layout } from "../../components/Layout";
 import { getDatabase } from "../../src/database/database";
 
-interface MediaProps {
-  loading?: boolean;
-}
-
-export const getServerSideProps: GetServerSideProps = async () =>{
-  const mongodb = await getDatabase();
-
-  const fiches = await mongodb.db().collection("Comite").find().toArray();
-  const fichesConvert = JSON.stringify(fiches)
-
-  return {
-    props: {
-      fiches: fichesConvert
-    }
-  };
-}
 
 export default function Comite({fiches}: any){
-  const fichesJSON = JSON.parse(fiches);
-console.log(fichesJSON)
+  const [fichesJSON, setFichesJSON] = useState<any>([]);
+
+  useEffect(()=>{
+    async function loadData(){
+      const dataDB =  await fetch("/api/loadData",{
+       method: "POST",
+       body: "Comite",
+     }).then((result: any) => result.json());
+     
+     setFichesJSON(dataDB.data)
+   }
+   loadData();
+  },[]);
   return (
        <Layout>
         <Head>

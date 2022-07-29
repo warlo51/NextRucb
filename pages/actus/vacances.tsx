@@ -1,29 +1,25 @@
 import * as React from 'react';
 import CardContent from '@mui/material/CardContent';
-import { Box, Container, Grid, Typography } from "@mui/material";
-import Header from '../../components/Header';
-import NavBar from '../../components/NavBar';
+import { Box, Typography } from "@mui/material";
 import { Button } from "react-bootstrap";
 import { Layout } from '../../components/Layout';
 import Head from 'next/head';
-import { GetServerSideProps } from 'next';
-import { getDatabase } from '../../src/database/database';
 
-export const getServerSideProps: GetServerSideProps = async () =>{
-  const mongodb = await getDatabase();
+export default function Vacance():JSX.Element {
+  const [articlesJSON, setArticlesJSON] = React.useState<any>([]);
 
-  const articles = await mongodb.db().collection("Vacances").find().toArray();
-  const articlesConvert = JSON.stringify(articles)
-
-  return {
-    props: {
-      articles: articlesConvert
-    }
-  };
-}
-
-export default function Vacance({articles}: any):JSX.Element {
-  const articlesJSON = JSON.parse(articles);
+  React.useEffect(()=>{
+    async function loadData(){
+      const dataDB =  await fetch("/api/loadData",{
+       method: "POST",
+       body: "Vacances",
+     }).then((result: any) => result.json());
+     
+     setArticlesJSON(dataDB.data)
+   }
+   loadData();
+  },[]);
+  
   return (
        <Layout>
         <Head>

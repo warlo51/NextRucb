@@ -37,6 +37,7 @@ export default function Administration(props: any) {
     const [telephone, setTelephone] = useState("");
     const [mail, setMail] = useState("");
     const [titre, setTitre] = useState("");
+    const [lienPage, setLienPage] = useState("");
     const [image, setImage] = useState<any>([]);
     const [video, setVideo] = useState("");
     const [contenu, setContenu] = useState("");
@@ -54,7 +55,10 @@ export default function Administration(props: any) {
         body: event,
       }).then((result: any) => result.json());
       setSelect(event);
-      setData(dataDB.data);
+      setData([]) 
+        setTimeout(() => {
+          setData(dataDB.data) 
+        }, 100);  
     }
 
     async function fileSelectedHandler(event:any, imagesDB: any, index:number){
@@ -87,19 +91,26 @@ export default function Administration(props: any) {
         setTimeout(() => {
           setData(dataReceive) 
         }, 500);     
-      }else if (select === "Historique"){
-        dataReceive.push({"titre": "Titre","contenu": "", "images": [],"color":"red"})   
+      }else if (select === "Historique" || select === "Vacances" || select === "Mecenat"){
+        dataReceive.push({"titre": "Titre","contenu": "", "image": [],"color":"red"})   
         setData([]) 
         setTimeout(() => {
           setData(dataReceive) 
-        }, 500);   
-      }else{
-        dataReceive.push({"contenu": "", "images": [],"color":"red"})
-        setData([])
+        }, 500);  
+       
+      }else if (select === "Formation"){
+        dataReceive.push({"titre": "Titre","contenu": "", "video": "coller url video","color":"red"})   
+        setData([]) 
         setTimeout(() => {
           setData(dataReceive) 
         }, 500);
-        
+      }
+      else if (select === "ImagesDeroulanteAccueil"){
+        dataReceive.push({"titre": "Titre","lienPage": "lien page", "image": [],"color":"red"})   
+        setData([]) 
+        setTimeout(() => {
+          setData(dataReceive) 
+        }, 500);
       }
     }
  
@@ -112,7 +123,6 @@ export default function Administration(props: any) {
     }
 
     function modification(index: number, data: any){
-      console.log(data)
       dataReceive[index] = {...data,color:"#388d39"};
       setData([])
         setTimeout(() => {
@@ -148,8 +158,9 @@ export default function Administration(props: any) {
         }, 500);
     }
   if(props.decoded !== null){
-    return (
-      <>
+    if(select === "Comite" || select === "Entraineurs" ){
+      return (
+        <>
       <Button ><a href="/api/auth/logout">déconnexion</a></Button>
       <div style={{padding:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
         <Box className="boxFormation">
@@ -160,6 +171,8 @@ export default function Administration(props: any) {
               <option value="Historique">Historique</option>
               <option value="Vacances">Vacances</option>
               <option value="Formation">Formation</option>
+              <option value="Mecenat">Mecenat</option>
+              <option value="ImagesDeroulanteAccueil">Bandeau Accueil</option>
           </select>
           <Button variant="primary" type="button" onClick={() => addArticle()}>
             Ajouter un nouvel article
@@ -170,8 +183,7 @@ export default function Administration(props: any) {
         </Box>
         {messageValidation}
       </div>
-      {select === "Comite" || select === "Entraineurs" ? dataReceive !== undefined ? dataReceive.map((element: any, index: number) => {
-
+      {dataReceive.map((element: any, index: number) => {
         return (
           <Box key={index} className="boxFormation" style={{backgroundColor: element.color, fontSize:"20px"}}>
           <Form onKeyDown={(event) => handleClick(index)}>
@@ -196,12 +208,41 @@ export default function Administration(props: any) {
         </Form>
         </Box>
         );
-      }) : <></> : dataReceive !== undefined ? dataReceive.map((element: any, index: number) => {
+        })}
+      </>
+      )
+    }
+    else if(select === "Actualites" || select === "Historique" || select === "Vacances" || select === "Formation" || select === "Mecenat" ){
+      return (
+        <>
+      <Button ><a href="/api/auth/logout">déconnexion</a></Button>
+      <div style={{padding:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
+        <Box className="boxFormation">
+          <select onChange={(event: any)=> loadData(event.target.value)}>
+              <option value="Comite">Comite</option>
+              <option value="Actualites">Actualité</option>
+              <option value="Entraineurs">Entraineurs</option>
+              <option value="Historique">Historique</option>
+              <option value="Vacances">Vacances</option>
+              <option value="Formation">Formation</option>
+              <option value="Mecenat">Mecenat</option>
+              <option value="ImagesDeroulanteAccueil">Bandeau Accueil</option>
+          </select>
+          <Button variant="primary" type="button" onClick={() => addArticle()}>
+            Ajouter un nouvel article
+          </Button>
+          <Button variant="primary" type="button" onClick={()=> addIntoDb()}>
+            Enregistrer toutes les modifications dans la base de donnée
+          </Button>
+        </Box>
+        {messageValidation}
+      </div>
+      {dataReceive.map((element: any, index: number) => {
         return (
           <Box key={index} className="boxFormation" style={{backgroundColor: element.color, fontSize:"20px"}}>
           <Form onKeyDown={(event) => handleClick(index)}>
           <Form.Group className="mb-3" >
-            {element.titre ? <><Form.Label>Titre :</Form.Label><Form.Control type="text" id="titre"  onChange={(event) => {setTitre(event.target.value)}} defaultValue={element.titre} /><br></br><br></br></> : <></>}
+            {element.titre ? <><Form.Label>Titre :</Form.Label><Form.Control type="text" id="titre"  style={{width:"300px"}} onChange={(event) => {setTitre(event.target.value)}} defaultValue={element.titre} /><br></br><br></br></> : <></>}
             <Form.Label>Contenu :<br></br><br></br><Form.Control as="textarea" id="textarea"  rows={10} cols={50} onChange={(event) => {setContenu(event.target.value)}} defaultValue={element.contenu} /><br></br><br></br></Form.Label>
             {element.video ? <><Form.Label>Video :</Form.Label><Form.Control type="text" id="titre"  onChange={(event) => {setVideo(event.target.value)}} defaultValue={element.video} /><br></br><br></br></> : <></>}
             {element.image ? <><Form.Label>Photo :<Form.Control type="file" id="titre" onChange={(event) => {fileSelectedHandler(event, element.image, index)}}></Form.Control><br></br><br></br>
@@ -221,9 +262,89 @@ export default function Administration(props: any) {
         </Form>
         </Box>
         );
-      }) : <></>}  
+      })}
       </>
-    );
+      )
+    }
+    else if(select === "ImagesDeroulanteAccueil"){
+      return (
+        <>
+      <Button ><a href="/api/auth/logout">déconnexion</a></Button>
+      <div style={{padding:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
+        <Box className="boxFormation">
+          <select onChange={(event: any)=> loadData(event.target.value)}>
+              <option value="Comite">Comite</option>
+              <option value="Actualites">Actualité</option>
+              <option value="Entraineurs">Entraineurs</option>
+              <option value="Historique">Historique</option>
+              <option value="Vacances">Vacances</option>
+              <option value="Formation">Formation</option>
+              <option value="Mecenat">Mecenat</option>
+              <option value="ImagesDeroulanteAccueil">Bandeau Accueil</option>
+          </select>
+          <Button variant="primary" type="button" onClick={() => addArticle()}>
+            Ajouter un nouvel article
+          </Button>
+          <Button variant="primary" type="button" onClick={()=> addIntoDb()}>
+            Enregistrer toutes les modifications dans la base de donnée
+          </Button>
+        </Box>
+        {messageValidation}
+      </div>
+      {dataReceive.map((element: any, index: number) => {
+        return (
+          <Box key={index} className="boxFormation" style={{backgroundColor: element.color, fontSize:"20px"}}>
+          <Form onKeyDown={(event) => handleClick(index)}>
+          <Form.Group className="mb-3" >
+            {element.titre ? <><Form.Label>Titre :</Form.Label><Form.Control type="text" style={{width:"300px"}} id="titre"  onChange={(event) => {setTitre(event.target.value)}} defaultValue={element.titre} /><br></br><br></br></> : <></>}
+            {element.lienPage ? <><Form.Label>Lien vers page :</Form.Label><Form.Control type="text" id="titre"  onChange={(event) => {setLienPage(event.target.value)}} defaultValue={element.lienPage} /><br></br><br></br></> : <></>}
+            {element.image ? <><Form.Label>Photo :<Form.Control type="file" id="titre" onChange={(event) => {fileSelectedHandler(event, element.image, index)}}></Form.Control><br></br><br></br>
+            {element.image.map((image: any, indexImage:number)=> {
+              return (<div key={indexImage}><Button  onClick={() => deleteImage(indexImage, index)}>X</Button><img style={{width:"300px"}} src={image}/></div>)
+            })}
+            </Form.Label></> : <></>}
+          </Form.Group>
+          <br></br>
+          {modificationStatut.statut === true && modificationStatut.index === index  ? <Button variant="primary" type="button" onClick={()=>modification(index, {titre: titre? titre : element.titre, lienPage: lienPage? lienPage : element.lienPage, image: image.length !== 0 ? image : element.image})} >
+            Sauvegarder modification
+          </Button> : <></>}
+          <br></br>
+          <Button variant="primary" type="button" onClick={()=>suppresion(index)}>
+            Supprimer
+          </Button>
+        </Form>
+        </Box>
+        );
+      })}
+      </>
+      )
+    }else if(select === ""){
+      return (
+        <>
+      <Button ><a href="/api/auth/logout">déconnexion</a></Button>
+      <div style={{padding:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
+        <Box className="boxFormation">
+          <select onChange={(event: any)=> loadData(event.target.value)}>
+              <option value="Comite">Comite</option>
+              <option value="Actualites">Actualité</option>
+              <option value="Entraineurs">Entraineurs</option>
+              <option value="Historique">Historique</option>
+              <option value="Vacances">Vacances</option>
+              <option value="Formation">Formation</option>
+              <option value="Mecenat">Mecenat</option>
+              <option value="ImagesDeroulanteAccueil">Bandeau Accueil</option>
+          </select>
+          <Button variant="primary" type="button" onClick={() => addArticle()}>
+            Ajouter un nouvel article
+          </Button>
+          <Button variant="primary" type="button" onClick={()=> addIntoDb()}>
+            Enregistrer toutes les modifications dans la base de donnée
+          </Button>
+        </Box>
+        {messageValidation}
+      </div>
+      </>)
+    }
   }else {
     return (
       <Button><a href="/api/auth/login">Se connecter</a></Button>

@@ -13,8 +13,7 @@ export default async function handler(
     body: `grant_type=authorization_code&client_id=${process.env.AUTH0_CLIENTID}&client_secret=${process.env.AUTH0_CLIENTSECRET}&code=${queryCode}&redirect_uri=${process.env.AUTH0_LOCAL}`,
   })
     .then((data) => data.json())
-    .then((token) => token)
-    .catch((error) => console.log(error));
+    .then((token) => token);
   const tokenAccess = auth0.access_token;
   const auth0searchUser = await fetch(
     `https://${process.env.AUTH0_DOMAIN}/userinfo`,
