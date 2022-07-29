@@ -29,7 +29,6 @@ export const Layout: React.FC<any> = ({ children }) => {
   },[])
 
 if(currentLocation.length === 0){
-  console.log("ici")
   return (
     <>
       <Header/>

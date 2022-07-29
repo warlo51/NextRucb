@@ -1,26 +1,27 @@
 import { Badge, Box, CardContent, Typography } from "@mui/material";
 import { Button } from "react-bootstrap";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {Layout} from "../components/Layout";
 import Head from "next/head";
 import { GetServerSideProps } from "next";
 import { getDatabase } from "../src/database/database";
 
-export const getServerSideProps: GetServerSideProps = async () =>{
-  const mongodb = await getDatabase();
 
-  const articles = await mongodb.db().collection("Formation").find().toArray();
-  const articlesConvert = JSON.stringify(articles)
 
-  return {
-    props: {
-      articles: articlesConvert
-    }
-  };
-}
+export default function Arbitrage() {
+  const [articlesJSON, setArticlesJSON] = useState<any>([]);
 
-export default function Arbitrage({articles}: any) {
-  const articlesJSON = JSON.parse(articles);
+  useEffect(()=>{
+    async function loadData(){
+      const dataDB =  await fetch("/api/loadData",{
+       method: "POST",
+       body: "Formation",
+     }).then((result: any) => result.json());
+     
+     setArticlesJSON(dataDB.data)
+   }
+   loadData();
+  },[]);
   return (
     <Layout >
       <Head>
@@ -29,7 +30,7 @@ export default function Arbitrage({articles}: any) {
         <meta name="google-site-verification" content="g-JktWG1_hWPLXMEXwsoblRJTiPvWl8QbmLFIvt_8aU" />
     </Head>
         <div style={{padding:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
-        {articlesJSON.map((article: any, index: number) =>{
+        {articlesJSON.length !== 0 ? articlesJSON.map((article: any, index: number) =>{
               return (
                 <Box key={index} className="boxFormation">
                   <Button id="badge">{article.titre}</Button>
@@ -45,7 +46,7 @@ export default function Arbitrage({articles}: any) {
                      </div>
                   </div>
                 </Box>
-              );})}
+              );}) : <></>}
       <br></br>
       <br></br>
       <br></br>

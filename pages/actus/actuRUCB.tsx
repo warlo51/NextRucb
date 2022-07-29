@@ -11,21 +11,21 @@ import { GetServerSideProps } from 'next';
 import { getDatabase } from '../../src/database/database';
 
 
-export const getServerSideProps: GetServerSideProps = async () =>{
-  const mongodb = await getDatabase();
 
-  const articles = await mongodb.db().collection("Actualites").find().toArray();
-  const articlesConvert = JSON.stringify(articles)
+export default function ActuRUCB() {
+  const [articlesJSON, setArticlesJSON] = React.useState<any>([]);
 
-  return {
-    props: {
-      articles: articlesConvert
-    }
-  };
-}
-
-export default function ActuRUCB({articles}: any) {
-  const articlesJSON = JSON.parse(articles)
+  React.useEffect(()=>{
+    async function loadData(){
+      const dataDB =  await fetch("/api/loadData",{
+       method: "POST",
+       body: "Actualites",
+     }).then((result: any) => result.json());
+     
+     setArticlesJSON(dataDB.data)
+   }
+   loadData();
+  },[]);
   return (
        <Layout>
         <Head>
@@ -44,9 +44,9 @@ export default function ActuRUCB({articles}: any) {
                       {article.contenu}
                     </Col>
                     <Col id="imgActu"  xs={12} sm={6}>
-                      {article.image.map((item: any, index:number)=>{
+                      {article.image.length !== 0 ? article.image.map((item: any, index:number)=>{
                         return (<img key={index} alt={item.alt} src={item}/>);
-                      })}
+                      }) : <></>}
                     </Col>
                   </Row>
                 </Box>

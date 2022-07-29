@@ -6,7 +6,6 @@ export default async function handler(
   res: NextApiResponse
 ) {
     const mongodb = await getDatabase();
-    console.log("mongo", mongodb)
     const dataReceived = await mongodb.db().collection(`${req.body}`).find().toArray();
 
     const dataModif = dataReceived.map((element)=>{

@@ -1,26 +1,23 @@
 import { Box, CardContent, Typography } from "@mui/material";
 import { Button } from "react-bootstrap";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {Layout} from "../../components/Layout";
 import Head from "next/head";
-import { GetServerSideProps } from "next";
-import { getDatabase } from "../../src/database/database";
 
-export const getServerSideProps: GetServerSideProps = async () =>{
-  const mongodb = await getDatabase();
+export default function Entraineurs() {
+  const [fichesJSON, setFichesJSON] = useState<any>([]);
 
-  const fiches = await mongodb.db().collection("Entraineurs").find().toArray();
-  const fichesConvert = JSON.stringify(fiches)
-
-  return {
-    props: {
-      fiches: fichesConvert
-    }
-  };
-}
-
-export default function Entraineurs({fiches}: any) {
-  const fichesJSON = JSON.parse(fiches);
+  useEffect(()=>{
+    async function loadData(){
+      const dataDB =  await fetch("/api/loadData",{
+       method: "POST",
+       body: "Entraineurs",
+     }).then((result: any) => result.json());
+     
+     setFichesJSON(dataDB.data)
+   }
+   loadData();
+  },[]);
   return (
     <Layout>
       <Head>
