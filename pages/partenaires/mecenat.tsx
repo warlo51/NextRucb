@@ -29,9 +29,9 @@ export default function Mecenat() {
               return (
                 <Box key={index} className="boxMecenat">
                   <CardContent>
-                  <Button id="badge">{article.titre}</Button>
+                  <Button id="badge" style={{backgroundColor:`${article.colorTitre}`}}>{article.titre}</Button>
                     <p></p>
-                    <Typography variant="body2" color="text.secondary">          
+                    <Typography variant="body2" style={{whiteSpace:"pre-wrap"}} color="text.secondary">          
                       {article.contenu}
                     </Typography>
                   </CardContent>
