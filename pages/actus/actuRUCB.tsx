@@ -35,9 +35,9 @@ export default function ActuRUCB() {
     </Head>
         <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
          
-            {articlesJSON.map((article: any) =>{
+            {articlesJSON.map((article: any, index:number) =>{
               return (
-                <Box className="boxHistoriquePage">
+                <Box key={index} className="boxHistoriquePage">
                  <Button id="badge">{article.titre}</Button>
                   <Row >
                     <Col xs={12} sm={6} id="colBox">
