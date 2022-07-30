@@ -1,14 +1,10 @@
 import * as React from 'react';
 import { Button } from "react-bootstrap";
-import CardContent from '@mui/material/CardContent';
 import { Box, Container, Grid, Typography } from "@mui/material";
-import Header from '../../components/Header';
-import NavBar from '../../components/NavBar';
 import { Layout } from '../../components/Layout';
 import { Col, Row } from 'react-bootstrap';
 import Head from 'next/head';
-import { GetServerSideProps } from 'next';
-import { getDatabase } from '../../src/database/database';
+
 
 
 
@@ -38,10 +34,12 @@ export default function ActuRUCB() {
             {articlesJSON.map((article: any, index:number) =>{
               return (
                 <Box key={index} className="boxHistoriquePage">
-                 <Button id="badge">{article.titre}</Button>
+                 <Button id="badge" style={{backgroundColor:`${article.colorTitre}`}}>{article.titre}</Button>
                   <Row >
                     <Col xs={12} sm={6} id="colBox">
-                      {article.contenu}
+                    <Typography variant="body2" style={{whiteSpace:"pre-wrap", textAlign:"left"}} color="text.secondary">          
+                        {article.contenu}
+                      </Typography>
                     </Col>
                     <Col id="imgActu"  xs={12} sm={6}>
                       {article.image.length !== 0 ? article.image.map((item: any, index:number)=>{

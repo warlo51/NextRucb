@@ -30,7 +30,7 @@ export default function Entraineurs() {
               return (
                 <Box className="BoxComite">
               <CardContent >
-              <Button id="badge">{fiche.nom}</Button>
+              <Button id="badge" style={{backgroundColor:`${fiche.colorTitre}`}}>{fiche.nom}</Button>
                 <p></p>
                 <Typography variant="body2" color="text.secondary">
                   <p>Tél. : {fiche.telephone}  </p>       

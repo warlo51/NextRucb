@@ -26,8 +26,8 @@ export default function BandeauIMG() {
               return (
                 <div key={index}>
                   <img src={article.image} />
-                  <p className="title">{article.titre}</p>
-                  <Button id="buttonSlide" href={article.lienPage}>Cliquez ici</Button>
+                  <p className="title" style={{color:`${article.colorText}`}}>{article.titre}</p>
+                  <Button id="buttonSlide" style={{color:`${article.colorTextButton}`,backgroundColor:`${article.colorBackgroundButton}`}}href={article.lienPage}>Cliquez ici</Button>
                 </div>
               );
             })}

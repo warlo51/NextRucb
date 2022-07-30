@@ -31,11 +31,11 @@ export default function Vacance():JSX.Element {
         {articlesJSON.map((article: any, index: number) =>{
               return (
                 <Box key={index} className="boxHistoriquePage">
-                  <Button id="badge">{article.titre}</Button>
+                  <Button id="badge" style={{backgroundColor:`${article.colorTitre}`}}>{article.titre}</Button>
                   <div className="divRegleBasket">
                     <CardContent>
                       <p></p>
-                      <Typography variant="body2" color="text.secondary">          
+                      <Typography variant="body2" style={{whiteSpace:"pre-wrap", textAlign:"left"}} color="text.secondary">          
                         {article.contenu}
                       </Typography>
                     </CardContent>
