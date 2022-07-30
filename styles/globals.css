@@ -207,12 +207,12 @@ z-index: 2;
   text-align:center;
 }
 #rowActu{
-  margin-top:40px;
+  margin-top:30px;
   margin-left:20px;
 }
 /* divHoraire */
 #colHomeCentre{
- padding-top:100px;
+ padding-top:40px;
 }
 .divHoraires{
   display: flex;
@@ -224,6 +224,7 @@ z-index: 2;
   margin-top: 30px;
   border-radius: 20px;
 }
+
 .divActualite{
   flex-direction: column;
   border:solid #3d1e7b;
@@ -233,9 +234,14 @@ z-index: 2;
   margin-top: 30px;
   border-radius: 20px;
 }
+.divActualite:hover{
+  background-color: #3d1e7b;
+  color:white;
+}
 .divFfbb{
   flex-direction: column;
   border:solid #3d1e7b;
+  height: 838px;
   background-color: #fff;
   box-shadow: 5px 5px 5px #3d1e7b;
   padding: 40px;
@@ -259,6 +265,10 @@ z-index: 2;
   padding: 40px;
   margin-top: 30px;
   border-radius: 20px;
+}
+.divSponsors:hover{
+ background-color: #3d1e7b;
+ color:white;
 }
 .divHoraires img{
   transition: transform .1s;
@@ -385,6 +395,18 @@ z-index: 2;
     padding-left: 80px;
     
     }
+    .divFfbb{
+      height:1180px ;
+    }
+    .iframeFFBB{
+      height: 900px;
+    }
+    .divHoraires{
+      height: 800px;
+    }
+    .divEquipe{
+      height: 350px;
+    }
     .navbar a{
       margin-left: 50px;
     }
@@ -415,11 +437,31 @@ z-index: 2;
   .Bandeau{
     display: none;
   }
+  #colHomeCentre #badge{
+    margin-left: -60px; 
+  }
+  #colHomeCentre{
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .divFfbb{
+    height:1080px ;
+  }
+  .iframeFFBB{
+    height: 900px;
+  }
+  .divHoraires{
+    height: 550px;
+  }
+  .divEquipe{
+    height: 500px;
+  }
   #imgActu img{
     height:  180px;
     margin-left: 20px;
     transition: transform .1s;
   }
+ 
 }
 @media screen and (max-width: 990px) {
   #badge{
@@ -461,6 +503,18 @@ z-index: 2;
   .Bandeau{
     display: none;
   }
+  .divEquipe{
+    font-size: 20px;
+  }
+  #colHomeCentre #badge{
+    margin-left: 0px; 
+  }
+  .divHoraires #badge{
+    margin-left: 60px; 
+  }
+  #colHomeCentre{
+    padding-top: 0px;
+  }
   .divRegleBasket{
     display:flex;
     flex-direction:column;
@@ -482,6 +536,10 @@ z-index: 2;
     height:  120px;
     margin-left: 2px;
     transition: transform .1s;
+  }
+  #colHomeCentre{
+    padding-left: 0;
+    padding-right: 0;
   }
   #badge{
     width: 200px;
@@ -507,6 +565,9 @@ z-index: 2;
   .NavBar.fixed{
    display: none;
   }
+  .divHoraires{
+    height: 1150px;
+  }
 }
 @media screen and (max-width: 375px) {
   .Bandeau{
@@ -515,6 +576,9 @@ z-index: 2;
   .imgBoxPartenaires{
     height:100px;
     width:200px;
+  }
+  .divActualite #badge{
+    margin-left: 10px;
   }
   .imgComplexeBox{
     width: 200px;
@@ -537,6 +601,10 @@ z-index: 2;
   .NavBar.fixed{
    display: none;
   }
+    #colHomeCentre{
+    padding-left: 0;
+    padding-right: 0;
+  }
   #badge{
     width: 150px;
     height: 40px;
@@ -545,5 +613,24 @@ z-index: 2;
     border-radius: 20px;
     color:white;
     background-color: #dc8d32;
+  }
+  .divHoraires{
+    height: 1000px;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .divHoraires #badge{
+    margin-left: 30px; 
+  }
+  .divHoraires{
+    height: 800px;
+  }
+  #colHomeCentre{
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .divEquipe{
+    font-size: 16px;
   }
 }

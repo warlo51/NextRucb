@@ -2,7 +2,7 @@ import { Button } from "react-bootstrap";
 
 export default function Equipes() {
     return (
-        <div className="divActualite">
+        <div className="divEquipe">
         <Button id="badge">Nos Equipes</Button>
         <ul id="ulEquipe">
             <li>Sénior 1 : Pre région</li>
