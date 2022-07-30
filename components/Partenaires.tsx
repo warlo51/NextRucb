@@ -1,7 +1,7 @@
 import { Button, Col, Row } from "react-bootstrap";
 export default function Partenaires() {
     return (
-        <a style={{color:"black"}} href="/partenaires/info">
+        <a style={{color:"black", padding:"0"}} href="/partenaires/info">
         <div className="divSponsors">
         <Button id="badge">Nos Partenaires</Button>        
         <Row>

@@ -440,6 +440,7 @@ z-index: 2;
   #colHomeCentre #badge{
     margin-left: -60px; 
   }
+  
   #colHomeCentre{
     padding-left: 0;
     padding-right: 0;
@@ -461,6 +462,9 @@ z-index: 2;
     margin-left: 20px;
     transition: transform .1s;
   }
+  .divHoraires img:hover {
+    transform: scale(1);
+  }
  
 }
 @media screen and (max-width: 990px) {
@@ -473,6 +477,9 @@ z-index: 2;
     border-radius: 20px;
     color:white;
     background-color: #dc8d32;
+  }
+  .NavBar.fixed{
+    height: 400px;
   }
  
   .Bandeau{
@@ -495,9 +502,7 @@ z-index: 2;
   .NavBar img{
     display: none;
   }
-  .NavBar.fixed{
-   display: none;
-  }
+
 }
 @media screen and (max-width: 425px) {
   .Bandeau{
@@ -562,9 +567,6 @@ z-index: 2;
   .NavBar img{
     display: none;
   }
-  .NavBar.fixed{
-   display: none;
-  }
   .divHoraires{
     height: 1150px;
   }
@@ -597,9 +599,6 @@ z-index: 2;
   }
   .NavBar img{
     display: none;
-  }
-  .NavBar.fixed{
-   display: none;
   }
     #colHomeCentre{
     padding-left: 0;
