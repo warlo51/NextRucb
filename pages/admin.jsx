@@ -1,14 +1,15 @@
-import { Badge, Box, CardContent, Typography } from "@mui/material";
+import { Badge, Box, CardContent, Modal, Typography } from "@mui/material";
 import { Accordion, Button, Col, Dropdown, Form, Row } from "react-bootstrap";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import jwt_decode from "jwt-decode";
 import { GetServerSideProps } from "next";
-import { ColorPicker, useColor } from "react-color-palette";
 import "react-color-palette/lib/css/styles.css";
+import { Layout } from "../components/Layout";
 
-export const getServerSideProps: GetServerSideProps = async (context) =>{
+
+export const getServerSideProps = async (context) =>{
   const accessTokken = context.req.cookies.AccessToken;
-  let decoded: any;
+  let decoded;
   let profile;
 
   if (accessTokken === undefined) {
@@ -28,43 +29,83 @@ export const getServerSideProps: GetServerSideProps = async (context) =>{
   };
 }
 
-export default function Administration(props: any) {
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
-    const [dataReceive, setData] = useState<any>([]);
+export default function Administration(props) {
+
+    const [dataReceive, setData] = useState([]);
     const [select, setSelect] = useState("");
     const [nom, setNom] = useState("");
     const [telephone, setTelephone] = useState("");
     const [mail, setMail] = useState("");
     const [titre, setTitre] = useState("");
     const [lienPage, setLienPage] = useState("");
-    const [image, setImage] = useState<any>([]);
+    const [image, setImage] = useState([]);
     const [video, setVideo] = useState("");
     const [colorTitre, setColorTitre] = useState("");
     const [colorBackgroundButton, setColorBackgroundButton] = useState("");
     const [colorTextButton, setColorTextButton] = useState("");
     const [colorText, setColorText] = useState("");
     const [contenu, setContenu] = useState("");
+    const [open, setOpen] = React.useState(false);
+    const handleClose = () => setOpen(false);
+    const handleOpen = () => setOpen(true);
     const [messageValidation, setMessageValidation] = useState(<></>);
     const [modificationStatut, setModificationStatut] = useState({statut:false, index: 0});
+    const dragItem = useRef();
+    const dragOverItem = useRef();
+    const [list, setList] = useState([]);
 
-    const handleClick = (index: number) => {
+
+  const dragStart = (e, position) => {
+    dragItem.current = position;
+  };
+ 
+  const dragEnter = (e, position) => {
+    dragOverItem.current = position;
+  };
+ 
+  const drop = (e) => {
+    const copyListItems = [...list];
+    const dragItemContent = copyListItems[dragItem.current];
+    copyListItems.splice(dragItem.current, 1);
+    copyListItems.splice(dragOverItem.current, 0, dragItemContent);
+    dragItem.current = null;
+    dragOverItem.current = null;
+    setList(copyListItems);
+   
+  };
+  
+    const handleClick = (index) => {
       dataReceive[index] = {...dataReceive[index],color:"#C6A43D"};
       setModificationStatut({statut: true, index: index})
     };
 
-    async function loadData(event: any){
+    async function loadData(event){
+      handleClose();
        const dataDB =  await fetch("/api/loadData",{
         method: "POST",
         body: event,
-      }).then((result: any) => result.json());
+      }).then((result) => result.json());
       setSelect(event);
+      setList(dataDB.data)
       setData([]) 
         setTimeout(() => {
           setData(dataDB.data) 
         }, 100);  
     }
 
-    async function fileSelectedHandler(event:any, imagesDB: any, index:number){
+    async function fileSelectedHandler(event, imagesDB, index){
       const file = event.target.files[0];
       const base64 = await convertBase64(file);
       const arrayImages = imagesDB;
@@ -73,8 +114,8 @@ export default function Administration(props: any) {
       handleClick(index)
     }
     
-    function convertBase64(file: any){
-      return new Promise((resolve: any, reject: any) => {
+    function convertBase64(file){
+      return new Promise((resolve, reject) => {
         const fileReader = new FileReader();
         fileReader.readAsDataURL(file);
 
@@ -94,7 +135,7 @@ export default function Administration(props: any) {
         setTimeout(() => {
           setData(dataReceive) 
         }, 500);     
-      }else if (select === "Historique" || select === "Vacances" || select === "Mecenat"){
+      }else if (select === "Historique" || select === "Vacances" || select === "Mecenat" || select === "Actualites"){
         dataReceive.push({"titre": "Titre","contenu": "", "image": [],"color":"#C63D59","colorTitre":"#dc8d32"})   
         setData([]) 
         setTimeout(() => {
@@ -116,8 +157,8 @@ export default function Administration(props: any) {
         }, 500);
       }
     }
- 
-    function suppresion(index: number){
+
+    function suppresion(index){
       dataReceive.splice(index,1);
       setData([])
         setTimeout(() => {
@@ -125,7 +166,7 @@ export default function Administration(props: any) {
         }, 500);
     }
 
-    function modification(index: number, data: any){
+    function modification(index, data){
       dataReceive[index] = {...data,color:"#3DA9C6"};
       setData([])
         setTimeout(() => {
@@ -139,18 +180,19 @@ export default function Administration(props: any) {
         }, 2000);
     }
 
-    async function addIntoDb(){
+    async function addIntoDb(dataRecu){
       const dataDB =  await fetch("/api/addIntoDB",{
         method: "POST",
-        body: JSON.stringify({ data: dataReceive, selectItem: select }),
+        body: JSON.stringify({ data: dataRecu, selectItem: select }),
       });
       setMessageValidation(<h2>Sauvegarde effectuée !</h2>)
       setTimeout(() => {
         setMessageValidation(<></>)
+        loadData(select);
       }, 2000);
     }
 
-    function deleteImage(indexImage: number, index:number){
+    function deleteImage(indexImage, index){
       dataReceive[index].image.splice(indexImage,1);
       setImage(dataReceive[index].image);
       handleClick(index)
@@ -164,10 +206,10 @@ export default function Administration(props: any) {
     if(select === "Comite" || select === "Entraineurs" ){
       return (
         <>
-      <Button ><a href="/api/auth/logout">déconnexion</a></Button>
+      <a href="/api/auth/logout"><Row style={{display:"flex", justifyContent:"center"}}><Button style={{fontSize:"40px", textAlign:"center", marginTop:"20px", backgroundColor:"orange", borderRadius:"20px"}}>Déconnexion</Button></Row></a>
       <div style={{padding:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
         <Box className="boxFormation">
-          <select onChange={(event: any)=> loadData(event.target.value)}>
+          <select onChange={(event)=> loadData(event.target.value)}>
               <option value="Comite">Comite</option>
               <option value="Actualites">Actualité</option>
               <option value="Entraineurs">Entraineurs</option>
@@ -177,16 +219,51 @@ export default function Administration(props: any) {
               <option value="Mecenat">Mecenat</option>
               <option value="ImagesDeroulanteAccueil">Bandeau Accueil</option>
           </select>
-          <Button variant="primary" type="button" onClick={() => addArticle()}>
+          <Button  style={{backgroundColor: "orange", marginLeft:"10px", fontSize:"20px", borderRadius:"20px"}} type="button" onClick={() => addArticle()}>
             Ajouter un nouvel article
           </Button>
-          <Button variant="primary" type="button" onClick={()=> addIntoDb()}>
+          <Button style={{backgroundColor: "orange", marginLeft:"10px", fontSize:"20px", borderRadius:"20px"}} type="button" onClick={()=> addIntoDb(dataReceive)}>
             Enregistrer toutes les modifications dans la base de donnée
           </Button>
+          <Button style={{backgroundColor: "orange", marginLeft:"10px", fontSize:"20px", borderRadius:"20px"}} type="button" onClick={handleOpen}>
+            Changer ordre affichage
+          </Button>
         </Box>
+        <div>
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style}>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Agencer l'ordre des articles
+              </Typography>
+              <br></br>
+              <>
+              {
+              list &&
+              list.map((item, index) => (
+                <div style={{backgroundColor:`${item.colorTitre}`, margin:'20px 25%', textAlign:'center', fontSize:'20px', borderRadius:"20px"}}
+                  onDragStart={(e) => dragStart(e, index)}
+                  onDragEnter={(e) => dragEnter(e, index)}
+                  onDragEnd={drop}
+                  key={index}
+                  draggable>
+                    {item.nom}
+                </div>
+                ))}
+              </>
+              <br></br>
+              <Button style={{marginLeft:"10px", fontSize:"15px", borderRadius:"20px"}} onClick={()=> {addIntoDb(list), handleClose()}}>Sauvegarder dans la base de donnée</Button><br></br><br></br>
+              <Button style={{ marginLeft:"10px", fontSize:"15px", borderRadius:"20px"}} onClick={handleClose}>Fermer</Button>
+            </Box>
+          </Modal>
+        </div>
         {messageValidation}
       </div>
-      {dataReceive.map((element: any, index: number) => {
+      {dataReceive.map((element, index) => {
         return (
           <Box key={index} className="boxFormation" style={{backgroundColor: element.color, fontSize:"20px"}}>
             <Row style={{display:"flex"}}>
@@ -204,11 +281,12 @@ export default function Administration(props: any) {
                       <Form.Control type="text" id="mail" defaultValue={element.mail} onChange={(event) => {setMail(event.target.value)}} />
                       <br></br>
                     </Form.Group>
-                    {modificationStatut.statut === true && modificationStatut.index === index ? <Button variant="primary" type="button" onClick={()=>modification(index, {nom: nom ? nom : element.nom, telephone: telephone? telephone : element.telephone, mail:mail? mail : element.mail,colorTitre: colorTitre !== "" ? colorTitre : element.colorTitre})}>
+                    <br></br>
+                    {modificationStatut.statut === true && modificationStatut.index === index ? <Button style={{backgroundColor: "orange", marginLeft:"10px", fontSize:"20px", borderRadius:"20px"}} type="button" onClick={()=>modification(index, {nom: nom ? nom : element.nom, telephone: telephone? telephone : element.telephone, mail:mail? mail : element.mail,colorTitre: colorTitre !== "" ? colorTitre : element.colorTitre})}>
                       Sauvegarder modification
                     </Button> : <></>}
                     <br></br>
-                    <Button variant="primary" type="button" onClick={()=>suppresion(index)}>
+                    <Button style={{backgroundColor: "orange", marginLeft:"10px", fontSize:"20px", borderRadius:"20px"}} type="button" onClick={()=>suppresion(index)}>
                       Supprimer
                     </Button>
                   </Form>
@@ -235,10 +313,10 @@ export default function Administration(props: any) {
     else if(select === "Actualites" || select === "Historique" || select === "Vacances" || select === "Formation" || select === "Mecenat" ){
       return (
         <>
-      <Button ><a href="/api/auth/logout">déconnexion</a></Button>
+      <a href="/api/auth/logout"><Row style={{display:"flex", justifyContent:"center"}}><Button style={{fontSize:"40px", textAlign:"center", marginTop:"20px", backgroundColor:"orange", borderRadius:"20px"}}>Déconnexion</Button></Row></a>
       <div style={{padding:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
         <Box className="boxFormation">
-          <select onChange={(event: any)=> loadData(event.target.value)}>
+          <select onChange={(event)=> loadData(event.target.value)}>
               <option value="Comite">Comite</option>
               <option value="Actualites">Actualité</option>
               <option value="Entraineurs">Entraineurs</option>
@@ -248,16 +326,51 @@ export default function Administration(props: any) {
               <option value="Mecenat">Mecenat</option>
               <option value="ImagesDeroulanteAccueil">Bandeau Accueil</option>
           </select>
-          <Button variant="primary" type="button" onClick={() => addArticle()}>
+          <Button style={{backgroundColor: "orange", marginLeft:"10px", fontSize:"20px", borderRadius:"20px"}} type="button" onClick={() => addArticle()}>
             Ajouter un nouvel article
           </Button>
-          <Button variant="primary" type="button" onClick={()=> addIntoDb()}>
+          <Button style={{backgroundColor: "orange", marginLeft:"10px", fontSize:"20px", borderRadius:"20px"}} type="button" onClick={()=> addIntoDb(dataReceive)}>
             Enregistrer toutes les modifications dans la base de donnée
           </Button>
+          <Button style={{backgroundColor: "orange", marginLeft:"10px", fontSize:"20px", borderRadius:"20px"}} type="button" onClick={handleOpen}>
+            Changer ordre affichage
+          </Button>
         </Box>
+        <div>
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style}>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Agencer l'ordre des articles
+              </Typography>
+              <br></br>
+              <>
+              {
+              list &&
+              list.map((item, index) => (
+                <div style={{backgroundColor:`${item.colorTitre}`, margin:'20px 25%', textAlign:'center', fontSize:'20px', borderRadius:"20px"}}
+                  onDragStart={(e) => dragStart(e, index)}
+                  onDragEnter={(e) => dragEnter(e, index)}
+                  onDragEnd={drop}
+                  key={index}
+                  draggable>
+                    {item.titre}
+                </div>
+                ))}
+              </>
+              <br></br>
+              <Button style={{marginLeft:"10px", fontSize:"15px", borderRadius:"20px"}} onClick={()=> {addIntoDb(list), handleClose()}}>Sauvegarder dans la base de donnée</Button><br></br><br></br>
+              <Button style={{marginLeft:"10px", fontSize:"15px", borderRadius:"20px"}} onClick={handleClose}>Fermer</Button>
+            </Box>
+          </Modal>
+        </div>
         {messageValidation}
       </div>
-      {dataReceive.map((element: any, index: number) => {
+      {dataReceive.map((element, index) => {
         return (
               <Box key={index} className="boxFormation" style={{backgroundColor: element.color, fontSize:"20px"}}>
                 <Row style={{display:"flex"}}>
@@ -265,20 +378,21 @@ export default function Administration(props: any) {
                   <Form onKeyDown={(event) => handleClick(index)}>
                   <Form.Group className="mb-3" >
                     {element.titre ? <><Form.Label>Titre :</Form.Label><Form.Control type="text" id="titre"  style={{width:"300px"}} onChange={(event) => {setTitre(event.target.value)}} defaultValue={element.titre} /><br></br><Form.Label>Couleur Titre : <Form.Control type="color" defaultValue={element.colorTitre} onChange={(event) => {setColorTitre(event.target.value), handleClick(index)}} id="titre" /></Form.Label><br></br></> : <></>}
-                    <Form.Label>Contenu :<br></br><br></br><Form.Control as="textarea" id="textarea"  rows={15} cols={70} onChange={(event) => {setContenu(event.target.value)}} defaultValue={element.contenu} /><br></br><br></br></Form.Label>
+                    <Form.Label>Contenu :<br></br><br></br><Form.Control as="textarea" id="textarea"  rows={15} cols={70} onChange={(event) => {setContenu(event.target.value)}} defaultValue={element.contenu} /><br></br><br></br></Form.Label><br></br>
                     {element.video ? <><Form.Label>Video :</Form.Label><Form.Control type="text" id="titre"  onChange={(event) => {setVideo(event.target.value)}} defaultValue={element.video} /><br></br><br></br></> : <></>}
                     {element.image ? <><Form.Label>Photo :<Form.Control type="file" id="titre" onChange={(event) => {fileSelectedHandler(event, element.image, index)}}></Form.Control><br></br><br></br>
-                    {element.image.map((image: any, indexImage:number)=> {
-                      return (<div key={indexImage}><Button  onClick={() => deleteImage(indexImage, index)}>X</Button><img style={{width:"300px"}} src={image}/></div>)
+                    {element.image.map((image, indexImage)=> {
+                      return (<div key={indexImage}><Button  onClick={() => deleteImage(indexImage, index)}>X</Button><img style={{width:"200px"}} src={image}/></div>)
                     })}
                     </Form.Label></> : <></>}
                   </Form.Group>
                   <br></br>
-                  {modificationStatut.statut === true && modificationStatut.index === index  ? <Button variant="primary" type="button" onClick={()=>modification(index, {titre: titre? titre : element.titre, contenu: contenu? contenu : element.contenu, video: video? video : element.video, image: image.length !== 0 ? image : element.image,colorTitre: colorTitre !== "" ? colorTitre : element.colorTitre})} >
+                  <br></br>
+                  {modificationStatut.statut === true && modificationStatut.index === index  ? <Button style={{backgroundColor: "orange", marginLeft:"10px", fontSize:"20px", borderRadius:"20px"}} type="button" onClick={()=>modification(index, {titre: titre? titre : element.titre, contenu: contenu? contenu : element.contenu, video: video? video : element.video, image: image.length !== 0 ? image : element.image,colorTitre: colorTitre !== "" ? colorTitre : element.colorTitre})} >
                     Sauvegarder modification
                   </Button> : <></>}
                   <br></br>
-                  <Button variant="primary" type="button" onClick={()=>suppresion(index)}>
+                  <Button style={{backgroundColor: "orange", marginLeft:"10px", fontSize:"20px", borderRadius:"20px"}} type="button" onClick={()=>suppresion(index)}>
                     Supprimer
                   </Button>
                   </Form>
@@ -288,10 +402,10 @@ export default function Administration(props: any) {
                  <Button id="badge" style={{backgroundColor:`${element.colorTitre}`}}>{element.titre}</Button>
                   <Row style={{display:"flex"}}>
                     <Col xs={6} sm={6} id="colBox">
-                      <pre style={{textAlign:"left"}}>{element.contenu}</pre>
+                      <pre style={{textAlign:"left", fontSize:"15px"}}>{element.contenu}</pre>
                     </Col>
                     <Col id="imgActu"  xs={6} sm={6}>
-                      {element.image ? element.image.map((item: any, index:number)=>{
+                      {element.image ? element.image.map((item, index)=>{
                         return (<img key={index} alt={item.alt} src={item}/>);
                       }) : <div className="embed-responsive embed-responsive-16by9">
                       <iframe className="videoRegleBasket" src={element.video} ></iframe>
@@ -310,10 +424,10 @@ export default function Administration(props: any) {
     else if(select === "ImagesDeroulanteAccueil"){
       return (
         <>
-      <Button ><a href="/api/auth/logout">déconnexion</a></Button>
+      <a href="/api/auth/logout"><Row style={{display:"flex", justifyContent:"center"}}><Button style={{fontSize:"40px", textAlign:"center", marginTop:"20px", backgroundColor:"orange", borderRadius:"20px"}}>Déconnexion</Button></Row></a>
       <div style={{padding:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
         <Box className="boxFormation">
-          <select onChange={(event: any)=> loadData(event.target.value)}>
+          <select onChange={(event)=> loadData(event.target.value)}>
               <option value="Comite">Comite</option>
               <option value="Actualites">Actualité</option>
               <option value="Entraineurs">Entraineurs</option>
@@ -323,16 +437,16 @@ export default function Administration(props: any) {
               <option value="Mecenat">Mecenat</option>
               <option value="ImagesDeroulanteAccueil">Bandeau Accueil</option>
           </select>
-          <Button variant="primary" type="button" onClick={() => addArticle()}>
+          <Button style={{backgroundColor: "orange", marginLeft:"10px", fontSize:"20px", borderRadius:"20px"}} type="button" onClick={() => addArticle()}>
             Ajouter un nouvel article
           </Button>
-          <Button variant="primary" type="button" onClick={()=> addIntoDb()}>
+          <Button style={{backgroundColor: "orange", marginLeft:"10px", fontSize:"20px", borderRadius:"20px"}} type="button" onClick={()=> addIntoDb(dataReceive)}>
             Enregistrer toutes les modifications dans la base de donnée
           </Button>
         </Box>
         {messageValidation}
       </div>
-      {dataReceive.map((element: any, index: number) => {
+      {dataReceive.map((element, index) => {
         return (
           <Box key={index} className="boxFormation" style={{backgroundColor: element.color, fontSize:"20px"}}>
             <Row style={{display:"flex"}}>
@@ -346,17 +460,18 @@ export default function Administration(props: any) {
                     <br></br></> : <></>}
                     {element.lienPage ? <><Form.Label>Lien vers page :</Form.Label><Form.Control type="text" id="titre"  onChange={(event) => {setLienPage(event.target.value)}} defaultValue={element.lienPage} /><br></br><br></br></> : <></>}
                     {element.image ? <><Form.Label>Photo :<Form.Control type="file" id="titre" onChange={(event) => {fileSelectedHandler(event, element.image, index)}}></Form.Control><br></br><br></br>
-                    {element.image.map((image: any, indexImage:number)=> {
+                    {element.image.map((image, indexImage)=> {
                       return (<div key={indexImage}><Button  onClick={() => deleteImage(indexImage, index)}>X</Button><img style={{width:"300px"}} src={image}/></div>)
                     })}
                     </Form.Label></> : <></>}
                   </Form.Group>
                   <br></br>
-                  {modificationStatut.statut === true && modificationStatut.index === index  ? <Button variant="primary" type="button" onClick={()=>modification(index, {titre: titre? titre : element.titre, lienPage: lienPage? lienPage : element.lienPage, image: image.length !== 0 ? image : element.image,colorText: colorText !== "" ? colorText : element.colorText,colorBackgroundButton: colorBackgroundButton !== "" ? colorBackgroundButton : element.colorBackgroundButton,colorTextButton: colorTextButton !== "" ? colorTextButton : element.colorTextButton})} >
+                  <br></br>
+                  {modificationStatut.statut === true && modificationStatut.index === index  ? <Button style={{backgroundColor: "orange", marginLeft:"10px", fontSize:"20px", borderRadius:"20px"}} type="button" onClick={()=>modification(index, {titre: titre? titre : element.titre, lienPage: lienPage? lienPage : element.lienPage, image: image.length !== 0 ? image : element.image,colorText: colorText !== "" ? colorText : element.colorText,colorBackgroundButton: colorBackgroundButton !== "" ? colorBackgroundButton : element.colorBackgroundButton,colorTextButton: colorTextButton !== "" ? colorTextButton : element.colorTextButton})} >
                     Sauvegarder modification
                   </Button> : <></>}
                   <br></br>
-                  <Button variant="primary" type="button" onClick={()=>suppresion(index)}>
+                  <Button style={{backgroundColor: "orange", marginLeft:"10px", fontSize:"20px", borderRadius:"20px"}} type="button" onClick={()=>suppresion(index)}>
                     Supprimer
                   </Button>
                 </Form>
@@ -368,7 +483,7 @@ export default function Administration(props: any) {
                     <p style={{marginBottom:"0",color:`${element.colorText}`}}>{element.titre}</p>
                     <button style={{width:"90px", height:"20px",borderColor: "white",borderRadius: "10px",color:`${element.colorTextButton}`,backgroundColor:`${element.colorBackgroundButton}`}}>Cliquez ici</button>
                     </Row>
-                    {element.image.map((image: any, indexImage:number)=> {
+                    {element.image.map((image, indexImage)=> {
                       return (<div key={indexImage}><img style={{width:"300px"}} src={image}/></div>)
                     })}
                   </Row>
@@ -384,10 +499,10 @@ export default function Administration(props: any) {
     }else if(select === ""){
       return (
         <>
-      <Button ><a href="/api/auth/logout">déconnexion</a></Button>
+      <a href="/api/auth/logout"><Row style={{display:"flex", justifyContent:"center"}}><Button style={{fontSize:"40px", textAlign:"center", marginTop:"20px", backgroundColor:"orange", borderRadius:"20px"}}>Déconnexion</Button></Row></a>
       <div style={{padding:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
         <Box className="boxFormation">
-          <select onChange={(event: any)=> loadData(event.target.value)}>
+          <select onChange={(event)=> loadData(event.target.value)}>
               <option value="Comite">Comite</option>
               <option value="Actualites">Actualité</option>
               <option value="Entraineurs">Entraineurs</option>
@@ -397,10 +512,10 @@ export default function Administration(props: any) {
               <option value="Mecenat">Mecenat</option>
               <option value="ImagesDeroulanteAccueil">Bandeau Accueil</option>
           </select>
-          <Button variant="primary" type="button" onClick={() => addArticle()}>
+          <Button style={{backgroundColor: "orange", marginLeft:"10px", fontSize:"20px", borderRadius:"20px"}} type="button" onClick={() => addArticle()}>
             Ajouter un nouvel article
           </Button>
-          <Button variant="primary" type="button" onClick={()=> addIntoDb()}>
+          <Button style={{backgroundColor: "orange", marginLeft:"10px", fontSize:"20px", borderRadius:"20px"}} type="button" onClick={()=> addIntoDb(dataReceive)}>
             Enregistrer toutes les modifications dans la base de donnée
           </Button>
         </Box>
@@ -410,7 +525,9 @@ export default function Administration(props: any) {
     }
   }else {
     return (
-      <Button><a href="/api/auth/login">Se connecter</a></Button>
+      <Layout>
+        <Row style={{height:"1000px", display:"flex", justifyContent:"center", alignContent:"center"}}><Button href="/api/auth/login" style={{backgroundColor:"#3d1e7b",borderRadius:"30px", width:"200px", height:"150px"}}><p style={{marginTop:"50px"}}>Se connecter</p></Button></Row>
+      </Layout>
     )
   }
 }

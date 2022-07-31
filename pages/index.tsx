@@ -30,6 +30,7 @@ const Home: NextPage = () => {
         </div>
         </a>
     </Row>
+    <br></br>
     <Row>
         <a style={{color:"black"}} href="/actus/actuRUCB">
         <div className="divActualite">
