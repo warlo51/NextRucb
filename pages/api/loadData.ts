@@ -11,7 +11,7 @@ export default async function handler(
     const dataModif = dataReceived.map((element)=>{
       return {
         ...element,
-        color:"#388d39"
+        color:"#7FC63D"
       }
     })
     

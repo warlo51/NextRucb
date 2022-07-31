@@ -48,7 +48,7 @@ export default function Administration(props: any) {
     const [modificationStatut, setModificationStatut] = useState({statut:false, index: 0});
 
     const handleClick = (index: number) => {
-      dataReceive[index] = {...dataReceive[index],color:"#a17c38"};
+      dataReceive[index] = {...dataReceive[index],color:"#C6A43D"};
       setModificationStatut({statut: true, index: index})
     };
 
@@ -89,27 +89,27 @@ export default function Administration(props: any) {
 
     function addArticle(){
       if(select === "Comite" || select === "Entraineurs"){
-        dataReceive.push({"nom":"", "telephone": "", "mail": "","color":"red", "colorTitre":"#dc8d32"})
+        dataReceive.push({"nom":"", "telephone": "", "mail": "","color":"#C63D59", "colorTitre":"#dc8d32"})
         setData([]) 
         setTimeout(() => {
           setData(dataReceive) 
         }, 500);     
       }else if (select === "Historique" || select === "Vacances" || select === "Mecenat"){
-        dataReceive.push({"titre": "Titre","contenu": "", "image": [],"color":"red","colorTitre":"#dc8d32"})   
+        dataReceive.push({"titre": "Titre","contenu": "", "image": [],"color":"#C63D59","colorTitre":"#dc8d32"})   
         setData([]) 
         setTimeout(() => {
           setData(dataReceive) 
         }, 500);  
        
       }else if (select === "Formation"){
-        dataReceive.push({"titre": "Titre","contenu": "", "video": "coller url video","color":"red","colorTitre":"#dc8d32"})   
+        dataReceive.push({"titre": "Titre","contenu": "", "video": "coller url video","color":"#C63D59","colorTitre":"#dc8d32"})   
         setData([]) 
         setTimeout(() => {
           setData(dataReceive) 
         }, 500);
       }
       else if (select === "ImagesDeroulanteAccueil"){
-        dataReceive.push({"titre": "Titre","lienPage": "lien page", "image": [],"color":"red","colorTextButton":"#FFFFFF","colorText":"#FFFFFF","colorBackgroundButton":"#3d1e7b"})   
+        dataReceive.push({"titre": "Titre","lienPage": "lien page", "image": [],"color":"#C63D59","colorTextButton":"#FFFFFF","colorText":"#FFFFFF","colorBackgroundButton":"#3d1e7b"})   
         setData([]) 
         setTimeout(() => {
           setData(dataReceive) 
@@ -126,7 +126,7 @@ export default function Administration(props: any) {
     }
 
     function modification(index: number, data: any){
-      dataReceive[index] = {...data,color:"#388d39"};
+      dataReceive[index] = {...data,color:"#3DA9C6"};
       setData([])
         setTimeout(() => {
           setData(dataReceive);
