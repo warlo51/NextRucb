@@ -10,6 +10,11 @@ import { getDatabase } from "../../src/database/database";
 export default function Comite({fiches}: any){
   const [fichesJSON, setFichesJSON] = useState<any>([]);
 
+  const [tailleEcran, setTailleEcran] = useState(0);
+
+    useEffect(()=>{
+        setTailleEcran(window.innerWidth);
+    },[]);
   useEffect(()=>{
     async function loadData(){
       const dataDB =  await fetch("/api/loadData",{
@@ -33,7 +38,7 @@ export default function Comite({fiches}: any){
               return (
               <Box className="BoxComite">
                 <CardContent >
-                <Button id="badge" style={{backgroundColor:`${fiche.colorTitre}`}}>{fiche.nom}</Button>
+                {tailleEcran < 333 ? <Button id="badge" style={{backgroundColor:`${fiche.colorTitre}`, width:"250px"}}>{fiche.nom}</Button> : <Button id="badge" style={{backgroundColor:`${fiche.colorTitre}`, width:"400px"}}>{fiche.nom}</Button>}
                   <p></p>
                   <Typography variant="body2" color="text.secondary">
                     <p>Tél. : {fiche.telephone}</p>

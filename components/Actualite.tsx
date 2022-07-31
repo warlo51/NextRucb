@@ -4,7 +4,7 @@ export default function Actualite() {
     return (
         <a style={{color:"black", padding:"0"}} href="../DossierLicence.pdf" download='../DossierLicence.pdf'>
         <div className="divActualite">
-        <Button id="badge">Le RUC Recrute !</Button>
+        <Button id="badge">Le RUCB Recrute !</Button>
         <h5>Téléchargez le dossier Ici</h5>
         </div>
         </a>

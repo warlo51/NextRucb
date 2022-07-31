@@ -153,7 +153,6 @@ z-index: 2;
   border-color: white;
   padding-left: 10px;
   padding-right: 10px;
-  font-size: 20px;
   text-align: left;
   animation-duration: .8s;
    animation-name: clignoter;
@@ -212,7 +211,7 @@ z-index: 2;
 }
 /* divHoraire */
 #colHomeCentre{
- padding-top:40px;
+
 }
 .divHoraires{
   display: flex;
@@ -231,7 +230,7 @@ z-index: 2;
   background-color: #fff;
   box-shadow: 5px 5px 5px #3d1e7b;
   padding: 40px;
-  margin-top: 30px;
+  height: 202px;
   border-radius: 20px;
 }
 .divActualite:hover{
@@ -263,7 +262,8 @@ z-index: 2;
   background-color: #fff;
   box-shadow: 5px 5px 5px #3d1e7b;
   padding: 40px;
-  margin-top: 30px;
+  height: 375px;
+
   border-radius: 20px;
 }
 .divSponsors:hover{
