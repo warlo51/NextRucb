@@ -6,6 +6,7 @@ import Head from 'next/head'
  
 
 function MyApp({ Component, pageProps }: AppProps) {
+  
   return <div>
       <Head>
         <title>RUCB Basket</title>
