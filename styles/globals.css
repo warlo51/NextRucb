@@ -253,6 +253,7 @@ z-index: 2;
   background-color: #fff;
   box-shadow: 5px 5px 5px #3d1e7b;
   padding: 40px;
+  height: 450px;
   margin-top: 30px;
   border-radius: 20px;
 }
@@ -265,6 +266,29 @@ z-index: 2;
   height: 375px;
 
   border-radius: 20px;
+}
+.contentFfbb{
+  height:700px;
+  overflow-y:scroll;
+}
+.cardFfbb { 
+  height: 300px;
+  margin-bottom: 10px;
+}
+.cardHeaderFfbb:hover{
+  background-color: #3d1e7b ;
+  color:#fff;
+}
+.cardHeaderFfbb{
+  color: black ;
+}
+.cardFfbb img{ 
+  height: 150px;
+  width: 250px;
+}
+.descriptionFfbb {
+  margin-top: 10px;
+  font-size: 10px;
 }
 .divSponsors:hover{
  background-color: #3d1e7b;
@@ -396,22 +420,25 @@ z-index: 2;
     
     }
     .divFfbb{
-      height:1180px ;
+      height:1390px ;
     }
     .iframeFFBB{
       height: 900px;
     }
     .divHoraires{
-      height: 800px;
+      height: 950px;
+    }
+    .contentFfbb{
+      height: 1200px;
     }
     .divEquipe{
-      height: 350px;
+      height: 400px;
     }
     .navbar a{
       margin-left: 50px;
     }
     #colHomeCentre{
-      padding-top:50px;
+      padding-top:200px;
      }
      .carousel .slide .title{
       bottom: 90px;
@@ -502,7 +529,22 @@ z-index: 2;
   .NavBar img{
     display: none;
   }
-
+  .divHoraires{
+    height: 700px;
+  }
+  .divEquipe{
+    height: 650px;
+  }
+  .contentFfbb{
+    height: 900px;
+  }
+  .cardFfbb img{
+    width: 180px;
+    height: 100px;
+  }
+  .divSponsors{
+    height: 400px;
+  }
 }
 @media screen and (max-width: 425px) {
   .Bandeau{
@@ -510,6 +552,7 @@ z-index: 2;
   }
   .divEquipe{
     font-size: 20px;
+    height: 400px;
   }
   #colHomeCentre #badge{
     margin-left: 0px; 
@@ -568,7 +611,10 @@ z-index: 2;
     display: none;
   }
   .divHoraires{
-    height: 1150px;
+    height: 1400px;
+  }
+  .contentFfbb{
+    height: 900px;
   }
 }
 @media screen and (max-width: 375px) {
@@ -614,7 +660,13 @@ z-index: 2;
     background-color: #dc8d32;
   }
   .divHoraires{
-    height: 1000px;
+    height: 1200px;
+  }
+  .divEquipe{
+    height: 400px;
+  }
+  .contentFfbb{
+    height: 900px;
   }
 }
 
@@ -622,14 +674,23 @@ z-index: 2;
   .divHoraires #badge{
     margin-left: 30px; 
   }
+
   .divHoraires{
-    height: 800px;
+    height: 950px;
   }
   #colHomeCentre{
     padding-left: 0;
     padding-right: 0;
   }
+  .cardFfbb img{
+    width: 180px;
+    height: 100px;
+  }
+  .contentFfbb{
+    height: 900px;
+  }
   .divEquipe{
-    font-size: 16px;
+    font-size: 14px;
+    height: 320px;
   }
 }
