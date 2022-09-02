@@ -3,8 +3,6 @@ import { Button } from "react-bootstrap";
 import React, { useEffect, useState } from "react";
 import {Layout} from "../components/Layout";
 import Head from "next/head";
-import { GetServerSideProps } from "next";
-import { getDatabase } from "../src/database/database";
 
 
 

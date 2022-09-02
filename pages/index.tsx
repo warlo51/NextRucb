@@ -1,7 +1,6 @@
 import type { GetServerSideProps, NextPage } from 'next'
 import { useEffect, useState } from 'react'
 import { Button, Col, Container, Row } from 'react-bootstrap'
-
 import Actualite from '../components/Actualite'
 import BandeauIMG from '../components/BandeauIMG'
 import Equipes from '../components/Equipes'
