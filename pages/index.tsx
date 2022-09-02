@@ -10,6 +10,7 @@ import Horaires from '../components/Horaires'
 import { Layout } from '../components/Layout'
 import Partenaires from '../components/Partenaires'
 import Sponsors from '../components/Sponsors'
+import useAnalyticsEventTracker from '../src/useAnalyticsEventTracker'
 
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
@@ -39,7 +40,8 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
 const Home: NextPage = (props: any) => {
 
   const [tailleEcran, setTailleEcran] = useState(0);
-
+  const gaEventTrackerVacance = useAnalyticsEventTracker("Le RUCB basket est en vacance");
+  const gaEventTrackerActu = useAnalyticsEventTracker("Les actualités du RUCB basket");
     useEffect(()=>{
         setTailleEcran(window.innerWidth);
     },[]);
@@ -49,18 +51,18 @@ const Home: NextPage = (props: any) => {
     <BandeauIMG/>
    <Container className="containerActu">
    {tailleEcran > 780 ? <></> : <><Row>
-        <a style={{color:"black"}} href="/actus/vacances">
+        <a style={{color:"black"}} href="/actus/vacances" onClick={()=>gaEventTrackerVacance('click')}>
         <div className="divActualite">
-        <Button id="badge">Le RUCB basket est en vacance</Button>
+        <Button  id="badge">Le RUCB basket est en vacance</Button>
         <h5>Découvrez l'article</h5>
         </div>
         </a>
     </Row>
     <br></br>
     <Row>
-        <a style={{color:"black"}} href="/actus/actuRUCB">
+        <a style={{color:"black"}} href="/actus/actuRUCB" onClick={()=>gaEventTrackerActu('click')}>
         <div className="divActualite">
-        <Button id="badge">Les actualités du RUCB basket</Button>
+        <Button  id="badge">Les actualités du RUCB basket</Button>
         <h5>Découvrez les actualités</h5>
         </div>
         </a>
