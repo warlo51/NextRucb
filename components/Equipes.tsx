@@ -12,8 +12,8 @@ export default function Equipes() {
             <li>U13 : Département</li>
             <li>U11 : Département</li>
             <li>U11 fille : Département</li>
-            <li>U9 </li>
-            <li>U7 </li>
+            <li>U9 : Ecole de mini basket</li>
+            <li>U7 : Ecole de mini basket</li>
         </ul>
         </div>
     );

@@ -20,7 +20,6 @@ export default function Partenaires() {
         <br></br>
         <br></br>
         <br></br>
-        <h5>Venez découvrir nos partenaires !</h5>
         </div>
         </a>
     );

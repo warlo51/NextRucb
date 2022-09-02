@@ -7,10 +7,11 @@ export default function Horaires() {
     useEffect(()=>{
         setTailleEcran(window.innerWidth);
     },[]);
+
     return (
        <div className="divHoraires">
         <Button id="badge">Entrainements</Button>
-        {tailleEcran > 780 ? <img alt="horairesEntrainementRUCB" src="../HorairesEntrainements.png"/> : <img alt="horairesEntrainementRUCB" src="../HorairesEntrainementsSmartphone.png"/>}  
+        {tailleEcran > 1036 ? <img alt="horairesEntrainementRUCB" src="../HorairesEntrainements.png"/> : <img alt="horairesEntrainementRUCB" src="../HorairesEntrainementsSmartphone.png"/>}  
        </div>
     
     );

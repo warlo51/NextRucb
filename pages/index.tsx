@@ -1,6 +1,7 @@
-import type { NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 import { useEffect, useState } from 'react'
 import { Button, Col, Container, Row } from 'react-bootstrap'
+
 import Actualite from '../components/Actualite'
 import BandeauIMG from '../components/BandeauIMG'
 import Equipes from '../components/Equipes'
@@ -10,8 +11,33 @@ import { Layout } from '../components/Layout'
 import Partenaires from '../components/Partenaires'
 import Sponsors from '../components/Sponsors'
 
-const Home: NextPage = () => {
+
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
+
+        const url = "http://www.ffbb.com/rss2.xml";
+        const data = await fetch(url)
+          .then((response) => {
+            return response.arrayBuffer();
+          })
+          .then((responseText) => {
+            const decoder = new TextDecoder('iso-8859-1');
+            const text = decoder.decode(responseText);
+            return text;
+         })
+      .catch((error) => {
+        console.log('Error fetching the feed: ', error);
+      });
+
+    return {
+      props: {
+        data: data,
+      },
+    };
   
+};
+
+const Home: NextPage = (props: any) => {
+
   const [tailleEcran, setTailleEcran] = useState(0);
 
     useEffect(()=>{
@@ -51,7 +77,7 @@ const Home: NextPage = () => {
         <Row id="rowActu"><Partenaires/></Row>
       </Col>
       <Col xs={12} sm={4}>
-        <Row id="rowActu"><Ffbb/></Row>
+        <Row id="rowActu"><Ffbb data={props.data} /></Row>
       </Col>
     </Row>
     </Container>
