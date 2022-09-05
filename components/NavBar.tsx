@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
+import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 
 export default function NavBar(props: any) {
 
