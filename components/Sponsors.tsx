@@ -1,6 +1,4 @@
 import { Button } from "react-bootstrap";
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 export default function Sponsors() {
     return (
         <a style={{color:"black", padding:"0"}} href="../Mecenat.pdf" download='../Mecenat.pdf'>

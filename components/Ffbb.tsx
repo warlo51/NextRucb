@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Card } from "react-bootstrap";
-import {parseString} from "xml2js";
-import { xml2json, json2xml } from "xml-js";
-import utf8 from "utf8";
+import { xml2json } from "xml-js";
 
 
 

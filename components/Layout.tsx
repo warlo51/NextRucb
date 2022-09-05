@@ -1,4 +1,3 @@
-import Head from "next/head";
 import React, { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from "./Header";
