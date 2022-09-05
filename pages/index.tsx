@@ -12,29 +12,29 @@ import Partenaires from '../components/Partenaires'
 import Sponsors from '../components/Sponsors'
 
 
-export const getServerSideProps: GetServerSideProps = async (context: any) => {
+// export const getServerSideProps: GetServerSideProps = async (context: any) => {
 
-        const url = "http://www.ffbb.com/rss2.xml";
-        const data = await fetch(url)
-          .then((response) => {
-            return response.arrayBuffer();
-          })
-          .then((responseText) => {
-            const decoder = new TextDecoder('iso-8859-1');
-            const text = decoder.decode(responseText);
-            return text;
-         })
-      .catch((error) => {
-        console.log('Error fetching the feed: ', error);
-      });
-
-    return {
-      props: {
-        data: data,
-      },
-    };
+//         const url = "http://www.ffbb.com/rss2.xml";
+//         const data = await fetch(url)
+//           .then((response) => {
+//             return response.arrayBuffer();
+//           })
+//           .then((responseText) => {
+//             const decoder = new TextDecoder('iso-8859-1');
+//             const text = decoder.decode(responseText);
+//             return text;
+//          })
+//       .catch((error) => {
+//         console.log('Error fetching the feed: ', error);
+//       });
+// {/* <Ffbb data={props.data} /> */}
+//     return {
+//       props: {
+//         data: data,
+//       },
+//     };
   
-};
+// };
 
 const Home: NextPage = (props: any) => {
 
@@ -77,7 +77,7 @@ const Home: NextPage = (props: any) => {
         <Row id="rowActu"><Partenaires/></Row>
       </Col>
       <Col xs={12} sm={4}>
-        <Row id="rowActu"><Ffbb data={props.data} /></Row>
+        <Row id="rowActu"></Row>
       </Col>
     </Row>
     </Container>
