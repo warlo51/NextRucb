@@ -1,5 +1,9 @@
 {
   "projects": {
+<<<<<<< HEAD
     "default": "rucb-basket"
+=======
+    "default": "rucb-basket-firebase"
+>>>>>>> 643f02eb63748dd5e3eda1edcba7a8c5dd92813f
   }
 }
