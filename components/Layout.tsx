@@ -11,7 +11,7 @@ export const Layout: React.FC<any> = ({ children }) => {
   React.useEffect(()=>{
     window.location.href ? setCurrentLocation(window.location.href.split("/")[3]) : setCurrentLocation("null");
   },[])
-
+console.log("currentLocation", currentLocation.length)
 if(currentLocation.length === 0){
   return (
     <>
