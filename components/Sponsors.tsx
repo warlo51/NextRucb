@@ -1,5 +1,5 @@
 import { Button } from "react-bootstrap";
-export default function Sponsors() {
+export default function Sponsors(): JSX.Element {
     return (
         <a style={{color:"black", padding:"0"}} href="../Mecenat.pdf" download='../Mecenat.pdf'>
         <div className="divActualite">

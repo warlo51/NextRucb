@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Button } from "react-bootstrap";
-import { Box, Container, Grid, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Layout } from '../../components/Layout';
 import { Col, Row } from 'react-bootstrap';
 import Head from 'next/head';

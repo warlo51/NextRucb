@@ -1,8 +1,7 @@
-import { Badge, Box, CardContent, Modal, Typography } from "@mui/material";
+import { Box, CardContent, Modal, Typography } from "@mui/material";
 import { Accordion, Button, Col, Dropdown, Form, Row } from "react-bootstrap";
 import React, { useEffect, useRef, useState } from "react";
 import jwt_decode from "jwt-decode";
-import { GetServerSideProps } from "next";
 import "react-color-palette/lib/css/styles.css";
 import { Layout } from "../components/Layout";
 
