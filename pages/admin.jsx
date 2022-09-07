@@ -54,6 +54,7 @@ export default function Administration(props) {
     const [colorTitre, setColorTitre] = useState("");
     const [colorBackgroundButton, setColorBackgroundButton] = useState("");
     const [colorTextButton, setColorTextButton] = useState("");
+    const [active, setActive] = useState(false);
     const [colorText, setColorText] = useState("");
     const [contenu, setContenu] = useState("");
     const [open, setOpen] = React.useState(false);
@@ -64,7 +65,6 @@ export default function Administration(props) {
     const dragItem = useRef();
     const dragOverItem = useRef();
     const [list, setList] = useState([]);
-
 
   const dragStart = (e, position) => {
     dragItem.current = position;
@@ -149,7 +149,7 @@ export default function Administration(props) {
         }, 500);
       }
       else if (select === "ImagesDeroulanteAccueil"){
-        dataReceive.push({"titre": "Titre","lienPage": "lien page", "image": [],"color":"#C63D59","colorTextButton":"#FFFFFF","colorText":"#FFFFFF","colorBackgroundButton":"#3d1e7b"})   
+        dataReceive.push({"titre": "Titre","active": "true","lienPage": "lien page", "image": [],"color":"#C63D59","colorTextButton":"#FFFFFF","colorText":"#FFFFFF","colorBackgroundButton":"#3d1e7b"})   
         setData([]) 
         setTimeout(() => {
           setData(dataReceive) 
@@ -167,6 +167,7 @@ export default function Administration(props) {
 
     function modification(index, data){
       dataReceive[index] = {...data,color:"#3DA9C6"};
+     
       setData([])
         setTimeout(() => {
           setData(dataReceive);
@@ -443,6 +444,7 @@ export default function Administration(props) {
             Enregistrer toutes les modifications dans la base de donnée
           </Button>
         </Box>
+       
         {messageValidation}
       </div>
       {dataReceive.map((element, index) => {
@@ -452,6 +454,15 @@ export default function Administration(props) {
                 <Col xs={6}>
                 <Form onKeyDown={(event) => handleClick(index)}>
                   <Form.Group className="mb-3" >
+                    {element.active === "true" ? <>
+                      <Form.Label>Activer: </Form.Label><br></br>
+                    <Form.Check type="radio" label="Oui" value={true} checked={true} name="group1" onChange={(event) => {setActive(event.target.value), handleClick(index)}} id="titre" />
+                    <Form.Check type="radio" label="Non" value={false} name="group1" onChange={(event) => {setActive(event.target.value), handleClick(index)}} id="titre" /><br></br>
+                    </> : <>
+                    <Form.Label>Activer: </Form.Label><br></br>
+                    <Form.Check type="radio" label="Oui" value={true} name="group1" onChange={(event) => {setActive(event.target.value), handleClick(index)}} id="titre" />
+                    <Form.Check type="radio" label="Non" value={false} checked={true} name="group1" onChange={(event) => {setActive(event.target.value), handleClick(index)}} id="titre" /><br></br></>}
+
                     {element.titre ? <><Form.Label>Titre :</Form.Label><Form.Control type="text" style={{width:"300px"}} id="titre"  onChange={(event) => {setTitre(event.target.value)}} defaultValue={element.titre} /><br></br><br></br>
                     <Form.Label>Couleur texte titre : <Form.Control type="color" defaultValue={element.colorText} onChange={(event) => {setColorText(event.target.value), handleClick(index)}} id="titre" /></Form.Label><br></br>
                     <Form.Label>Couleur texte bouton : <Form.Control type="color" defaultValue={element.colorTextButton} onChange={(event) => {setColorTextButton(event.target.value), handleClick(index)}} id="titre" /></Form.Label><br></br>
@@ -466,7 +477,7 @@ export default function Administration(props) {
                   </Form.Group>
                   <br></br>
                   <br></br>
-                  {modificationStatut.statut === true && modificationStatut.index === index  ? <Button style={{backgroundColor: "orange", marginLeft:"10px", fontSize:"20px", borderRadius:"20px"}} type="button" onClick={()=>modification(index, {titre: titre? titre : element.titre, lienPage: lienPage? lienPage : element.lienPage, image: image.length !== 0 ? image : element.image,colorText: colorText !== "" ? colorText : element.colorText,colorBackgroundButton: colorBackgroundButton !== "" ? colorBackgroundButton : element.colorBackgroundButton,colorTextButton: colorTextButton !== "" ? colorTextButton : element.colorTextButton})} >
+                  {modificationStatut.statut === true && modificationStatut.index === index  ? <Button style={{backgroundColor: "orange", marginLeft:"10px", fontSize:"20px", borderRadius:"20px"}} type="button" onClick={()=>modification(index, {titre: titre? titre : element.titre, active: active? active : element.active, lienPage: lienPage? lienPage : element.lienPage, image: image.length !== 0 ? image : element.image,colorText: colorText !== "" ? colorText : element.colorText,colorBackgroundButton: colorBackgroundButton !== "" ? colorBackgroundButton : element.colorBackgroundButton,colorTextButton: colorTextButton !== "" ? colorTextButton : element.colorTextButton})} >
                     Sauvegarder modification
                   </Button> : <></>}
                   <br></br>

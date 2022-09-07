@@ -14,7 +14,7 @@ export default function BandeauIMG() {
        body: "ImagesDeroulanteAccueil",
      }).then((result: any) => result.json());
      
-     setArticlesJSON(dataDB.data)
+     setArticlesJSON(dataDB.data.filter((article: any) => article.active === "true"))
    }
    loadData();
   },[]);
@@ -22,13 +22,14 @@ export default function BandeauIMG() {
   return(
   <Carousel autoPlay  infiniteLoop={true} interval={4000} className="Bandeau">
     {articlesJSON.map((article: any, index:number) =>{
-              return (
-                <div key={index}>
-                  <img src={article.image} />
-                  <p className="title" style={{color:`${article.colorText}`}}>{article.titre}</p>
-                  <Button id="buttonSlide" style={{color:`${article.colorTextButton}`,backgroundColor:`${article.colorBackgroundButton}`}}href={article.lienPage}>Cliquez ici</Button>
-                </div>
-              );
+          return (
+            <div key={index}>
+              <img src={article.image} />
+              <p className="title" style={{color:`${article.colorText}`}}>{article.titre}</p>
+              <Button id="buttonSlide" style={{color:`${article.colorTextButton}`,backgroundColor:`${article.colorBackgroundButton}`}}href={article.lienPage}>Cliquez ici</Button>
+            </div>
+          );
+         
             })}
   </Carousel>);
 }
