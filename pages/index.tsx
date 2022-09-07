@@ -32,9 +32,9 @@ const Home: NextPage = () => {
     <BandeauIMG/>
    <Container className="containerActu">
    {tailleEcran > 780 ? <></> : <><Row>
-        <a style={{color:"black"}} href="/actus/vacances">
+        <a style={{color:"black"}} href="/actus/rentree">
         <div className="divActualite">
-        <Button id="badge">Le RUCB basket est en vacance</Button>
+        <Button id="badge">Le RUCB basket fait sa rentrée</Button>
         <h5>Découvrez l'article</h5>
         </div>
         </a>
