@@ -240,7 +240,7 @@ z-index: 2;
 .divFfbb{
   flex-direction: column;
   border:solid #3d1e7b;
-  height: 838px;
+  height: 888px;
   background-color: #fff;
   box-shadow: 5px 5px 5px #3d1e7b;
   padding: 40px;
@@ -253,7 +253,7 @@ z-index: 2;
   background-color: #fff;
   box-shadow: 5px 5px 5px #3d1e7b;
   padding: 40px;
-  height: 450px;
+  height: 500px;
   margin-top: 30px;
   border-radius: 20px;
 }
@@ -263,7 +263,7 @@ z-index: 2;
   background-color: #fff;
   box-shadow: 5px 5px 5px #3d1e7b;
   padding: 40px;
-  height: 375px;
+  height: 425px;
 
   border-radius: 20px;
 }
@@ -432,7 +432,7 @@ z-index: 2;
       height: 1200px;
     }
     .divEquipe{
-      height: 400px;
+      height: 600px;
     }
     .navbar a{
       margin-left: 50px;
@@ -482,7 +482,7 @@ z-index: 2;
     height: 550px;
   }
   .divEquipe{
-    height: 500px;
+    height: 400px;
   }
   #imgActu img{
     height:  180px;
@@ -552,7 +552,7 @@ z-index: 2;
   }
   .divEquipe{
     font-size: 20px;
-    height: 400px;
+    height: 600px;
   }
   #colHomeCentre #badge{
     margin-left: 0px; 
@@ -663,7 +663,7 @@ z-index: 2;
     height: 1200px;
   }
   .divEquipe{
-    height: 400px;
+    height: 600px;
   }
   .contentFfbb{
     height: 900px;
@@ -691,6 +691,6 @@ z-index: 2;
   }
   .divEquipe{
     font-size: 14px;
-    height: 320px;
+    height: 500px;
   }
 }
