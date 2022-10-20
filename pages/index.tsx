@@ -22,7 +22,7 @@ const Home: NextPage = () => {
           const dataFFBB =  await fetch("/api/loadFFBB",{
            method: "POST",
          }).then((result: any) => result.json());
-         
+
          setData(dataFFBB.data)
        }
        loadData();
@@ -32,9 +32,9 @@ const Home: NextPage = () => {
     <BandeauIMG/>
    <Container className="containerActu">
    {tailleEcran > 780 ? <></> : <><Row>
-        <a style={{color:"black"}} href="/actus/rentree">
+        <a style={{color:"black"}} href="/actus/vacanceHalloween">
         <div className="divActualite">
-        <Button id="badge">Le RUCB basket fait sa rentrée</Button>
+        <Button id="badge">Temps mort</Button>
         <h5>Découvrez l'article</h5>
         </div>
         </a>

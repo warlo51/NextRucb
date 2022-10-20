@@ -69,11 +69,11 @@ export default function Administration(props) {
   const dragStart = (e, position) => {
     dragItem.current = position;
   };
- 
+
   const dragEnter = (e, position) => {
     dragOverItem.current = position;
   };
- 
+
   const drop = (e) => {
     const copyListItems = [...list];
     const dragItemContent = copyListItems[dragItem.current];
@@ -82,9 +82,9 @@ export default function Administration(props) {
     dragItem.current = null;
     dragOverItem.current = null;
     setList(copyListItems);
-   
+
   };
-  
+
     const handleClick = (index) => {
       dataReceive[index] = {...dataReceive[index],color:"#C6A43D"};
       setModificationStatut({statut: true, index: index})
@@ -98,10 +98,10 @@ export default function Administration(props) {
       }).then((result) => result.json());
       setSelect(event);
       setList(dataDB.data)
-      setData([]) 
+      setData([])
         setTimeout(() => {
-          setData(dataDB.data) 
-        }, 100);  
+          setData(dataDB.data)
+        }, 100);
     }
 
     async function fileSelectedHandler(event, imagesDB, index){
@@ -112,7 +112,7 @@ export default function Administration(props) {
       setImage(arrayImages);
       handleClick(index)
     }
-    
+
     function convertBase64(file){
       return new Promise((resolve, reject) => {
         const fileReader = new FileReader();
@@ -130,29 +130,29 @@ export default function Administration(props) {
     function addArticle(){
       if(select === "Comite" || select === "Entraineurs"){
         dataReceive.push({"nom":"", "telephone": "", "mail": "","color":"#C63D59", "colorTitre":"#dc8d32"})
-        setData([]) 
+        setData([])
         setTimeout(() => {
-          setData(dataReceive) 
-        }, 500);     
+          setData(dataReceive)
+        }, 500);
       }else if (select === "Historique" || select === "Vacances" || select === "Mecenat" || select === "Actualites"){
-        dataReceive.push({"titre": "Titre","contenu": "", "image": [],"color":"#C63D59","colorTitre":"#dc8d32"})   
-        setData([]) 
+        dataReceive.push({"titre": "Titre","contenu": "", "image": [],"color":"#C63D59","colorTitre":"#dc8d32"})
+        setData([])
         setTimeout(() => {
-          setData(dataReceive) 
-        }, 500);  
-       
+          setData(dataReceive)
+        }, 500);
+
       }else if (select === "Formation"){
-        dataReceive.push({"titre": "Titre","contenu": "", "video": "coller url video","color":"#C63D59","colorTitre":"#dc8d32"})   
-        setData([]) 
+        dataReceive.push({"titre": "Titre","contenu": "", "video": "coller url video","color":"#C63D59","colorTitre":"#dc8d32"})
+        setData([])
         setTimeout(() => {
-          setData(dataReceive) 
+          setData(dataReceive)
         }, 500);
       }
       else if (select === "ImagesDeroulanteAccueil"){
-        dataReceive.push({"titre": "Titre","active": "true","lienPage": "lien page", "image": [],"color":"#C63D59","colorTextButton":"#FFFFFF","colorText":"#FFFFFF","colorBackgroundButton":"#3d1e7b"})   
-        setData([]) 
+        dataReceive.push({"titre": "Titre","active": "true","lienPage": "lien page", "image": [],"color":"#C63D59","colorTextButton":"#FFFFFF","colorText":"#FFFFFF","colorBackgroundButton":"#3d1e7b"})
+        setData([])
         setTimeout(() => {
-          setData(dataReceive) 
+          setData(dataReceive)
         }, 500);
       }
     }
@@ -161,13 +161,13 @@ export default function Administration(props) {
       dataReceive.splice(index,1);
       setData([])
         setTimeout(() => {
-          setData(dataReceive) 
+          setData(dataReceive)
         }, 500);
     }
 
     function modification(index, data){
       dataReceive[index] = {...data,color:"#3DA9C6"};
-     
+
       setData([])
         setTimeout(() => {
           setData(dataReceive);
@@ -215,6 +215,7 @@ export default function Administration(props) {
               <option value="Entraineurs">Entraineurs</option>
               <option value="Historique">Historique</option>
               <option value="Vacances">Vacances</option>
+              <option value="VacancesHalloween">VacancesHalloween</option>
               <option value="Formation">Formation</option>
               <option value="Mecenat">Mecenat</option>
               <option value="ImagesDeroulanteAccueil">Bandeau Accueil</option>
@@ -298,7 +299,7 @@ export default function Administration(props) {
                     <p></p>
                     <Typography variant="body2" color="text.secondary">
                       <p>Tél. : {element.telephone}</p>
-                      <p>E-mail : {element.mail} </p>       
+                      <p>E-mail : {element.mail} </p>
                     </Typography>
                   </CardContent>
                   </Box>
@@ -310,7 +311,7 @@ export default function Administration(props) {
       </>
       )
     }
-    else if(select === "Actualites" || select === "Historique" || select === "Vacances" || select === "Formation" || select === "Mecenat" ){
+    else if(select === "Actualites" || select === "Historique" || select === "Vacances" || select === "VacancesHalloween"|| select === "Formation" || select === "Mecenat" ){
       return (
         <>
       <a href="/api/auth/logout"><Row style={{display:"flex", justifyContent:"center"}}><Button style={{fontSize:"40px", textAlign:"center", marginTop:"20px", backgroundColor:"orange", borderRadius:"20px"}}>Déconnexion</Button></Row></a>
@@ -322,6 +323,7 @@ export default function Administration(props) {
               <option value="Entraineurs">Entraineurs</option>
               <option value="Historique">Historique</option>
               <option value="Vacances">Vacances</option>
+              <option value="VacancesHalloween">VacancesHalloween</option>
               <option value="Formation">Formation</option>
               <option value="Mecenat">Mecenat</option>
               <option value="ImagesDeroulanteAccueil">Bandeau Accueil</option>
@@ -433,6 +435,7 @@ export default function Administration(props) {
               <option value="Entraineurs">Entraineurs</option>
               <option value="Historique">Historique</option>
               <option value="Vacances">Vacances</option>
+              <option value="VacancesHalloween">VacancesHalloween</option>
               <option value="Formation">Formation</option>
               <option value="Mecenat">Mecenat</option>
               <option value="ImagesDeroulanteAccueil">Bandeau Accueil</option>
@@ -444,7 +447,7 @@ export default function Administration(props) {
             Enregistrer toutes les modifications dans la base de donnée
           </Button>
         </Box>
-       
+
         {messageValidation}
       </div>
       {dataReceive.map((element, index) => {
@@ -500,7 +503,7 @@ export default function Administration(props) {
                 </Box>
                 </Col>
               </Row>
-          
+
         </Box>
         );
       })}
@@ -518,6 +521,7 @@ export default function Administration(props) {
               <option value="Entraineurs">Entraineurs</option>
               <option value="Historique">Historique</option>
               <option value="Vacances">Vacances</option>
+              <option value="VacancesHalloween">VacancesHalloween</option>
               <option value="Formation">Formation</option>
               <option value="Mecenat">Mecenat</option>
               <option value="ImagesDeroulanteAccueil">Bandeau Accueil</option>
