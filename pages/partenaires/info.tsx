@@ -1,55 +1,79 @@
-import { Box, CardContent, Container, ImageList, ImageListItem, Typography } from "@mui/material";
-import { Button } from "react-bootstrap";
-import React from "react";
+import {Box, CardContent, Container, ImageList, ImageListItem, Typography} from "@mui/material";
+import {Button} from "react-bootstrap";
+import React, {useEffect, useState} from "react";
 import {Layout} from "../../components/Layout";
 import Head from "next/head";
-export default function info() {
-  const itemData = [
-    "../../sponsors/CD51.png",
-    "../../sponsors/LogoVilledeReims.jpg",
-    "../../sponsors/liguegdestbasket.png",
-    "../../sponsors/ffbb.png",
-    "../../sponsors/logocomitemarne.png"
-  ]
-  const itemDataPrive = [
-    "../../sponsors/NouveauLogoNorauto.jpg",
-    "../../sponsors/LOGOMAISONKIKEL.jpg",
-    "../../sponsors/logocarrefour.png",
-    "../../sponsors/logoBuffaloGrill.png",
-    "../../sponsors/Charpentiersdumassif.png",
-    "../../sponsors/logoCIC.jpg",
-    "../../sponsors/TAYLOR.jpg",
-    "../../sponsors/JSRDRUM.jpg"
-  ]
-  return (
-    <Layout>
-        <Head>
-        <title>Partenaires</title>
-        <meta name="description" content="Les partenaires du RUCB basket"/>
-        <meta name="google-site-verification" content="g-JktWG1_hWPLXMEXwsoblRJTiPvWl8QbmLFIvt_8aU" />
-    </Head>
-         <div style={{padding:"20px",marginTop:"40px" ,display:"flex",justifyContent:"center",flexDirection:"column"}}>
-          <Box className="boxPartenaires">
-          <Button id="badge">Les partenaires institutionnels</Button>
-            <div className="containerImgPartenaires">
-              {itemData.map((element,index)=>{
-                return <img alt="imagePartenairesRUCB" className="imgBoxPartenaires" key={index} style={{marginRight:"20px"}} src={`${element}`}/>
-              })}
-            </div>
-          </Box>
-          
-          <Box className="boxPartenaires">
-          <Button id="badge">Les partenaires privés</Button>
+import client from "../../src/client";
+import urlFor from "../../src/fonctions/urlImageSanity";
 
-            <div className="containerImgPartenaires">
-              {itemDataPrive.map((element,index)=>{
-                return <img alt="imagePartenairesRUCB" className="imgBoxPartenaires" key={index} style={{marginRight:"20px",marginBottom:"20px"}} src={`${element}`}/>
-              })}
+export default function info() {
+
+    const [partenairePrivee, setPartenairePrivee] = useState<any>([]);
+    const [partenairePublic, setPartenairePublic] = useState<any>([]);
+
+    useEffect(() => {
+        async function loadData() {
+            const partenairesPublic = await client.fetch(
+                `*[_type == "partenairesPublic"]`
+            )
+            setPartenairePublic(partenairesPublic.map((partenaire: any) => {
+                return {
+                    titre: partenaire.titre,
+                    image: urlFor(partenaire.image).url()
+                }
+            }))
+
+            const partenairesPrives = await client.fetch(
+                `*[_type == "partenairesPrives"]`
+            )
+            setPartenairePrivee(partenairesPrives.map((partenaire: any) => {
+                return {
+                    titre: partenaire.titre,
+                    image: urlFor(partenaire.image).url()
+                }
+            }))
+        }
+
+        loadData();
+    }, []);
+
+    return (
+        <Layout>
+            <Head>
+                <title>Partenaires</title>
+                <meta name="description" content="Les partenaires du RUCB basket"/>
+                <meta name="google-site-verification" content="g-JktWG1_hWPLXMEXwsoblRJTiPvWl8QbmLFIvt_8aU"/>
+            </Head>
+            <div style={{
+                padding: "20px",
+                marginTop: "40px",
+                display: "flex",
+                justifyContent: "center",
+                flexDirection: "column"
+            }}>
+                <Box className="boxPartenaires">
+                    <Button id="badge">Les partenaires institutionnels</Button>
+                    <div className="containerImgPartenaires">
+                        {partenairePublic.map((element: any, index: number) => {
+                            return <img alt="imagePartenairesRUCB" className="imgBoxPartenaires" key={index}
+                                        style={{marginRight: "20px"}} src={`${element.image}`}/>
+                        })}
+                    </div>
+                </Box>
+
+                <Box className="boxPartenaires">
+                    <Button id="badge">Les partenaires privés</Button>
+
+                    <div className="containerImgPartenaires">
+                        {partenairePrivee.map((element: any, index: number) => {
+                            return <img alt="imagePartenairesRUCB" className="imgBoxPartenaires" key={index}
+                                        style={{marginRight: "20px", marginBottom: "20px"}} src={`${element.image}`}/>
+                        })}
+                    </div>
+                </Box>
+
             </div>
-          </Box>
-          
-      </div>
-     
-    </Layout>
-  );
+
+        </Layout>
+    );
 }

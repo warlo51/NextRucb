@@ -3,18 +3,19 @@ import { Button } from "react-bootstrap";
 import React, { useEffect, useState } from "react";
 import {Layout} from "../components/Layout";
 import Head from "next/head";
+import client from "../src/client";
+import {PortableText} from "@portabletext/react";
 
 export default function Arbitrage() {
   const [articlesJSON, setArticlesJSON] = useState<any>([]);
 
   useEffect(()=>{
     async function loadData(){
-      const dataDB =  await fetch("/api/loadData",{
-       method: "POST",
-       body: "Formation",
-     }).then((result: any) => result.json());
-     
-     setArticlesJSON(dataDB.data)
+        const formations = await client.fetch(
+            `*[_type == "formations"]`
+        )
+        setArticlesJSON(formations);
+
    }
    loadData();
   },[]);
@@ -29,16 +30,16 @@ export default function Arbitrage() {
         {articlesJSON.length !== 0 ? articlesJSON.map((article: any, index: number) =>{
               return (
                 <Box key={index} className="boxFormation">
-                  <Button id="badge" style={{backgroundColor:`${article.colorTitre}`}}>{article.titre}</Button>
+                  <Button id="badge" style={{backgroundColor:`${article.colorTitre.hex}`}}>{article.titre}</Button>
                   <div className="divRegleBasket">
                     <CardContent>
                       <p></p>
-                      <Typography variant="body2" style={{whiteSpace:"pre-wrap"}} color="text.secondary">          
-                        {article.contenu}
-                      </Typography>
+                        <PortableText
+                            value={article.description[0]}
+                        />
                     </CardContent>
                     <div className="embed-responsive embed-responsive-16by9">
-                      <iframe className="videoRegleBasket" src={article.video} ></iframe>
+                      <iframe className="videoRegleBasket" src={article.linkVideo} ></iframe>
                      </div>
                   </div>
                 </Box>

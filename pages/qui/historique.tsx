@@ -4,22 +4,22 @@ import { Box, Typography } from "@mui/material";
 import { Button } from "react-bootstrap";
 import { Layout } from '../../components/Layout';
 import Head from 'next/head';
+import client from "../../src/client";
+import {PortableText} from "@portabletext/react";
 
 export default function Historique(){
   const [articlesJSON, setArticlesJSON] = React.useState<any>([]);
 
   React.useEffect(()=>{
     async function loadData(){
-      const dataDB =  await fetch("/api/loadData",{
-       method: "POST",
-       body: "Historique",
-     }).then((result: any) => result.json());
-     
-     setArticlesJSON(dataDB.data)
+        const historique = await client.fetch(
+            `*[_type == "historiqueRucb"]`
+        )
+        setArticlesJSON(historique);
    }
    loadData();
   },[]);
-  
+
   return (
        <Layout>
         <Head>
@@ -32,11 +32,11 @@ export default function Historique(){
               return (
                 <Box key={index} className="boxHistoriquePage">
                   <CardContent>
-                  <Button id="badge" style={{backgroundColor:`${article.colorTitre}`}}>{article.titre}</Button>
+                  <Button id="badge" style={{backgroundColor:`${article.colorTitre.hex}`}}>{article.titre}</Button>
                     <p></p>
-                    <Typography variant="body2" style={{whiteSpace:"pre-wrap"}} color="text.secondary">          
-                      {article.contenu}
-                    </Typography>
+                      <PortableText
+                          value={article.description}
+                      />
                   </CardContent>
                 </Box>
               );})}

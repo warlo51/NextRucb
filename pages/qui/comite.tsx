@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { Layout } from "../../components/Layout";
 import { getDatabase } from "../../src/database/database";
+import client from "../../src/client";
 
 
 export default function Comite({fiches}: any){
@@ -17,12 +18,10 @@ export default function Comite({fiches}: any){
     },[]);
   useEffect(()=>{
     async function loadData(){
-      const dataDB =  await fetch("/api/loadData",{
-       method: "POST",
-       body: "Comite",
-     }).then((result: any) => result.json());
-     
-     setFichesJSON(dataDB.data)
+        const comite = await client.fetch(
+            `*[_type == "comiteDirecteur"]`
+        )
+        setFichesJSON(comite);
    }
    loadData();
   },[]);
@@ -33,21 +32,21 @@ export default function Comite({fiches}: any){
         <meta name="description" content="Le comité directeur du RUCB basket"/>
         <meta name="google-site-verification" content="g-JktWG1_hWPLXMEXwsoblRJTiPvWl8QbmLFIvt_8aU" />
     </Head>
-        <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}> 
+        <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
         {fichesJSON.map((fiche: any) =>{
               return (
               <Box className="BoxComite">
                 <CardContent >
-                {tailleEcran < 333 ? <Button id="badge" style={{backgroundColor:`${fiche.colorTitre}`, width:"250px"}}>{fiche.nom}</Button> : <Button id="badge" style={{backgroundColor:`${fiche.colorTitre}`, width:"400px"}}>{fiche.nom}</Button>}
+                {tailleEcran < 333 ? <Button id="badge" style={{backgroundColor:`${fiche.colorTitre.hex}`, width:"250px"}}>{fiche.nom}</Button> : <Button id="badge" style={{backgroundColor:`${fiche.colorTitre.hex}`, width:"400px"}}>{fiche.nom}</Button>}
                   <p></p>
                   <Typography variant="body2" color="text.secondary">
-                    <p>Tél. : {fiche.telephone}</p>
-                    <p>E-mail : {fiche.mail} </p>       
+                    <p>Tél. : {fiche.phone}</p>
+                    <p>E-mail : {fiche.email} </p>
                   </Typography>
                 </CardContent>
               </Box>
               );
-        })}; 
+        })};
         </div>
         </Layout>
   );

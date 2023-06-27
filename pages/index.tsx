@@ -1,5 +1,5 @@
 import type { GetServerSideProps, NextPage } from 'next'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Col, Container, Row } from 'react-bootstrap'
 import Actualite from '../components/Actualite'
 import BandeauIMG from '../components/BandeauIMG'
@@ -9,46 +9,60 @@ import Horaires from '../components/Horaires'
 import { Layout } from '../components/Layout'
 import Partenaires from '../components/Partenaires'
 import Sponsors from '../components/Sponsors'
+import urlFor from "../src/fonctions/urlImageSanity";
+import client from "../src/client";
 
 
 const Home: NextPage = () => {
 
   const [tailleEcran, setTailleEcran] = useState(0);
   const [data, setData] = useState();
+  const [dataArticles, setDataArticles] = useState([]);
 
     useEffect(()=>{
         setTailleEcran(window.innerWidth);
         async function loadData(){
-          const dataFFBB =  await fetch("/api/loadFFBB",{
-           method: "POST",
-         }).then((result: any) => result.json());
+            const actus = await client.fetch(
+                `*[_type == "imagesPageAccueil" && active == "Oui"]`
+            )
+            setDataArticles(actus.map((actu: any) => {
+                return {
+                    ...actu,
+                    image: actu.image ? urlFor(actu.image).url() : ""
+                }
+            }))
+        }
+        loadData();
 
-         setData(dataFFBB.data)
-       }
-       loadData();
+        async function loadDataFFBB(){
+            const dataFFBB =  await fetch("/api/loadFFBB",{
+                method: "POST",
+            }).then((result: any) => result.json());
+
+            setData(dataFFBB.data)
+        }
+        loadDataFFBB();
     },[]);
   return (
     <Layout >
     <BandeauIMG/>
    <Container className="containerActu">
-   {tailleEcran > 780 ? <></> : <><Row>
-        <a style={{color:"black"}} href="/actus/vacanceHalloween">
-        <div className="divActualite">
-        <Button id="badge">Temps mort</Button>
-        <h5>Découvrez l'article</h5>
-        </div>
-        </a>
-    </Row>
-    <br></br>
-    <Row>
-        <a style={{color:"black"}} href="/actus/actuRUCB">
-        <div className="divActualite">
-        <Button id="badge">Les actualités du RUCB basket</Button>
-        <h5>Découvrez les actualités</h5>
-        </div>
-        </a>
-    </Row>
-    </>}
+   {tailleEcran > 780 ? <></> :
+       <>
+           {dataArticles.map((article: any, index:number) =>{
+               return (
+                   <Row key={index}>
+                       <a style={{color:"black"}} href={article?.linkArticle?._ref ? `/actus/${article?.linkArticle?._ref}` : "/actus"}>
+                           <div className="divActualite">
+                               <Button id="badge">{article.titre}</Button>
+                               <h5>Découvrez l'article</h5>
+                           </div>
+                       </a>
+                   </Row>
+               );
+           })}
+       </>
+   }
     <Row>
       <Col xs={12} sm={4} >
         <Horaires/>

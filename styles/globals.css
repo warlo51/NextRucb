@@ -2,10 +2,10 @@ body{
   margin: 0;
   background-color: #e8e8e8;
 }
-a:link 
-{ 
- text-decoration:none; 
-} 
+a:link
+{
+ text-decoration:none;
+}
 #__next{
   background-color: #fff;
 }
@@ -56,12 +56,12 @@ a:link
   color:white;
 }
 #basic-nav-dropdown-black{
-  color:black; 
+  color:black;
 }
 
 #linkDropdown{
   color: black;
-  margin-left: 0; 
+  margin-left: 0;
 }
 .dropdown-menu.show {
   margin-left: 100px;
@@ -116,12 +116,9 @@ z-index: 2;
 
 .carousel .slide{
   height: 550px;
-  
+
 }
-.carousel div img{
-  opacity: 0.7;
-  
-}
+
 
 .carousel .slide .title{
   transition: all .7s ease-in-out;
@@ -139,6 +136,9 @@ z-index: 2;
   text-align: left;
 }
 
+#imageSlide{
+  height: 550px;
+}
 #buttonSlide{
   transition: all .7s ease-in-out;
   position: absolute;
@@ -271,7 +271,7 @@ z-index: 2;
   height:700px;
   overflow-y:scroll;
 }
-.cardFfbb { 
+.cardFfbb {
   height: 300px;
   margin-bottom: 10px;
 }
@@ -282,7 +282,7 @@ z-index: 2;
 .cardHeaderFfbb{
   color: black ;
 }
-.cardFfbb img{ 
+.cardFfbb img{
   height: 150px;
   width: 250px;
 }
@@ -308,6 +308,15 @@ z-index: 2;
   border:solid #3d1e7b;
   box-shadow: 5px 5px 5px #3d1e7b;
   margin-top: 70px;
+  border-radius: 20px;
+  padding: 20px;
+  background-color: #fff;
+}
+
+.boxActuDetail{
+  border:solid #3d1e7b;
+  box-shadow: 5px 5px 5px #3d1e7b;
+  margin-top: 80px;
   border-radius: 20px;
   padding: 20px;
   background-color: #fff;
@@ -417,7 +426,7 @@ z-index: 2;
  @media screen and (max-width: 1024px) {
   .navbar>.container{
     padding-left: 80px;
-    
+
     }
     .divFfbb{
       height:1390px ;
@@ -465,9 +474,9 @@ z-index: 2;
     display: none;
   }
   #colHomeCentre #badge{
-    margin-left: -60px; 
+    margin-left: -60px;
   }
-  
+
   #colHomeCentre{
     padding-left: 0;
     padding-right: 0;
@@ -492,7 +501,7 @@ z-index: 2;
   .divHoraires img:hover {
     transform: scale(1);
   }
- 
+
 }
 @media screen and (max-width: 990px) {
   #badge{
@@ -508,7 +517,7 @@ z-index: 2;
   .NavBar.fixed{
     height: 400px;
   }
- 
+
   .Bandeau{
     display: none;
   }
@@ -555,10 +564,10 @@ z-index: 2;
     height: 600px;
   }
   #colHomeCentre #badge{
-    margin-left: 0px; 
+    margin-left: 0px;
   }
   .divHoraires #badge{
-    margin-left: 60px; 
+    margin-left: 60px;
   }
   #colHomeCentre{
     padding-top: 0px;
@@ -672,7 +681,7 @@ z-index: 2;
 
 @media screen and (max-width: 320px) {
   .divHoraires #badge{
-    margin-left: 30px; 
+    margin-left: 30px;
   }
 
   .divHoraires{
