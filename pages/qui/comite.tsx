@@ -1,10 +1,8 @@
 import { Box, CardContent, Typography } from "@mui/material";
-import { GetServerSideProps } from "next";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { Layout } from "../../components/Layout";
-import { getDatabase } from "../../src/database/database";
 import client from "../../src/client";
 
 

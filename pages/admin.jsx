@@ -112,7 +112,6 @@ export default function Administration(props) {
       setImage(arrayImages);
       handleClick(index)
     }
-
     function convertBase64(file){
       return new Promise((resolve, reject) => {
         const fileReader = new FileReader();
