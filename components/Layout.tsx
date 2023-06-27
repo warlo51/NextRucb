@@ -7,11 +7,11 @@ import Footer from "./Footer";
 export const Layout: React.FC<any> = ({ children }) => {
 
   const [currentLocation,setCurrentLocation] = useState("init");
-  
+
   React.useEffect(()=>{
     window.location.href ? setCurrentLocation(window.location.href.split("/")[3]) : setCurrentLocation("null");
   },[])
-console.log("currentLocation", currentLocation.length)
+
 if(currentLocation.length === 0){
   return (
     <>
@@ -31,5 +31,5 @@ if(currentLocation.length === 0){
     </>
   );
 }
-  
+
 };

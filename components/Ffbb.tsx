@@ -15,14 +15,12 @@ export default function Ffbb(props: any) {
                 <Button id="badge">Actu FFBB</Button>
                 <div className="contentFfbb">
                 {data.map((element => {
-                    console.log("element",element.description)
                     // const description = element.description.replace('<img href="',"").replace('" />',"").split(".jpg");
                     // const image= description[0];
                     // const texte = description[1];
-                    const texte = element.description.split("/>");
-                    const image = texte[0].split('"')[1]
-                    console.log('image', image)
-                    
+                    const texte = element.description?.split("/>");
+                    const image = texte ? texte[0].split('"')[1] : ""
+
                     return <div>
                         <Card className="cardFfbb">
                         <a className="cardHeaderFfbb"  href={element.link}>
@@ -40,5 +38,5 @@ export default function Ffbb(props: any) {
                 </div>
             </div>
         );
-    
+
 }
