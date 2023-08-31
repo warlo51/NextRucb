@@ -10,6 +10,12 @@ a:link
   background-color: #fff;
 }
 
+.logo{
+  display: none;
+}
+.logo.fixed{
+  display: block;
+}
 #badge{
   width: 250px;
   height: 40px;
@@ -20,7 +26,6 @@ a:link
   background-color: #dc8d32;
 }
 #colBox{
-  text-align: center;
   align-self: center;
 }
 /* HEADER */
@@ -123,7 +128,7 @@ z-index: 2;
 .carousel .slide .title{
   transition: all .7s ease-in-out;
   position: absolute;
-  bottom: 90px;
+  bottom: 40px;
   height: 80px;
   left: 50%;
   margin-left: -45%;
@@ -143,7 +148,7 @@ z-index: 2;
   transition: all .7s ease-in-out;
   position: absolute;
   height: 40px;
-  bottom: 60px;
+  bottom: 20px;
   left: 50%;
   margin-left: -45%;
   border-radius: 10px;
@@ -211,7 +216,7 @@ z-index: 2;
 }
 /* divHoraire */
 #colHomeCentre{
-
+padding-top: 100px;
 }
 .divHoraires{
   display: flex;
@@ -263,8 +268,7 @@ z-index: 2;
   background-color: #fff;
   box-shadow: 5px 5px 5px #3d1e7b;
   padding: 40px;
-  height: 425px;
-
+  height: 202px;
   border-radius: 20px;
 }
 .contentFfbb{
@@ -550,9 +554,6 @@ z-index: 2;
   .cardFfbb img{
     width: 180px;
     height: 100px;
-  }
-  .divSponsors{
-    height: 400px;
   }
 }
 @media screen and (max-width: 425px) {

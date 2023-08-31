@@ -69,9 +69,9 @@ const Home: NextPage = () => {
         <Equipes/>
       </Col>
       <Col xs={12} sm={4} id="colHomeCentre">
+          <Row id="rowActu"><Partenaires/></Row>
         <Row id="rowActu"><Actualite/></Row>
         <Row id="rowActu"><Sponsors/></Row>
-        <Row id="rowActu"><Partenaires/></Row>
       </Col>
       <Col xs={12} sm={4}>
         {data !== undefined ? <Row id="rowActu"><Ffbb data={data} /></Row> : <></>}

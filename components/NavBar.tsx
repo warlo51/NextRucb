@@ -26,7 +26,7 @@ export default function NavBar(props: any) {
             <Nav id="nav" className={fix ? "NavBar fixed" : "NavBar"}>
               <Nav.Link id="link" href="/" style={{color:`${props.colorText}`}}>Accueil</Nav.Link>
               <Nav.Link id="link" href="/actus" style={{color:`${props.colorText}`}}>Actualités</Nav.Link>
-              <Nav.Link id="link" href="" ><img alt="logoRUCB" src="../logoruc.png"/></Nav.Link>
+              <Nav.Link id="link" href="" ><img alt="logoRUCB" src="../logoruc.png" className={fix ? "logo fixed" : "logo"}/></Nav.Link>
               <NavDropdown title="Qui Sommes Nous" id="basic-nav-dropdown" >
                 <NavDropdown.Item id="linkDropdown" href="/qui/historique" >Histoire Du RUC</NavDropdown.Item>
                 <NavDropdown.Item id="linkDropdown" href="/formation" >Formation</NavDropdown.Item>
