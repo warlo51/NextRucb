@@ -19,6 +19,7 @@ export default function info() {
             setPartenairePublic(partenairesPublic.map((partenaire: any) => {
                 return {
                     titre: partenaire.titre,
+                    site: partenaire.site,
                     image: urlFor(partenaire.image).url()
                 }
             }))
@@ -29,6 +30,7 @@ export default function info() {
             setPartenairePrivee(partenairesPrives.map((partenaire: any) => {
                 return {
                     titre: partenaire.titre,
+                    site: partenaire.site,
                     image: urlFor(partenaire.image).url()
                 }
             }))
@@ -66,8 +68,8 @@ export default function info() {
 
                     <div className="containerImgPartenaires">
                         {partenairePrivee.map((element: any, index: number) => {
-                            return <img alt="imagePartenairesRUCB" className="imgBoxPartenaires" key={index}
-                                        style={{marginRight: "20px", marginBottom: "20px"}} src={`${element.image}`}/>
+                            return <a href={`${element.site}`} target={"_blank"}><img alt="imagePartenairesRUCB" className="imgBoxPartenaires" key={index}
+                                           style={{marginRight: "20px", marginBottom: "20px"}} src={`${element.image}`}/></a>
                         })}
                     </div>
                 </Box>

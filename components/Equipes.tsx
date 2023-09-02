@@ -13,6 +13,7 @@ export default function Equipes() {
                 <tbody>
                 <tr><td>U7</td></tr>
                 <tr><td>U9</td></tr>
+                <tr><td>U11 (dont 1 féminine)</td></tr>
                 <tr><td>U11 (2 équipes)</td></tr>
                 </tbody>
                 <thead>
@@ -21,7 +22,7 @@ export default function Equipes() {
                 </tr>
                 </thead>
                 <tbody>
-                <tr><td>U11</td></tr>
+                <tr><td>U13 (2 équipes)</td></tr>
                 <tr><td>U15</td></tr>
                 </tbody>
                 <thead>

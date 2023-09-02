@@ -131,7 +131,7 @@ z-index: 2;
   bottom: 40px;
   height: 80px;
   left: 50%;
-  margin-left: -45%;
+  margin-left: -48%;
   width: 50%;
   border-radius: 10px;
   background: transparent;
@@ -150,7 +150,7 @@ z-index: 2;
   height: 40px;
   bottom: 20px;
   left: 50%;
-  margin-left: -45%;
+  margin-left: -47%;
   border-radius: 10px;
   background:#3d1e7b;
   color: #fff;
@@ -245,7 +245,7 @@ padding-top: 100px;
 .divFfbb{
   flex-direction: column;
   border:solid #3d1e7b;
-  height: 888px;
+  height: 925px;
   background-color: #fff;
   box-shadow: 5px 5px 5px #3d1e7b;
   padding: 40px;
@@ -258,7 +258,7 @@ padding-top: 100px;
   background-color: #fff;
   box-shadow: 5px 5px 5px #3d1e7b;
   padding: 40px;
-  height: 500px;
+  height: 550px;
   margin-top: 30px;
   border-radius: 20px;
 }
@@ -375,10 +375,6 @@ padding-top: 100px;
   color: #3d1e7b;
   text-align: center;
   margin-bottom: 20px;
-}
-.imgBoxPartenaires{
-  height:200px;
-  width:300px;
 }
 .containerImgPartenaires{
   text-align: center;
