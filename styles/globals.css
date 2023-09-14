@@ -94,7 +94,7 @@ a:link
   top:0;
   background: linear-gradient(to bottom right, #3d1e7b, orange);
   position: fixed;
-z-index: 2;
+z-index: 3;
 }
 .footer{
   background: linear-gradient(to bottom right, #3d1e7b, orange);
@@ -103,67 +103,117 @@ z-index: 2;
   width: 100%;
   bottom: 0;
 }
-/* Bandeau */
-.Bandeau{
+.sectionBandeau{
+  height: 700px;
+  border:solid #3d1e7b;
+  border-radius: 20px;
+  position: relative;
+  box-shadow: 5px 5px 5px #3d1e7b;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+.bandeauBottom{
+  background-color: #3d1e7b;
+  bottom:0;
+  position: absolute;
+  height: 50px;
   width: 100%;
-  height: 500px;
-  margin-top: -132px;
-  top:50px;
+  border-radius: 0px 0px 15px 15px;
+  opacity:0;
+  cursor:pointer;
+}
+.bandeau{
+  width: 100%;
+  height: 700px;
+  position: relative;
+  overflow: hidden;
+  cursor:pointer;
+}
+/* Bandeau */
+.slide{
+  height: 700px;
+  position: absolute;
+  opacity: 0;
+  text-align: center;
+}
+.slide > img {
+  height: 700px;
+  display: block;
+  width: 100%;
+  object-position: center;
+  text-align: center;
+}
+.slideTest{
+  opacity: 1;
+  text-align: center;
+}
+.titleBandeau{
+  font-size: 30px;
+  margin-left: 20px;
+}
+.bandeauBottomActive{
+  display: flex;
+  background-color: #3d1e7b;
+  bottom:0;
+  position: absolute;
+  height: 50px;
+  width: 100%;
+  border-radius: 0px 0px 15px 15px;
+  opacity:1;
+  cursor:pointer;
+  z-index:2;
+}
+.buttonSlide{
+  right: 0;
+  margin-top: 8px;
+  margin-right: 8px;
+  cursor:pointer;
+}
+.slideTest > img{
+ height: 650px;
+  width: 100%;
+  border-radius: 20px 20px 0 0;
+  object-position: center;
+}
+
+.bandeau > ul {
+  height: 700px;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+.bandeau-button{
+  position: absolute;
+  background: none;
+  height: 100%;
+  border: none;
+  font-size: 7rem;
+  top: 50%;
+  width: 50px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 1;
+}
+
+.bandeau-button:hover,.bandeau-button:focus {
+  color: white;
+  background-color: #3d1e7b;
+}
+
+.bandeau-button.prev {
+  border-radius: 20px 0 0 20px;
+  left: 0;
+}
+
+.bandeau-button.next {
+  border-radius: 0 20px 20px 0;
   right: 0;
 }
 
 .thumbs-wrapper{
   display: none;
 }
-.carousel .carousel-status{
-  display: none;
-}
 
-.carousel .slide{
-  height: 550px;
-
-}
-
-
-.carousel .slide .title{
-  transition: all .7s ease-in-out;
-  position: absolute;
-  bottom: 40px;
-  height: 80px;
-  left: 50%;
-  margin-left: -48%;
-  width: 50%;
-  border-radius: 10px;
-  background: transparent;
-  color: #fff;
-  padding: 10px;
-  font-size: 50px;
-  text-align: left;
-}
-
-#imageSlide{
-  height: 550px;
-}
-#buttonSlide{
-  transition: all .7s ease-in-out;
-  position: absolute;
-  height: 40px;
-  bottom: 20px;
-  left: 50%;
-  margin-left: -47%;
-  border-radius: 10px;
-  background:#3d1e7b;
-  color: #fff;
-  border: solid 2px;
-  border-color: white;
-  padding-left: 10px;
-  padding-right: 10px;
-  text-align: left;
-  animation-duration: .8s;
-   animation-name: clignoter;
-   animation-iteration-count: infinite;
-   transition: none;
-}
 @keyframes clignoter {
   0%   { opacity:1; }
   40%   {opacity:0; }
@@ -208,6 +258,7 @@ z-index: 2;
 }
 .containerActu{
   padding:40px;
+  margin-top:30px;
   text-align:center;
 }
 #rowActu{
@@ -216,7 +267,7 @@ z-index: 2;
 }
 /* divHoraire */
 #colHomeCentre{
-padding-top: 100px;
+padding-top: 20px;
 }
 .divHoraires{
   display: flex;

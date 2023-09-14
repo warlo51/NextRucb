@@ -11,6 +11,7 @@ import Partenaires from '../components/Partenaires'
 import Sponsors from '../components/Sponsors'
 import urlFor from "../src/fonctions/urlImageSanity";
 import client from "../src/client";
+import Temoignages from "../components/Temoignages";
 
 
 const Home: NextPage = () => {
@@ -69,6 +70,7 @@ const Home: NextPage = () => {
         <Equipes/>
       </Col>
       <Col xs={12} sm={4} id="colHomeCentre">
+          <Row id="rowActu"><Temoignages/></Row>
           <Row id="rowActu"><Partenaires/></Row>
         <Row id="rowActu"><Actualite/></Row>
         <Row id="rowActu"><Sponsors/></Row>
