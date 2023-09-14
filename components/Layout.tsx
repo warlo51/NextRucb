@@ -16,7 +16,7 @@ if(currentLocation.length === 0){
   return (
     <>
       <Header/>
-      <NavBar colorText="white"/>
+      <NavBar colorText="black"/>
       {children}
       <Footer/>
     </>
