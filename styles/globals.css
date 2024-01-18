@@ -103,8 +103,13 @@ z-index: 3;
   width: 100%;
   bottom: 0;
 }
+.containerSectionBandeau{
+  display: flex;
+  justify-content: center;
+}
 .sectionBandeau{
   height: 700px;
+  width: 70%;
   border:solid #3d1e7b;
   border-radius: 20px;
   position: relative;
@@ -137,9 +142,9 @@ z-index: 3;
   text-align: center;
 }
 .slide > img {
-  height: 700px;
+  height: 200px;
   display: block;
-  width: 100%;
+  width: 80%;
   object-position: center;
   text-align: center;
 }

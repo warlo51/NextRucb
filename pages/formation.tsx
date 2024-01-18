@@ -30,7 +30,7 @@ export default function Arbitrage() {
         {articlesJSON.length !== 0 ? articlesJSON.map((article: any, index: number) =>{
               return (
                 <Box key={index} className="boxFormation">
-                  <Button id="badge" style={{backgroundColor:`${article.colorTitre.hex}`}}>{article.titre}</Button>
+                  <Button id="badge" style={{backgroundColor:`${article.colorTitre.value}`}}>{article.titre}</Button>
                   <div className="divRegleBasket">
                     <CardContent>
                       <p></p>
