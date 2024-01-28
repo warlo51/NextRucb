@@ -21,7 +21,7 @@ export default function Ffbb(props: any) {
                     const texte = element.description?.split("/>");
                     const image = texte ? texte[0].split('"')[1] : ""
 
-                    return <div>
+                    return <div key={element.title}>
                         <Card className="cardFfbb">
                         <a className="cardHeaderFfbb"  href={element.link}>
                             <Card.Header>{element.title}</Card.Header>

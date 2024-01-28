@@ -29,7 +29,6 @@ export default function ActuRUCB() {
         loadData();
     },[]);
 
-    console.log("toto", articlesJSON)
     return (
         <Layout>
             <Head>

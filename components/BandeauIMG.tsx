@@ -68,6 +68,7 @@ export default function BandeauIMG() {
                       return (
                           <a
                               href={article?.linkArticle?._ref ? `/actus/${article?.linkArticle?._ref}` : "/actus"}
+                              key={article._id}
                           >
                               <li className={indexImage===index ? "slideTest" : "slide"} key={index}>
                               <img src={article.image} alt=""/>
