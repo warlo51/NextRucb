@@ -32,7 +32,7 @@ export default function Historique(){
               return (
                 <Box key={index} className="boxHistoriquePage">
                   <CardContent>
-                  <Button id="badge" style={{backgroundColor:`${article.colorTitre.hex}`}}>{article.titre}</Button>
+                  <Button id="badge" style={{backgroundColor:`${article.colorTitre.value}`}}>{article.titre}</Button>
                     <p></p>
                       <PortableText
                           value={article.description}

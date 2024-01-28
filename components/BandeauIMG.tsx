@@ -59,7 +59,7 @@ export default function BandeauIMG() {
     }
 
   return(
-      <section className="sectionBandeau">
+      <div className="containerSectionBandeau"><section className="sectionBandeau">
           <button className="bandeau-button prev" onClick={previousImage}><ArrowBackIosIcon/></button>
           <button className="bandeau-button next" onClick={nextImage}><ArrowForwardIosIcon/></button>
           <div className="bandeau">
@@ -79,19 +79,19 @@ export default function BandeauIMG() {
           {articlesJSON.map((article: any, index:number) =>{
               return (
                   <div className={indexImage===index ? "bandeauBottomActive" : "bandeauBottom"} key={index}>
-                      <p className="titleBandeau" style={{color:`${article.colorTexte.hex}`}}>{article.titre}</p>
+                      <p className="titleBandeau" style={{color:`${article.colorTexte.value}`}}>{article.titre}</p>
                       <Button
                           className="buttonSlide"
                           style={{
-                              color:`${article.colorTextButton.hex}`,
+                              color:`${article.colorTextButton.value}`,
                               borderRadius: "50px",
                               position: "absolute",
-                              backgroundColor:`${article.colorBackgroundButton.hex}`}}
+                              backgroundColor:`${article.colorBackgroundButton.value}`}}
                           href={article?.linkArticle?._ref ? `/actus/${article?.linkArticle?._ref}` : "/actus"}
                       >
                           Cliquez ici
                       </Button>
                   </div>);
           })}
-      </section>);
+      </section></div>);
 }

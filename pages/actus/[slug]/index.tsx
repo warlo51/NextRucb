@@ -42,7 +42,7 @@ export default function Index({
                 {articlesJSON.filter((actu: any) => actu._id === router.query.slug).map((article: any, index:number) =>{
                     return (
                         <Box key={index} className="boxActuDetail">
-                            <Button id="badge" style={{backgroundColor:`${article.colorTitre.hex}`}}>{article.titre}</Button>
+                            <Button id="badge" style={{backgroundColor:`${article.colorTitre.value}`}}>{article.titre}</Button>
                             <Row >
                                 <Col xs={12} sm={6} id="colBox">
                                     <PortableText

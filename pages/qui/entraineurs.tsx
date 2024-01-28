@@ -36,7 +36,7 @@ export default function Entraineurs() {
               return (
                 <Box className="BoxComite">
               <CardContent >
-              {tailleEcran < 333 ? <Button id="badge" style={{backgroundColor:`${fiche.colorTitre.hex}`, width:"250px"}}>{fiche.nom}</Button> : <Button id="badge" style={{backgroundColor:`${fiche.colorTitre.hex}`, width:"400px"}}>{fiche.nom}</Button>}
+              {tailleEcran < 333 ? <Button id="badge" style={{backgroundColor:`${fiche.colorTitre.value}`, width:"250px"}}>{fiche.nom}</Button> : <Button id="badge" style={{backgroundColor:`${fiche.colorTitre.value}`, width:"400px"}}>{fiche.nom}</Button>}
                 <p></p>
                 <Typography variant="body2" color="text.secondary">
                   <p>Tél. : {fiche.phone}  </p>

@@ -29,7 +29,7 @@ export default function Mecenat() {
               return (
                 <Box key={index} className="boxMecenat">
                   <CardContent>
-                  <Button id="badge" style={{backgroundColor:`${article.colorTitre.hex}`}}>{article.titre}</Button>
+                  <Button id="badge" style={{backgroundColor:`${article.colorTitre.value}`}}>{article.titre}</Button>
                     <p></p>
                       <PortableText
                           value={article.description}

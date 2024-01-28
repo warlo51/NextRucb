@@ -1,4 +1,4 @@
-import type { GetServerSideProps, NextPage } from 'next'
+import type { NextPage } from 'next'
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Container, Row } from 'react-bootstrap'
 import Actualite from '../components/Actualite'
@@ -11,7 +11,7 @@ import Partenaires from '../components/Partenaires'
 import Sponsors from '../components/Sponsors'
 import urlFor from "../src/fonctions/urlImageSanity";
 import client from "../src/client";
-import Temoignages from "../components/Temoignages";
+import Actus from "../components/Actus";
 
 
 const Home: NextPage = () => {
@@ -70,7 +70,7 @@ const Home: NextPage = () => {
         <Equipes/>
       </Col>
       <Col xs={12} sm={4} id="colHomeCentre">
-          <Row id="rowActu"><Temoignages/></Row>
+          <Row id="rowActu"><Actus/></Row>
           <Row id="rowActu"><Partenaires/></Row>
         <Row id="rowActu"><Actualite/></Row>
         <Row id="rowActu"><Sponsors/></Row>
