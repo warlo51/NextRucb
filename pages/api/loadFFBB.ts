@@ -28,8 +28,8 @@ export default async function handler(
 
           Array(JSON.parse(xml)).forEach((element: any) => {
               const elems = element.elements[0];
-              const findElement = elems.elements?.find(e => e.type === "element");
-              tableau = findElement.elements?.filter(e => e.type === 'element');
+              const findElement = elems.elements?.find((e: any) => e.type === "element");
+              tableau = findElement.elements?.filter((e: any) => e.type === 'element');
           });
           const formatData: any[] = [];
           tableau?.forEach((element: any, index:number) => {
