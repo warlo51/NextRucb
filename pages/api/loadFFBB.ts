@@ -21,6 +21,7 @@ export default async function handler(
       });
 
       let tableau: [] = [];
+      const formatData: any[] = [];
       if(data){
           const xml = xml2json(data.replace(/[\n\r]/g, '\\n')
               .replace(/&/g,"&amp;")
@@ -31,7 +32,7 @@ export default async function handler(
               const findElement = elems.elements?.find((e: any) => e.type === "element");
               tableau = findElement.elements?.filter((e: any) => e.type === 'element');
           });
-          const formatData: any[] = [];
+
           tableau?.forEach((element: any, index:number) => {
               if(index > 4){
                   let objet = {};
@@ -48,7 +49,6 @@ export default async function handler(
                   formatData.push(objet);
               }
           });
-          res.status(200).send({data: formatData});
       }
-    res.status(200).send({data: tableau});
+    res.status(200).send({data: formatData});
 }
