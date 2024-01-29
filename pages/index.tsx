@@ -37,7 +37,7 @@ const Home: NextPage = () => {
 
         async function loadDataFFBB(){
             const dataFFBB =  await fetch("/api/loadFFBB",{
-                method: "POST",
+                method: "GET",
             }).then((result: any) => result.json());
             setData(dataFFBB.data)
         }
