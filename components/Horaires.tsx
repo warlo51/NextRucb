@@ -10,8 +10,8 @@ export default function Horaires() {
     return (
        <div className="divHoraires">
         <Button id="badge">Entrainements</Button>
-        {tailleEcran > 1036 ? <img alt="horairesEntrainementRUCB" src="../HorairesEntrainements.png"/> : <img alt="horairesEntrainementRUCB" src="../HorairesEntrainementsSmartphone.png"/>}  
+        {tailleEcran > 1036 ? <img alt="horairesEntrainementRUCB" src="../HorairesEntrainements.png"/> : <img alt="horairesEntrainementRUCB" src="../HorairesEntrainements.png"/>}
        </div>
-    
+
     );
 }
