@@ -1,10 +1,11 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
+import { SSRProvider } from 'react-bootstrap'
 
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <div>
+  return <SSRProvider><div>
       <Head>
         <title>RUCB Basket</title>
         <meta name="description" content="Site web du RUCB, club de basket REIMS"/>
@@ -14,7 +15,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 </script>
       </Head>
       <Component {...pageProps} />
-    </div>
+    </div></SSRProvider>
 }
 
 export default MyApp
