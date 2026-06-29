@@ -3,6 +3,29 @@ import Head from 'next/head';
 import { supabase } from '../../lib/supabaseClient';
 
 const JOURS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
+const JOUR_COURT: Record<string, string> = { Lundi: 'Lun', Mardi: 'Mar', Mercredi: 'Mer', Jeudi: 'Jeu', Vendredi: 'Ven' };
+// Code couleur PAR CATÉGORIE d'équipe (charte conservée, teintes harmonisées)
+const CAT_PALETTE: { test: RegExp; label: string; color: string }[] = [
+  { test: /U18|U17/, label: 'U18', color: '#b5532a' },
+  { test: /U15|U16/, label: 'U15', color: '#dc8d32' },
+  { test: /U13/, label: 'U13', color: '#c2417a' },
+  { test: /U11/, label: 'U11', color: '#5a35a0' },
+  { test: /U9/, label: 'U9', color: '#1f8a5b' },
+  { test: /U7|BABY|ECOLE|ÉCOLE/, label: 'U7 / École', color: '#2a6fdb' },
+  { test: /SM|SENIOR|\bPR\b|\bD2\b|\bD3\b|\bNM\b/, label: 'Seniors', color: '#3d1e7b' },
+  { test: /LOISIR/, label: 'Loisirs', color: '#4a7a8c' },
+];
+function slotColor(label?: string): string {
+  const c = (label || '').toUpperCase();
+  const hit = CAT_PALETTE.find((p) => p.test.test(c));
+  return hit ? hit.color : '#3d1e7b';
+}
+function slotTint(hex: string): string {
+  const n = parseInt(hex.slice(1), 16); const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  const mix = (ch: number) => Math.round(ch + (255 - ch) * 0.88);
+  return `rgb(${mix(r)},${mix(g)},${mix(b)})`;
+}
+
 const CATEGORIES = ['Compétition', 'Club', 'Partenaires', 'Événement'];
 const SECTIONS = [
   { key: 'planning', label: 'Planning' },
@@ -62,6 +85,7 @@ export default function Admin() {
   const [resultats, setResultats] = React.useState<any[]>([]);
 
   const [cForm, setCForm] = React.useState<any>(null);   // créneau
+  const [planDay, setPlanDay] = React.useState('Lundi'); // jour sélectionné (vue mobile)
   const [aForm, setAForm] = React.useState<any>(null);   // actu
   const [mForm, setMForm] = React.useState<any>(null);   // membre comité
   const [eForm, setEForm] = React.useState<any>(null);   // entraîneur
@@ -373,23 +397,78 @@ export default function Admin() {
                   <div style={{ display: 'flex', gap: 10, marginTop: 20 }}><button onClick={saveCreneau} style={btnPrimary}>Enregistrer</button><button onClick={() => setCForm(null)} style={btnGhost}>Annuler</button></div>
                 </div>
               )}
-              <div style={{ background: '#fff', border: '1px solid #eee9f4', borderRadius: 16, overflow: 'hidden' }}>
-                <div style={{ overflowX: 'auto' }}><div style={{ minWidth: 780 }}>
-                  {[...creneaux].sort((a, b) => (JOURS.indexOf(a.jour) - JOURS.indexOf(b.jour)) || (a.heure_debut - b.heure_debut)).map((r) => (
-                    <div key={r.id} style={{ display: 'grid', gridTemplateColumns: '96px 140px 1.1fr 1.2fr 1.4fr 110px', gap: 12, padding: '14px 20px', borderBottom: '1px solid #f0edf6', alignItems: 'center', fontSize: 13.5 }}>
-                      <div style={{ fontWeight: 700, color: '#3d1e7b' }}>{r.jour}</div>
-                      <div style={{ fontWeight: 600 }}>{r.horaire}</div>
-                      <div style={{ fontWeight: 700 }}>{creneauEquipes(r) || r.categorie}</div>
-                      <div style={{ color: '#726b86' }}>{r.annees}</div>
-                      <div style={{ color: '#726b86' }}>{venueName(r.gymnase_id)}</div>
-                      <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
-                        <button onClick={() => setCForm({ ...r, equipe_ids: (r.equipes || []).map((e: any) => e.id) })} style={{ background: '#f1edf8', color: '#3d1e7b', border: 'none', fontWeight: 700, fontSize: 12, padding: '7px 10px', borderRadius: 8, cursor: 'pointer' }}>Éditer</button>
-                        <button onClick={() => delCreneau(r.id)} style={{ background: '#fbeaea', color: '#c0392b', border: 'none', fontWeight: 700, fontSize: 12, padding: '7px 10px', borderRadius: 8, cursor: 'pointer' }}>Suppr.</button>
+              {(() => {
+                const newSlot = (jour: string) => ({ jour, heure_debut: 18, horaire: '', annees: '', detail: '', gymnase_id: gymnases[0]?.id, equipe_ids: [], actif: true });
+                const itemsOf = (jour: string) => [...creneaux].filter((c) => c.jour === jour).sort((a, b) => a.heure_debut - b.heure_debut);
+                const labelOf = (r: any) => creneauEquipes(r) || r.categorie || '—';
+                const Card = ({ r, compact }: { r: any; compact?: boolean }) => {
+                  const col = slotColor(labelOf(r));
+                  return (
+                      <div style={{ background: slotTint(col), border: '1px solid #eee9f4', borderLeft: `4px solid ${col}`, borderRadius: 10, padding: compact ? '10px 11px' : '12px 14px' }}>
+                        <div style={{ fontWeight: 800, fontSize: compact ? 12.5 : 15, color: '#1d1730' }}>{r.horaire || '—'}</div>
+                        <div style={{ fontWeight: 800, fontSize: compact ? 13 : 14, marginTop: 2, color: col, lineHeight: 1.25 }}>{labelOf(r)}</div>
+                        <div style={{ fontSize: compact ? 11 : 12.5, color: '#726b86', marginTop: 3, lineHeight: 1.3 }}>{venueName(r.gymnase_id)}</div>
+                        {!compact && r.annees ? <div style={{ fontSize: 12, color: '#9a93ad', marginTop: 2 }}>{r.annees}</div> : null}
+                        <div style={{ display: 'flex', gap: 6, marginTop: compact ? 9 : 12 }}>
+                          <button onClick={() => setCForm({ ...r, equipe_ids: (r.equipes || []).map((e: any) => e.id) })} style={{ flex: 1, background: '#fff', color: '#3d1e7b', border: '1px solid #e4dcf3', fontFamily: "'Manrope',sans-serif", fontWeight: 700, fontSize: compact ? 11 : 13, padding: compact ? 5 : 10, borderRadius: compact ? 7 : 9, cursor: 'pointer' }}>Éditer</button>
+                          <button onClick={() => delCreneau(r.id)} style={{ flex: 1, background: '#fff', color: '#c0392b', border: '1px solid #f6d6d6', fontFamily: "'Manrope',sans-serif", fontWeight: 700, fontSize: compact ? 11 : 13, padding: compact ? 5 : 10, borderRadius: compact ? 7 : 9, cursor: 'pointer' }}>Suppr.</button>
+                        </div>
                       </div>
+                  );
+                };
+                const Legend = () => (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px 18px', marginTop: 18, padding: '14px 16px', background: '#fff', border: '1px solid #eee9f4', borderRadius: 12 }}>
+                      <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: '.06em', textTransform: 'uppercase', color: '#9a93ad', marginRight: 4 }}>Catégories</span>
+                      {CAT_PALETTE.map((p) => (
+                          <div key={p.label} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12.5, fontWeight: 600, color: '#1d1730' }}><span style={{ width: 14, height: 14, borderRadius: 4, background: p.color, display: 'inline-block', flexShrink: 0 }} />{p.label}</div>
+                      ))}
                     </div>
-                  ))}
-                </div></div>
-              </div>
+                );
+
+                if (isMobile) {
+                  return (
+                      <div>
+                        <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 10 }}>
+                          {JOURS.map((jour) => { const on = planDay === jour; return <button key={jour} onClick={() => setPlanDay(jour)} style={{ flexShrink: 0, fontFamily: "'Manrope',sans-serif", fontWeight: 700, fontSize: 13, padding: '9px 15px', borderRadius: 999, cursor: 'pointer', border: `1.5px solid ${on ? '#3d1e7b' : '#e1dcec'}`, background: on ? '#3d1e7b' : '#fff', color: on ? '#fff' : '#3d1e7b' }}>{JOUR_COURT[jour]}</button>; })}
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '8px 0 14px' }}>
+                          <div style={{ fontFamily: "'Oswald',sans-serif", fontWeight: 600, textTransform: 'uppercase', fontSize: 20, color: '#1d1730' }}>{planDay}</div>
+                          <button onClick={() => setCForm(newSlot(planDay))} style={btnOrange}>+ Ajouter</button>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                          {itemsOf(planDay).map((r) => <Card key={r.id} r={r} />)}
+                          {itemsOf(planDay).length === 0 && (<button onClick={() => setCForm(newSlot(planDay))} style={{ minHeight: 90, background: '#fff', border: '1.5px dashed #e1dcec', borderRadius: 14, color: '#b5adc6', fontFamily: "'Manrope',sans-serif", fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>Aucun créneau ce jour — + Ajouter</button>)}
+                        </div>
+                        <Legend />
+                      </div>
+                  );
+                }
+                return (
+                    <>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,minmax(0,1fr))', gap: 10, alignItems: 'start' }}>
+                        {JOURS.map((jour) => {
+                          const items = itemsOf(jour);
+                          return (
+                              <div key={jour} style={{ background: '#fff', border: '1px solid #eee9f4', borderRadius: 14, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 230, boxShadow: '0 12px 28px -26px rgba(23,18,43,.5)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, padding: 10, background: '#faf9fc', borderBottom: '1px solid #eee9f4' }}>
+                                  <div>
+                                    <div style={{ fontFamily: "'Oswald',sans-serif", fontWeight: 600, textTransform: 'uppercase', fontSize: 13, color: '#1d1730', letterSpacing: '.05em' }}>{JOUR_COURT[jour]}</div>
+                                    <div style={{ fontSize: 10.5, color: '#9a93ad', fontWeight: 600 }}>{items.length}</div>
+                                  </div>
+                                  <button onClick={() => setCForm(newSlot(jour))} title="Ajouter un créneau" style={{ width: 26, height: 26, borderRadius: 8, background: '#3d1e7b', color: '#fff', border: 'none', fontSize: 17, lineHeight: 1, cursor: 'pointer', flexShrink: 0 }}>+</button>
+                                </div>
+                                <div style={{ padding: 8, display: 'flex', flexDirection: 'column', gap: 8, flex: 1 }}>
+                                  {items.map((r) => <Card key={r.id} r={r} compact />)}
+                                  {items.length === 0 && (<button onClick={() => setCForm(newSlot(jour))} style={{ flex: 1, minHeight: 64, background: 'none', border: '1.5px dashed #e1dcec', borderRadius: 10, color: '#b5adc6', fontFamily: "'Manrope',sans-serif", fontWeight: 700, fontSize: 12, cursor: 'pointer' }}>+</button>)}
+                                </div>
+                              </div>
+                          );
+                        })}
+                      </div>
+                      <Legend />
+                    </>
+                );
+              })()}
             </div>
           )}
 
