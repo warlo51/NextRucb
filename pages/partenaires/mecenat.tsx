@@ -1,48 +1,37 @@
-import { Box, CardContent, Container, Typography } from "@mui/material";
-import { Button } from "react-bootstrap";
-import React, { useEffect, useState } from "react";
-import {Layout} from "../../components/Layout";
-import Head from "next/head";
-import client from "../../src/client";
-import {PortableText} from "@portabletext/react";
-export default function Mecenat() {
-  const [fichesJSON, setFichesJSON] = useState<any>([]);
+import * as React from 'react';
+import { Layout } from '../../components/Layout';
+import PageHeader from '../../components/PageHeader';
+import Head from 'next/head';
+import { supabase } from '../../lib/supabaseClient';
 
-  useEffect(()=>{
-    async function loadData(){
-        const mecenat = await client.fetch(
-            `*[_type == "mecenat"]`
-        )
-     setFichesJSON(mecenat)
-   }
-   loadData();
-  },[]);
+export default function Mecenat() {
+  const [articles, setArticles] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    async function load() {
+      const { data } = await supabase.from('mecenat').select('*').eq('actif', true).order('ordre');
+      setArticles(data || []);
+    }
+    load();
+  }, []);
+
   return (
     <Layout>
       <Head>
-        <title>Mécenat</title>
-        <meta name="description" content="Les mécenat du RUCB basket"/>
+        <title>Mécénat</title>
+        <meta name="description" content="Le mécénat au RUCB basket" />
         <meta name="google-site-verification" content="g-JktWG1_hWPLXMEXwsoblRJTiPvWl8QbmLFIvt_8aU" />
       </Head>
-        <div style={{margin:"20px",display:"flex",justifyContent:"center",flexDirection:"column"}}>
-        {fichesJSON.map((article: any, index: number) =>{
-              return (
-                <Box key={index} className="boxMecenat">
-                  <CardContent>
-                  <Button id="badge" style={{backgroundColor:`${article.colorTitre.value}`}}>{article.titre}</Button>
-                    <p></p>
-                      <PortableText
-                          value={article.description}
-                      />
-                  </CardContent>
-                </Box>
-              );})}
-          <br></br>
-          <br></br>
-          <br></br>
-          <br></br>
-          <br></br>
-      </div>
+      <PageHeader kicker="Soutenir le club" title="Mécénat" />
+
+      <section style={{ padding: '48px 26px 70px', maxWidth: 860, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 28 }}>
+        {articles.map((a) => (
+          <article key={a.id} style={{ background: '#fff', border: '1px solid #eee9f4', borderRadius: 18, padding: 26, boxShadow: '0 14px 34px -26px rgba(23,18,43,.5)' }}>
+            <h2 style={{ fontFamily: "'Oswald',sans-serif", fontSize: 'clamp(22px,3vw,30px)', fontWeight: 700, textTransform: 'uppercase', color: '#3d1e7b', margin: '0 0 14px' }}>{a.titre}</h2>
+            {a.texte && <div style={{ fontFamily: "'Manrope',sans-serif", fontSize: 15.5, lineHeight: 1.7, color: '#3a3450', whiteSpace: 'pre-line' }}>{a.texte}</div>}
+          </article>
+        ))}
+      </section>
     </Layout>
   );
 }

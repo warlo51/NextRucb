@@ -1,86 +1,1007 @@
-import type { NextPage } from 'next'
-import React, { useEffect, useState } from 'react'
-import { Button, Col, Container, Row } from 'react-bootstrap'
-import Actualite from '../components/Actualite'
-import BandeauIMG from '../components/BandeauIMG'
-import Equipes from '../components/Equipes'
-import Ffbb from '../components/Ffbb'
-import Horaires from '../components/Horaires'
-import { Layout } from '../components/Layout'
-import Partenaires from '../components/Partenaires'
-import Sponsors from '../components/Sponsors'
-import urlFor from "../src/fonctions/urlImageSanity";
-import client from "../src/client";
-import Actus from "../components/Actus";
+import type { NextPage } from "next";
+import React, { useEffect, useState } from "react";
+import Head from "next/head";
+import Link from "next/link";
+import { Layout } from "../components/Layout";
+import { supabase } from "../lib/supabaseClient";
+import { forceDownload } from "../lib/forceDownload";
 
+const JOURS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"];
+
+const VALEURS = [
+  { num: "01", t: "Accueil", d: "Une place pour chacun, du loisir à la compétition." },
+  { num: "02", t: "Respect", d: "Des partenaires, des adversaires et des arbitres." },
+  { num: "03", t: "Compétition", d: "Progresser et se dépasser, match après match." },
+  { num: "04", t: "Convivialité", d: "Un club, une famille, des moments partagés." },
+];
+
+const EQUIPES = [
+  { groupe: "École de basket", cats: ["U7", "U9", "U11 fém.", "U11"] },
+  { groupe: "Académie", cats: ["U13", "U15"] },
+  { groupe: "Secteur seniors", cats: ["U17", "D2", "PR1"] },
+];
+
+// Visuels Instagram de repli (assets du club) si aucun flux Behold n'est
+// configuré. Dès que NEXT_PUBLIC_INSTAGRAM_FEED_URL est renseigné, ils sont
+// remplacés par les vrais derniers posts — le markup de la grille reste identique.
+const INSTA = [
+  { img: "/gymnase3.jpg", likes: 132 },
+  { img: "/gymnase2.jpg", likes: 98 },
+  { img: "/bandeau1.jpg", likes: 76 },
+  { img: "/gymnase1.jpg", likes: 154 },
+  { img: "/gymnase4.jpg", likes: 63 },
+  { img: "/gymnase5.jpg", likes: 201 },
+];
+
+const IG_HANDLE = "reims_universite_club_basket";
+const IG_URL = `https://www.instagram.com/${IG_HANDLE}/`;
+// Flux JSON Behold.so (https://behold.so) : à renseigner dans .env.local.
+// Vide => repli sur les visuels statiques ci-dessus.
+const IG_FEED_URL = process.env.NEXT_PUBLIC_INSTAGRAM_FEED_URL || "";
+
+// Repli si la table partenaire Supabase est vide / non configurée.
+const FALLBACK_SPONSORS = [
+  "/sponsors/logocarrefour.png",
+  "/sponsors/NouveauLogoNorauto.jpg",
+  "/sponsors/logoBuffaloGrill.png",
+  "/sponsors/logoCIC.jpg",
+  "/sponsors/LogoVilledeReims.jpg",
+  "/sponsors/CD51.png",
+];
+
+const formatDate = (d: string) =>
+  d
+    ? new Date(d)
+        .toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })
+        .toUpperCase()
+    : "";
 
 const Home: NextPage = () => {
+  const [actus, setActus] = useState<any[]>([]);
+  const [creneaux, setCreneaux] = useState<any[]>([]);
+  const [ffbb, setFfbb] = useState<any[]>([]);
+  const [sponsors, setSponsors] = useState<string[]>(FALLBACK_SPONSORS);
+  const [equipes, setEquipes] = useState<any[]>([]);
+  const [instaPosts, setInstaPosts] = useState<any[]>([]);
+  const [licence, setLicence] = useState<{ url: string; nom: string } | null>(null);
+  const [bandeau, setBandeau] = useState<string>("");
 
-  const [tailleEcran, setTailleEcran] = useState(0);
-  const [data, setData] = useState();
-  const [dataArticles, setDataArticles] = useState([]);
+  useEffect(() => {
+    async function loadSupabase() {
+      const today = new Date().toISOString().slice(0, 10);
+      const { data: ac } = await supabase
+        .from("actu")
+        .select("id, titre, slug, categorie, date_publication, extrait, image_url")
+        .eq("actif", true)
+        .lte("date_publication", today)
+        .or(`date_fin_publication.is.null,date_fin_publication.gte.${today}`)
+        .order("date_publication", { ascending: false })
+        .limit(3);
+      setActus(ac || []);
 
-    useEffect(()=>{
-        setTailleEcran(window.innerWidth);
-        async function loadData(){
-            const actus = await client.fetch(
-                `*[_type == "imagesPageAccueil" && active == "Oui"]`
-            )
-            setDataArticles(actus.map((actu: any) => {
-                return {
-                    ...actu,
-                    image: actu.image ? urlFor(actu.image).url() : ""
-                }
-            }))
-        }
-        loadData();
+      const { data: cr } = await supabase.from("creneau").select("jour").eq("actif", true);
+      setCreneaux(cr || []);
 
-        async function loadDataFFBB(){
-            const dataFFBB =  await fetch("/api/loadFFBB",{
-                method: "GET",
-            }).then((result: any) => result.json());
-            setData(dataFFBB.data)
-        }
-        loadDataFFBB();
-    },[]);
+      const { data: pa } = await supabase
+        .from("partenaire")
+        .select("logo_url")
+        .eq("actif", true)
+        .order("ordre");
+      const logos = (pa || []).map((p: any) => p.logo_url).filter(Boolean);
+      if (logos.length) setSponsors(logos);
+
+      const { data: eq } = await supabase
+        .from("equipe")
+        .select("categorie, nom, ordre")
+        .eq("actif", true)
+        .order("ordre");
+      setEquipes(eq || []);
+
+      const { data: lf } = await supabase
+        .from("licence_file")
+        .select("file_url, nom")
+        .eq("actif", true)
+        .order("created_at", { ascending: false })
+        .limit(1);
+      if (lf && lf[0]?.file_url) setLicence({ url: lf[0].file_url, nom: lf[0].nom || "dossier-licence.pdf" });
+
+      const { data: bn } = await supabase
+        .from("bandeau")
+        .select("image_url")
+        .eq("actif", true)
+        .order("created_at", { ascending: false })
+        .limit(1);
+      if (bn && bn[0]?.image_url) setBandeau(bn[0].image_url);
+    }
+    loadSupabase().catch(() => undefined);
+
+    async function loadFFBB() {
+      try {
+        const res = await fetch("/api/loadFFBB");
+        const json = await res.json();
+        setFfbb((json.data || []).slice(0, 3));
+      } catch {
+        setFfbb([]);
+      }
+    }
+    loadFFBB();
+
+    async function loadInstagram() {
+      if (!IG_FEED_URL) return;
+      try {
+        const res = await fetch(IG_FEED_URL);
+        const json = await res.json();
+        // Behold renvoie soit un tableau, soit { posts: [...] }.
+        const posts = Array.isArray(json) ? json : json.posts || [];
+        setInstaPosts(posts);
+      } catch {
+        setInstaPosts([]);
+      }
+    }
+    loadInstagram();
+  }, []);
+
+  const creneauxParJour = JOURS.map((jour) => ({
+    jour,
+    count: creneaux.filter((c) => c.jour === jour).length,
+  })).filter((j) => j.count > 0);
+
+  // Équipes groupées par catégorie (Supabase) ; repli sur la liste statique si vide.
+  const equipesGroupes = equipes.length
+    ? Array.from(new Set(equipes.map((e) => e.categorie))).map((cat) => ({
+        groupe: cat,
+        cats: equipes.filter((e) => e.categorie === cat).map((e) => e.nom),
+      }))
+    : EQUIPES;
+
+  // Derniers posts Instagram (flux Behold) ; repli sur les visuels statiques.
+  const instaImg = (p: any) =>
+    p?.sizes?.medium?.mediaUrl || p?.sizes?.small?.mediaUrl || p?.thumbnailUrl || p?.mediaUrl || "";
+  const instaCaption = (p: any) =>
+    (p?.prunedCaption || p?.caption || "").replace(/\s+/g, " ").trim();
+  const instaTiles = instaPosts.length
+    ? instaPosts.slice(0, 6).map((p) => ({
+        img: instaImg(p),
+        link: p.permalink || IG_URL,
+        caption: instaCaption(p),
+        isVideo: p?.mediaType === "VIDEO",
+        real: true,
+      }))
+    : INSTA.map((p) => ({ img: p.img, link: IG_URL, caption: "", isVideo: false, real: false }));
+
   return (
-    <Layout >
-    <BandeauIMG/>
-   <Container className="containerActu">
-   {tailleEcran > 780 ? <></> :
-       <>
-           {dataArticles.map((article: any, index:number) =>{
-               return (
-                   <Row key={index}>
-                       <a style={{color:"black"}} href={article?.linkArticle?._ref ? `/actus/${article?.linkArticle?._ref}` : "/actus"}>
-                           <div className="divActualite">
-                               <Button id="badge">{article.titre}</Button>
-                               <h5>Découvrez l'article</h5>
-                           </div>
-                       </a>
-                   </Row>
-               );
-           })}
-       </>
-   }
-    <Row>
-      <Col xs={12} sm={4} >
-        <Horaires/>
-        <Equipes/>
-      </Col>
-      <Col xs={12} sm={4} id="colHomeCentre">
-          <Row id="rowActu"><Actus/></Row>
-          <Row id="rowActu"><Partenaires/></Row>
-        <Row id="rowActu"><Actualite/></Row>
-        <Row id="rowActu"><Sponsors/></Row>
-      </Col>
-      <Col xs={12} sm={4}>
-        {data !== undefined ? <Row id="rowActu"><Ffbb data={data} /></Row> : <></>}
-      </Col>
-    </Row>
-    </Container>
- </Layout>
-  );
-}
+    <Layout>
+      <Head>
+        <title>RUC Basket Reims — Grandir ensemble, gagner ensemble</title>
+        <meta
+          name="description"
+          content="Club de basket formateur à Reims, de l'école de basket aux seniors. Compétition, respect et convivialité."
+        />
+      </Head>
 
-export default Home
+      {/* ============================ HERO ============================ */}
+      <section
+        style={{
+          position: "relative",
+          backgroundImage: `linear-gradient(105deg,rgba(42,20,87,.94) 0%,rgba(42,20,87,.62) 48%,rgba(220,141,50,.30) 100%),url('${bandeau || "/gymnase3.jpg"}')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          color: "#fff",
+          padding: "78px 26px 92px",
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: -60,
+            right: -40,
+            width: 240,
+            height: 240,
+            border: "2px solid rgba(220,141,50,.4)",
+            borderRadius: "50%",
+          }}
+        />
+        <div style={{ position: "relative", zIndex: 2, maxWidth: 680 }}>
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 9,
+              fontFamily: "'Oswald',sans-serif",
+              fontSize: 13,
+              letterSpacing: ".28em",
+              textTransform: "uppercase",
+              color: "#f0b968",
+              fontWeight: 600,
+              marginBottom: 20,
+            }}
+          >
+            <span style={{ width: 26, height: 2, background: "#dc8d32", display: "inline-block" }} />
+            RUC Basket · depuis 2003
+          </div>
+          <h1
+            style={{
+              fontFamily: "'Oswald',sans-serif",
+              fontWeight: 700,
+              fontSize: "clamp(38px,6.2vw,68px)",
+              lineHeight: 1.02,
+              margin: "0 0 20px",
+              letterSpacing: "-.005em",
+              textTransform: "uppercase",
+            }}
+          >
+            Grandir ensemble,
+            <br />
+            <span style={{ color: "#f0a93f" }}>gagner ensemble.</span>
+          </h1>
+          <p
+            style={{
+              fontSize: "clamp(16px,1.6vw,19px)",
+              lineHeight: 1.55,
+              color: "#e7ddf6",
+              maxWidth: 540,
+              margin: "0 0 34px",
+              fontWeight: 500,
+            }}
+          >
+            Club de basket formateur à Reims — de l'école de basket aux seniors. Compétition,
+            respect et convivialité au cœur du jeu.
+          </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
+            <Link
+              href="/qui/historique"
+              className="btnHover"
+              style={{
+                background: "#dc8d32",
+                color: "#fff",
+                fontWeight: 800,
+                fontSize: 16,
+                padding: "16px 30px",
+                borderRadius: 999,
+                boxShadow: "0 12px 30px -10px rgba(220,141,50,.8)",
+              }}
+            >
+              Rejoindre le club
+            </Link>
+            <Link
+              href="/actus"
+              className="btnHover"
+              style={{
+                background: "rgba(255,255,255,.12)",
+                border: "1.5px solid rgba(255,255,255,.5)",
+                color: "#fff",
+                fontWeight: 700,
+                fontSize: 16,
+                padding: "16px 30px",
+                borderRadius: 999,
+              }}
+            >
+              Voir les actualités
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================== VALEURS ========================== */}
+      <section style={{ background: "#2a1457" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit,minmax(150px,1fr))",
+          }}
+        >
+          {VALEURS.map((v) => (
+            <div
+              key={v.num}
+              style={{
+                padding: "30px 24px",
+                borderTop: "3px solid #dc8d32",
+                borderRight: "1px solid rgba(255,255,255,.08)",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "'Oswald',sans-serif",
+                  fontSize: 34,
+                  fontWeight: 700,
+                  color: "#dc8d32",
+                  lineHeight: 1,
+                }}
+              >
+                {v.num}
+              </div>
+              <div
+                style={{
+                  fontFamily: "'Oswald',sans-serif",
+                  fontSize: 18,
+                  fontWeight: 600,
+                  letterSpacing: ".05em",
+                  textTransform: "uppercase",
+                  color: "#fff",
+                  margin: "10px 0 6px",
+                }}
+              >
+                {v.t}
+              </div>
+              <div style={{ fontSize: 13, lineHeight: 1.5, color: "#b9a9d8", fontWeight: 500 }}>
+                {v.d}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ========================= ACTUALITÉS ========================= */}
+      <section style={{ padding: "64px 26px 18px", maxWidth: 1240, margin: "0 auto" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: 12,
+            marginBottom: 30,
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontFamily: "'Oswald',sans-serif",
+                fontSize: 13,
+                letterSpacing: ".26em",
+                textTransform: "uppercase",
+                color: "#dc8d32",
+                fontWeight: 600,
+              }}
+            >
+              Le club bouge
+            </div>
+            <h2
+              style={{
+                fontFamily: "'Oswald',sans-serif",
+                fontSize: "clamp(28px,3.4vw,40px)",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                margin: "6px 0 0",
+                color: "#1d1730",
+                letterSpacing: "-.01em",
+              }}
+            >
+              Actualités
+            </h2>
+          </div>
+          <Link
+            href="/actus"
+            style={{ color: "#3d1e7b", fontWeight: 800, fontSize: 14.5 }}
+          >
+            Toutes les actus →
+          </Link>
+        </div>
+
+        {actus.length === 0 ? (
+          <p style={{ color: "#726b86", fontWeight: 500 }}>
+            Les actualités du club arrivent bientôt.
+          </p>
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit,minmax(270px,1fr))",
+              gap: 22,
+            }}
+          >
+            {actus.map((n) => (
+              <Link
+                key={n.id}
+                href={`/actus/${n.slug}`}
+                className="newsCard"
+                style={{
+                  color: "inherit",
+                  background: "#fff",
+                  border: "1px solid #eee9f4",
+                  borderRadius: 18,
+                  overflow: "hidden",
+                  boxShadow: "0 14px 34px -22px rgba(23,18,43,.5)",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <div style={{ position: "relative", height: 180, width: "100%" }}>
+                  <div
+                    style={{
+                      height: 180,
+                      backgroundImage: n.image_url
+                        ? `url('${n.image_url}')`
+                        : "repeating-linear-gradient(45deg,#efeaf6,#efeaf6 10px,#e7e0f1 10px,#e7e0f1 20px)",
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  />
+                  {n.categorie ? (
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: 14,
+                        left: 14,
+                        background: "#3d1e7b",
+                        color: "#fff",
+                        fontSize: 11,
+                        fontWeight: 800,
+                        letterSpacing: ".08em",
+                        textTransform: "uppercase",
+                        padding: "6px 11px",
+                        borderRadius: 999,
+                      }}
+                    >
+                      {n.categorie}
+                    </span>
+                  ) : null}
+                </div>
+                <div
+                  style={{
+                    padding: "20px 20px 24px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 9,
+                    flex: 1,
+                  }}
+                >
+                  <span style={{ fontSize: 12, fontWeight: 700, color: "#dc8d32", letterSpacing: ".05em" }}>
+                    {formatDate(n.date_publication)}
+                  </span>
+                  <h3
+                    style={{
+                      fontFamily: "'Oswald',sans-serif",
+                      fontSize: 20,
+                      fontWeight: 600,
+                      lineHeight: 1.18,
+                      margin: 0,
+                      color: "#1d1730",
+                    }}
+                  >
+                    {n.titre}
+                  </h3>
+                  <p style={{ fontSize: 14, lineHeight: 1.55, color: "#726b86", margin: 0, fontWeight: 500 }}>
+                    {n.extrait}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* ======================= 3 CARTES INFOS ======================= */}
+      <section style={{ padding: "46px 26px 64px", maxWidth: 1240, margin: "0 auto" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))",
+            gap: 22,
+            alignItems: "start",
+          }}
+        >
+          {/* Entraînements */}
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 18,
+              border: "1px solid #eee9f4",
+              boxShadow: "0 14px 34px -26px rgba(23,18,43,.5)",
+              overflow: "hidden",
+            }}
+          >
+            <div style={{ background: "linear-gradient(120deg,#3d1e7b,#5a35a0)", padding: "22px 24px" }}>
+              <div
+                style={{
+                  fontFamily: "'Oswald',sans-serif",
+                  fontSize: 19,
+                  fontWeight: 600,
+                  letterSpacing: ".04em",
+                  textTransform: "uppercase",
+                  color: "#fff",
+                }}
+              >
+                Entraînements
+              </div>
+              <div style={{ fontSize: 13, color: "#cdbce8", fontWeight: 600, marginTop: 3 }}>
+                Créneaux de la saison
+              </div>
+            </div>
+            <div style={{ padding: "10px 22px 22px" }}>
+              {creneauxParJour.length === 0 ? (
+                <div style={{ padding: "13px 0", color: "#726b86", fontWeight: 600, fontSize: 14 }}>
+                  Planning disponible sur la page dédiée.
+                </div>
+              ) : (
+                creneauxParJour.map((c) => (
+                  <div
+                    key={c.jour}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: "13px 0",
+                      borderBottom: "1px solid #f0edf6",
+                    }}
+                  >
+                    <span style={{ fontWeight: 700, fontSize: 14.5, color: "#1d1730" }}>{c.jour}</span>
+                    <span style={{ fontSize: 13, color: "#726b86", fontWeight: 600 }}>
+                      {c.count} séance{c.count > 1 ? "s" : ""}
+                    </span>
+                  </div>
+                ))
+              )}
+              <Link
+                href="/planning"
+                className="btnOutline"
+                style={{
+                  display: "block",
+                  textAlign: "center",
+                  color: "#3d1e7b",
+                  fontWeight: 800,
+                  fontSize: 14,
+                  marginTop: 18,
+                  border: "1.5px solid #3d1e7b",
+                  padding: 12,
+                  borderRadius: 999,
+                  transition: "background .15s,color .15s",
+                }}
+              >
+                Tous les créneaux
+              </Link>
+            </div>
+          </div>
+
+          {/* Nos équipes */}
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 18,
+              border: "1px solid #eee9f4",
+              boxShadow: "0 14px 34px -26px rgba(23,18,43,.5)",
+              overflow: "hidden",
+            }}
+          >
+            <div style={{ background: "linear-gradient(120deg,#3d1e7b,#5a35a0)", padding: "22px 24px" }}>
+              <div
+                style={{
+                  fontFamily: "'Oswald',sans-serif",
+                  fontSize: 19,
+                  fontWeight: 600,
+                  letterSpacing: ".04em",
+                  textTransform: "uppercase",
+                  color: "#fff",
+                }}
+              >
+                Nos équipes
+              </div>
+              <div style={{ fontSize: 13, color: "#cdbce8", fontWeight: 600, marginTop: 3 }}>
+                De l'U7 aux seniors
+              </div>
+            </div>
+            <div style={{ padding: "18px 22px 22px" }}>
+              {equipesGroupes.map((g) => (
+                <div key={g.groupe} style={{ marginBottom: 16 }}>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 800,
+                      letterSpacing: ".08em",
+                      textTransform: "uppercase",
+                      color: "#dc8d32",
+                      marginBottom: 9,
+                    }}
+                  >
+                    {g.groupe}
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+                    {g.cats.map((cat) => (
+                      <span
+                        key={cat}
+                        style={{
+                          background: "#f1edf8",
+                          color: "#3d1e7b",
+                          fontWeight: 700,
+                          fontSize: 13,
+                          padding: "7px 13px",
+                          borderRadius: 8,
+                        }}
+                      >
+                        {cat}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Actu FFBB */}
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 18,
+              border: "1px solid #eee9f4",
+              boxShadow: "0 14px 34px -26px rgba(23,18,43,.5)",
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                background: "linear-gradient(120deg,#3d1e7b,#5a35a0)",
+                padding: "22px 24px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    fontFamily: "'Oswald',sans-serif",
+                    fontSize: 19,
+                    fontWeight: 600,
+                    letterSpacing: ".04em",
+                    textTransform: "uppercase",
+                    color: "#fff",
+                  }}
+                >
+                  Actu FFBB
+                </div>
+                <div style={{ fontSize: 13, color: "#cdbce8", fontWeight: 600, marginTop: 3 }}>
+                  Fil fédéral
+                </div>
+              </div>
+              <img
+                src="/logoFFBB.png"
+                alt="FFBB"
+                style={{ height: 42, width: "auto", background: "#fff", borderRadius: 8, padding: 3 }}
+              />
+            </div>
+            <div style={{ padding: "8px 22px 22px" }}>
+              {ffbb.length === 0 ? (
+                <div style={{ padding: "14px 0", color: "#726b86", fontWeight: 600, fontSize: 14 }}>
+                  Fil fédéral momentanément indisponible.
+                </div>
+              ) : (
+                ffbb.map((f, i) => (
+                  <a
+                    key={i}
+                    href={f.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ display: "block", padding: "14px 0", borderBottom: "1px solid #f0edf6" }}
+                  >
+                    <div
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 800,
+                        letterSpacing: ".06em",
+                        textTransform: "uppercase",
+                        color: "#dc8d32",
+                        marginBottom: 4,
+                      }}
+                    >
+                      FFBB
+                    </div>
+                    <div style={{ fontWeight: 700, fontSize: 14.5, color: "#1d1730", lineHeight: 1.3 }}>
+                      {f.title}
+                    </div>
+                  </a>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================= INSTAGRAM ========================== */}
+      <section style={{ padding: "58px 26px 64px", maxWidth: 1240, margin: "0 auto" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: 16,
+            marginBottom: 30,
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontFamily: "'Oswald',sans-serif",
+                fontSize: 13,
+                letterSpacing: ".26em",
+                textTransform: "uppercase",
+                color: "#dc8d32",
+                fontWeight: 600,
+              }}
+            >
+              Suivez le club
+            </div>
+            <h2
+              style={{
+                fontFamily: "'Oswald',sans-serif",
+                fontSize: "clamp(28px,3.4vw,40px)",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                margin: "6px 0 0",
+                color: "#1d1730",
+                letterSpacing: "-.01em",
+              }}
+            >
+              Sur Instagram
+            </h2>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#3d1e7b", marginTop: 6 }}>
+              @{IG_HANDLE}
+            </div>
+          </div>
+          <a
+            href={IG_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="btnHover"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 10,
+              background: "linear-gradient(45deg,#dc8d32,#c83b6b 55%,#3d1e7b)",
+              color: "#fff",
+              fontWeight: 800,
+              fontSize: 14.5,
+              padding: "13px 22px",
+              borderRadius: 999,
+              boxShadow: "0 10px 24px -10px rgba(200,59,107,.7)",
+            }}
+          >
+            Suivre @{IG_HANDLE}
+          </a>
+        </div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit,minmax(150px,1fr))",
+            gap: 14,
+          }}
+        >
+          {instaTiles.map((p, i) => (
+            <a
+              key={p.link + i}
+              href={p.link}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={p.caption ? `Post Instagram : ${p.caption.slice(0, 80)}` : "Voir sur Instagram"}
+              className="instaTile"
+              style={{
+                position: "relative",
+                aspectRatio: "1/1",
+                borderRadius: 14,
+                overflow: "hidden",
+                background: "#efeaf6",
+                display: "block",
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  backgroundImage: p.img ? `url('${p.img}')` : "none",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              />
+              {p.isVideo ? (
+                <span
+                  aria-hidden
+                  style={{
+                    position: "absolute",
+                    top: 9,
+                    right: 9,
+                    width: 26,
+                    height: 26,
+                    borderRadius: "50%",
+                    background: "rgba(23,18,43,.55)",
+                    color: "#fff",
+                    fontSize: 12,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    paddingLeft: 2,
+                  }}
+                >
+                  ▶
+                </span>
+              ) : null}
+              <div
+                className="instaOverlay"
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "rgba(42,20,87,.74)",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 6,
+                  color: "#fff",
+                  padding: "14px",
+                  textAlign: "center",
+                }}
+              >
+                <span style={{ fontSize: 24, fontWeight: 800, lineHeight: 1 }}>⌾</span>
+                {p.real && p.caption ? (
+                  <span
+                    style={{
+                      fontSize: 11.5,
+                      fontWeight: 500,
+                      lineHeight: 1.35,
+                      opacity: 0.92,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {p.caption}
+                  </span>
+                ) : (
+                  <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: ".04em", opacity: 0.85 }}>
+                    Voir sur Instagram
+                  </span>
+                )}
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* ========================== SPONSORS ========================== */}
+      <section
+        style={{
+          background: "#fff",
+          borderTop: "1px solid #eee9f4",
+          borderBottom: "1px solid #eee9f4",
+          padding: "48px 26px",
+        }}
+      >
+        <div style={{ textAlign: "center", marginBottom: 30 }}>
+          <div
+            style={{
+              fontFamily: "'Oswald',sans-serif",
+              fontSize: 13,
+              letterSpacing: ".26em",
+              textTransform: "uppercase",
+              color: "#dc8d32",
+              fontWeight: 600,
+            }}
+          >
+            Merci à nos partenaires
+          </div>
+          <h2
+            style={{
+              fontFamily: "'Oswald',sans-serif",
+              fontSize: "clamp(24px,3vw,34px)",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              margin: "6px 0 0",
+              color: "#1d1730",
+            }}
+          >
+            Ils nous soutiennent
+          </h2>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 18,
+          }}
+        >
+          {sponsors.map((s, i) => (
+            <div
+              key={i}
+              className="sponsorTile"
+              style={{
+                height: 78,
+                width: 140,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "#faf9fc",
+                border: "1px solid #eee9f4",
+                borderRadius: 14,
+                padding: 14,
+              }}
+            >
+              <img
+                src={s}
+                alt="partenaire"
+                style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "contain" }}
+              />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ============================= CTA ============================ */}
+      <section
+        style={{
+          background: "linear-gradient(115deg,#3d1e7b 0%,#5a2f9e 55%,#dc8d32 140%)",
+          color: "#fff",
+          padding: "60px 26px",
+          textAlign: "center",
+        }}
+      >
+        <h2
+          style={{
+            fontFamily: "'Oswald',sans-serif",
+            fontSize: "clamp(28px,4vw,46px)",
+            fontWeight: 700,
+            textTransform: "uppercase",
+            margin: "0 0 14px",
+            lineHeight: 1.05,
+          }}
+        >
+          Envie de jouer avec nous ?
+        </h2>
+        <p
+          style={{
+            fontSize: 17,
+            color: "#e7ddf6",
+            maxWidth: 520,
+            margin: "0 auto 30px",
+            fontWeight: 500,
+            lineHeight: 1.5,
+          }}
+        >
+          Essais gratuits toute l'année. Rejoins une équipe à ton niveau et partage l'esprit RUCB.
+        </p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center" }}>
+          <Link
+            href="/qui/historique"
+            className="btnHover"
+            style={{
+              background: "#fff",
+              color: "#3d1e7b",
+              fontWeight: 800,
+              fontSize: 16,
+              padding: "16px 34px",
+              borderRadius: 999,
+              display: "inline-block",
+              boxShadow: "0 14px 34px -14px rgba(0,0,0,.5)",
+            }}
+          >
+            Demander un essai
+          </Link>
+          {licence && (
+            <button
+              type="button"
+              onClick={() => forceDownload(licence.url, licence.nom)}
+              className="btnHover"
+              style={{
+                background: "rgba(255,255,255,.14)",
+                color: "#fff",
+                border: "1.5px solid rgba(255,255,255,.6)",
+                fontWeight: 800,
+                fontSize: 16,
+                fontFamily: "'Manrope',sans-serif",
+                padding: "16px 34px",
+                borderRadius: 999,
+                cursor: "pointer",
+              }}
+            >
+              Télécharger le dossier de licence
+            </button>
+          )}
+        </div>
+      </section>
+    </Layout>
+  );
+};
+
+export default Home;

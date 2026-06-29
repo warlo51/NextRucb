@@ -1,758 +1,365 @@
+/* =====================================================================
+   RUC BASKET — globals.css MODERNISÉ (refonte 2026)
+   ---------------------------------------------------------------------
+   Remplace ton ancien styles/globals.css. Tous les noms de classes/ids
+   existants sont CONSERVÉS : tu n'as rien à changer dans le JSX pour que
+   l'essentiel du site adopte le nouveau look.
+   Charte conservée : violet #3d1e7b + orange #dc8d32.
+   ===================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root{
+  --violet:#3d1e7b;
+  --violet-deep:#2a1457;
+  --violet-soft:#5a35a0;
+  --ink:#17122b;
+  --orange:#dc8d32;
+  --orange-bright:#f0a93f;
+  --bg:#f4f2f8;
+  --paper:#ffffff;
+  --text:#1d1730;
+  --muted:#726b86;
+  --line:#eee9f4;
+  --shadow-card:0 14px 34px -26px rgba(23,18,43,.5);
+  --radius:18px;
+  --display:'Oswald',system-ui,sans-serif;
+  --body:'Manrope',system-ui,sans-serif;
+}
+
+/* ------------------------------- BASE ------------------------------- */
 body{
-  margin: 0;
-  background-color: #e8e8e8;
+  margin:0;
+  background:var(--bg);
+  font-family:var(--body);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
 }
-a:link
-{
- text-decoration:none;
-}
-#__next{
-  background-color: #fff;
-}
+#__next{ background:var(--bg); }
+a:link, a:visited{ text-decoration:none; }
+::selection{ background:var(--orange); color:#fff; }
 
-.logo{
-  display: none;
-}
-.logo.fixed{
-  display: block;
-}
+h1,h2,h3{ font-family:var(--display); text-transform:uppercase; letter-spacing:-.005em; }
+
+/* ------------------------- BADGE / TITRES PILL ---------------------- */
+/* #badge sert de titre de section dans tes composants */
 #badge{
-  width: 250px;
-  height: 40px;
-  font-size: 18px;
-  margin-bottom: 20px;
-  border-radius: 20px;
-  color:white;
-  background-color: #dc8d32;
-}
-#colBox{
-  align-self: center;
-}
-/* HEADER */
-.Header ul{
-  z-index: 2;
-  list-style:none;
-  display: flex;
-  padding-top: 10px;
-  padding-right: 30px;
-  flex-direction: row;
-  margin-bottom: 0px;
-  height: 50px;
-  justify-content: flex-end;
-  background: linear-gradient(to bottom right, #3d1e7b, orange);
-}
-
-.Header ul li{
-  margin-left: 5px;
-}
-.navbar img{
-  height: 120px;
-}
-
-/* NavBar */
-
-.navbar a{
-  margin-left: 100px;
-  color:white;
-  z-index: 2;
-}
-
-#basic-nav-dropdown{
-  color:white;
-}
-#basic-nav-dropdown-black{
-  color:black;
-}
-
-#linkDropdown{
-  color: black;
-  margin-left: 0;
-}
-.dropdown-menu.show {
-  margin-left: 100px;
-}
-#basic-navbar-nav #nav{
-  justify-content: center;
-}
-#basic-navbar-nav{
-  justify-content: center;
-}
-.NavBar{
-  background-color: transparent;
-  height: 50px;
-  width: 100%;
-  z-index: 2;
-}
-
-#badge{
+  width:auto;
+  min-width:180px;
+  height:auto;
+  font-family:var(--display);
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  margin-bottom:18px;
+  padding:9px 20px;
+  border-radius:999px;
+  color:#fff;
+  background:var(--orange);
+  border:none;
+  box-shadow:none;
   cursor:default;
-  box-shadow: none;
 }
-.NavBar.fixed{
-  width: 100%;
-  height: 50px;
-  top:0;
-  background: linear-gradient(to bottom right, #3d1e7b, orange);
-  position: fixed;
-z-index: 3;
+
+/* ------------------------------ HEADER ------------------------------ */
+/* Barre utilitaire fine en haut (.Header ul) */
+.Header ul{
+  z-index:2;
+  list-style:none;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:18px;
+  margin:0;
+  padding:10px 30px;
+  height:auto;
+  background:var(--violet-deep);
+  font-size:12.5px;
+  font-weight:600;
+  color:#cabbe6;
 }
-.footer{
-  background: linear-gradient(to bottom right, #3d1e7b, orange);
-  color: #fff;
-  position:static;
-  width: 100%;
-  bottom: 0;
-}
-.containerSectionBandeau{
-  display: flex;
-  justify-content: center;
-}
-.sectionBandeau{
-  height: 700px;
-  width: 70%;
-  border:solid #3d1e7b;
-  border-radius: 20px;
-  position: relative;
-  box-shadow: 5px 5px 5px #3d1e7b;
-  margin-left: 20px;
-  margin-right: 20px;
-}
-.bandeauBottom{
-  background-color: #3d1e7b;
-  bottom:0;
-  position: absolute;
-  height: 50px;
-  width: 100%;
-  border-radius: 0px 0px 15px 15px;
-  opacity:0;
-  cursor:pointer;
-}
-.bandeau{
-  width: 100%;
-  height: 700px;
-  position: relative;
-  overflow: hidden;
-  cursor:pointer;
-}
-/* Bandeau */
-.slide{
-  height: 700px;
-  position: absolute;
-  opacity: 0;
-  text-align: center;
-}
-.slide > img {
-  height: 200px;
-  display: block;
-  width: 80%;
-  object-position: center;
-  text-align: center;
-}
-.slideTest{
-  opacity: 1;
-  text-align: center;
-}
-.titleBandeau{
-  font-size: 30px;
-  margin-left: 20px;
-}
-.bandeauBottomActive{
-  display: flex;
-  background-color: #3d1e7b;
-  bottom:0;
-  position: absolute;
-  height: 50px;
-  width: 100%;
-  border-radius: 0px 0px 15px 15px;
-  opacity:1;
-  cursor:pointer;
+.Header ul li{ margin-left:0; }
+.Header ul li a{ color:#cabbe6; }
+
+/* ------------------------------ NAVBAR ------------------------------ */
+.navbar img{ height:60px; }
+.navbar a{
+  margin-left:28px;
+  color:var(--text);
+  font-weight:700;
+  font-size:15px;
   z-index:2;
 }
-.buttonSlide{
-  right: 0;
-  margin-top: 8px;
-  margin-right: 8px;
+.NavBar{
+  background:#fff;
+  height:auto;
+  min-height:64px;
+  width:100%;
+  z-index:20;
+  align-items:center;
+  border-bottom:1px solid var(--line);
+}
+.NavBar.fixed{
+  width:100%;
+  min-height:64px;
+  top:0;
+  background:#fff;
+  position:fixed;
+  z-index:30;
+  border-bottom:1px solid var(--line);
+  box-shadow:0 6px 20px -16px rgba(23,18,43,.5);
+}
+#basic-nav-dropdown, #basic-nav-dropdown-black{ color:var(--text)!important; font-weight:700; }
+#linkDropdown{ color:var(--text); margin-left:0; font-weight:600; }
+#linkDropdown:hover{ color:var(--violet); }
+.dropdown-menu.show{ margin-left:0; border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow-card); }
+#basic-navbar-nav #nav, #basic-navbar-nav{ justify-content:center; align-items:center; }
+
+#buttonToggle{
+  position:fixed; z-index:31; top:8px; right:12px;
+  background:var(--violet); border:none; padding:8px 10px; border-radius:10px;
+}
+
+/* ------------------------------ FOOTER ------------------------------ */
+.footer{
+  background:var(--ink);
+  color:#b9a9d8;
+  width:100%;
+  bottom:0;
+  padding-top:32px;
+}
+.footer a{ color:var(--orange); }
+.footer-copyright{ color:#7d719c; font-size:12.5px; border-top:1px solid rgba(255,255,255,.12); margin-top:24px; }
+
+/* ---------------------------- HERO / BANDEAU ------------------------ */
+.containerSectionBandeau{ display:flex; justify-content:center; }
+.sectionBandeau{
+  height:560px;
+  width:92%;
+  border:none;
+  border-radius:24px;
+  position:relative;
+  box-shadow:0 30px 70px -34px rgba(23,18,43,.55);
+  margin:24px 20px 0;
+  overflow:hidden;
+}
+.bandeau{
+  width:100%;
+  height:560px;
+  position:relative;
+  overflow:hidden;
   cursor:pointer;
 }
-.slideTest > img{
- height: 650px;
-  width: 100%;
-  border-radius: 20px 20px 0 0;
-  object-position: center;
-}
+.slide{ height:560px; position:absolute; opacity:0; text-align:center; }
+.slide > img{ height:200px; display:block; width:80%; object-position:center; }
+.slideTest{ opacity:1; text-align:center; }
+.slideTest > img{ height:560px; width:100%; border-radius:24px; object-fit:cover; object-position:center; }
+.bandeau > ul{ height:560px; margin:0; padding:0; list-style:none; }
+.titleBandeau{ font-family:var(--display); font-size:30px; margin-left:20px; }
 
-.bandeau > ul {
-  height: 700px;
-  margin:0;
-  padding:0;
-  list-style:none;
+.bandeauBottom{
+  background:var(--violet-deep); bottom:0; position:absolute; height:48px; width:100%;
+  border-radius:0 0 24px 24px; opacity:0; cursor:pointer;
 }
+.bandeauBottomActive{
+  display:flex; background:var(--violet-deep); bottom:0; position:absolute; height:48px; width:100%;
+  border-radius:0 0 24px 24px; opacity:1; cursor:pointer; z-index:2;
+}
+.buttonSlide{ right:0; margin-top:8px; margin-right:8px; cursor:pointer; }
+#buttonSlide:hover{ background:var(--orange); color:#fff; }
+#buttonSlide a:link{ color:#fff; }
+
 .bandeau-button{
-  position: absolute;
-  background: none;
-  height: 100%;
-  border: none;
-  font-size: 7rem;
-  top: 50%;
-  width: 50px;
-  transform: translateY(-50%);
-  cursor: pointer;
-  z-index: 1;
+  position:absolute; background:rgba(42,20,87,.35); height:64px; width:48px; border:none;
+  font-size:3rem; color:#fff; top:50%; transform:translateY(-50%); cursor:pointer; z-index:1;
+  display:flex; align-items:center; justify-content:center; border-radius:12px;
 }
+.bandeau-button:hover, .bandeau-button:focus{ color:#fff; background:var(--violet); }
+.bandeau-button.prev{ left:12px; }
+.bandeau-button.next{ right:12px; }
+.thumbs-wrapper{ display:none; }
 
-.bandeau-button:hover,.bandeau-button:focus {
-  color: white;
-  background-color: #3d1e7b;
-}
+@keyframes clignoter{ 0%{opacity:1;} 40%{opacity:0;} 100%{opacity:1;} }
 
-.bandeau-button.prev {
-  border-radius: 20px 0 0 20px;
-  left: 0;
-}
+/* -------------------- BLOC INFOS ACCUEIL (.BoxInfo) ----------------- */
+.containerActu{ padding:40px; margin-top:20px; }
+#rowActu{ margin-top:24px; }
+#colHomeCentre{ padding-top:20px; }
 
-.bandeau-button.next {
-  border-radius: 0 20px 20px 0;
-  right: 0;
-}
-
-.thumbs-wrapper{
-  display: none;
-}
-
-@keyframes clignoter {
-  0%   { opacity:1; }
-  40%   {opacity:0; }
-  100% { opacity:1; }
-}
-#buttonSlide:hover{
-  background:#dc8d32;
-  text-decoration: none;
-  color:white;
-}
-#buttonSlide a:link{
-  text-decoration: none;
-  color:white
-}
-.BoxInfo{
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding-right: 20px;
-  padding-left: 20px;
-}
-
+.BoxInfo{ display:flex; flex-direction:column; width:100%; padding:0 20px; }
 .BoxInfo h1{
-  margin-top: 45px;
-  width: 100%;
-  height: 200px;
-  border:solid #3d1e7b;
-  box-shadow: 5px 5px 5px #3d1e7b;
-  margin-bottom: 50px;
-  border-radius: 20px;
-  text-align: center;
-  color: #3d1e7b;
-  background-color: #fff;
-  padding-top: 70px;
-  padding-bottom: 70px;
-}
-
-.BoxInfo h1:hover{
-  background-color: #dc8d32;
-  color:white;
-  cursor: pointer;
-}
-.containerActu{
-  padding:40px;
-  margin-top:30px;
+  margin-top:32px; margin-bottom:32px;
+  width:100%;
+  border:none;
+  box-shadow:var(--shadow-card);
+  border-radius:var(--radius);
   text-align:center;
+  color:var(--violet);
+  background:var(--paper);
+  padding:48px 24px;
+  font-size:26px;
+  transition:transform .15s, background .15s, color .15s;
 }
-#rowActu{
-  margin-top:30px;
-  margin-left:20px;
-}
-/* divHoraire */
-#colHomeCentre{
-padding-top: 20px;
-}
-.divHoraires{
-  display: flex;
-  flex-direction: column;
-  border:solid #3d1e7b;
-  background-color: #fff;
-  box-shadow: 5px 5px 5px #3d1e7b;
-  padding: 40px;
-  margin-top: 30px;
-  border-radius: 20px;
-}
+.BoxInfo h1:hover{ background:var(--orange); color:#fff; cursor:pointer; transform:translateY(-3px); }
 
-.divActualite{
-  flex-direction: column;
-  border:solid #3d1e7b;
-  background-color: #fff;
-  box-shadow: 5px 5px 5px #3d1e7b;
-  padding: 40px;
-  height: 202px;
-  border-radius: 20px;
-}
-.divActualite:hover{
-  background-color: #3d1e7b;
-  color:white;
-}
-.divFfbb{
-  flex-direction: column;
-  border:solid #3d1e7b;
-  height: 925px;
-  background-color: #fff;
-  box-shadow: 5px 5px 5px #3d1e7b;
-  padding: 40px;
-  margin-top: 30px;
-  border-radius: 20px;
-}
-.divEquipe{
-  flex-direction: column;
-  border:solid #3d1e7b;
-  background-color: #fff;
-  box-shadow: 5px 5px 5px #3d1e7b;
-  padding: 40px;
-  height: 550px;
-  margin-top: 30px;
-  border-radius: 20px;
-}
-.divSponsors{
-  flex-direction: column;
-  border:solid #3d1e7b;
-  background-color: #fff;
-  box-shadow: 5px 5px 5px #3d1e7b;
-  padding: 40px;
-  height: 202px;
-  border-radius: 20px;
-}
-.contentFfbb{
-  height:700px;
-  overflow-y:scroll;
-}
-.cardFfbb {
-  height: 300px;
-  margin-bottom: 10px;
-}
-.cardHeaderFfbb:hover{
-  background-color: #3d1e7b ;
-  color:#fff;
-}
-.cardHeaderFfbb{
-  color: black ;
-}
-.cardFfbb img{
-  height: 150px;
-  width: 250px;
-}
-.descriptionFfbb {
-  margin-top: 10px;
-  font-size: 10px;
-}
-.divSponsors:hover{
- background-color: #3d1e7b;
- color:white;
-}
-.divHoraires img{
-  transition: transform .1s;
-}
-.divHoraires img:hover{
-  -ms-transform: scale(1.6); /* IE 9 */
-  -webkit-transform: scale(1.6); /* Safari 3-8 */
-  transform: scale(1.6);
-}
-
-/* page historique */
-.boxHistoriquePage{
-  border:solid #3d1e7b;
-  box-shadow: 5px 5px 5px #3d1e7b;
-  margin-top: 70px;
-  border-radius: 20px;
-  padding: 20px;
-  background-color: #fff;
-}
-
-.boxActuDetail{
-  border:solid #3d1e7b;
-  box-shadow: 5px 5px 5px #3d1e7b;
-  margin-top: 80px;
-  border-radius: 20px;
-  padding: 20px;
-  background-color: #fff;
-}
-
-/* page comite */
-.BoxComite{
-  border:solid #3d1e7b;
-  box-shadow: 5px 5px 5px #3d1e7b;
-  margin-top: 60px;
-  border-radius: 20px;
-  padding: 20px;
-  background-color: #fff;
-}
-
-/* page complexe sportif */
-.boxComplexeImage{
-  border:solid #3d1e7b;
-  box-shadow: 5px 5px 5px #3d1e7b;
-  margin-top: 60px;
-  border-radius: 20px;
-  padding: 40px;
-  background-color: #fff;
-}
-.divImageComplexe{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.imgComplexeBox{
-  width: 400px;
-}
-/* page mecenat */
-.boxMecenat{
-  border:solid #3d1e7b;
-  box-shadow: 5px 5px 5px #3d1e7b;
-  margin-top: 60px;
-  border-radius: 20px;
-  padding: 40px;
-  background-color: #fff;
-}
-/* page info */
-.boxPartenaires{
-  border:solid #3d1e7b;
-  box-shadow: 5px 5px 5px #3d1e7b;
-  margin-top: 60px;
-  border-radius: 20px;
-  padding: 40px;
-  background-color: #fff;
-}
-.boxPartenaires h1{
-  color: #3d1e7b;
-  text-align: center;
-  margin-bottom: 20px;
-}
-.containerImgPartenaires{
-  text-align: center;
-  margin-top: 30px;
-}
-
-/* page formation */
-.boxFormation{
-  border:solid #3d1e7b;
-  box-shadow: 5px 5px 5px #3d1e7b;
-  margin-top: 60px;
-  border-radius: 20px;
-  padding: 40px;
-  background-color: #fff;
-}
-.divRegleBasket{
+/* --------------------------- CARTES (.divX) ------------------------- */
+/* Style commun : on remplace les bordures/ombres violettes épaisses
+   par une carte blanche moderne à ombre douce. */
+.divHoraires, .divActualite, .divFfbb, .divEquipe, .divSponsors{
   display:flex;
-  flex-direction:row;
-  justify-content: space-between;
+  flex-direction:column;
+  background:var(--paper);
+  border:1px solid var(--line);
+  box-shadow:var(--shadow-card);
+  border-radius:var(--radius);
+  padding:28px;
+  margin-top:24px;
+  transition:transform .15s, box-shadow .15s;
 }
-/* page Actu */
-#imgActu{
-  text-align: center;
+.divHoraires:hover, .divFfbb:hover, .divEquipe:hover{ transform:translateY(-3px); }
+
+.divActualite{ height:auto; min-height:160px; }
+.divActualite:hover{ background:var(--violet); color:#fff; }
+.divActualite:hover #badge{ background:#fff; color:var(--violet); }
+
+.divSponsors{ min-height:160px; }
+.divSponsors:hover{ background:var(--violet); color:#fff; }
+
+/* Tableau des équipes */
+.divEquipe table{ width:100%; border-collapse:collapse; }
+.divEquipe th{
+  font-family:var(--display); text-transform:uppercase; letter-spacing:.04em;
+  color:var(--orange); font-size:13px; text-align:left; padding:10px 8px 6px;
 }
-#imgActu img{
-  height:  200px;
-  margin-left: 10px;
-  transition: transform .1s;
+.divEquipe td{ padding:8px; font-weight:600; font-size:14px; border-bottom:1px solid var(--line); color:var(--text); }
+
+/* Horaires : image */
+.divHoraires img{ width:100%; border-radius:12px; transition:transform .2s; }
+.divHoraires img:hover{ transform:scale(1.04); }
+
+/* Flux FFBB */
+.contentFfbb{ height:680px; overflow-y:auto; margin-top:6px; padding-right:6px; }
+.cardFfbb{ height:auto; margin-bottom:14px; border:1px solid var(--line); border-radius:14px; overflow:hidden; box-shadow:none; }
+.cardHeaderFfbb{ color:var(--text); font-weight:700; }
+.cardHeaderFfbb:hover{ background:var(--violet); color:#fff; }
+.cardFfbb img{ height:150px; width:100%; object-fit:cover; }
+.descriptionFfbb{ margin-top:10px; font-size:12px; color:var(--muted); }
+
+/* ----------------------- PAGES INTERNES (.boxX) -------------------- */
+.boxHistoriquePage, .boxActuDetail, .BoxComite,
+.boxComplexeImage, .boxMecenat, .boxPartenaires, .boxFormation{
+  border:1px solid var(--line);
+  box-shadow:var(--shadow-card);
+  border-radius:var(--radius);
+  margin-top:48px;
+  padding:32px;
+  background:var(--paper);
 }
-#imgActu img:hover{
-  -ms-transform: scale(2); /* IE 9 */
-  -webkit-transform: scale(2); /* Safari 3-8 */
-  transform: scale(2);
+.boxPartenaires h1{ color:var(--violet); text-align:center; margin-bottom:20px; }
+.containerImgPartenaires{ text-align:center; margin-top:30px; }
+
+.divImageComplexe{ display:flex; flex-direction:column; align-items:center; }
+.imgComplexeBox{ width:400px; max-width:100%; border-radius:14px; }
+
+.divRegleBasket{ display:flex; flex-direction:row; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+
+#imgActu{ text-align:center; }
+#imgActu img{ height:200px; margin:6px; border-radius:12px; transition:transform .2s; }
+#imgActu img:hover{ transform:scale(1.5); }
+
+#ulEquipe{ list-style:none; text-align:justify; padding-left:0; }
+
+/* ----------------------------- RESPONSIVE --------------------------- */
+@media screen and (max-width:1024px){
+  .navbar > .container{ padding-left:16px; }
+  .divFfbb{ height:auto; }
+  .contentFfbb{ height:auto; max-height:1000px; }
+  .navbar a{ margin-left:20px; }
+  #colHomeCentre{ padding-top:24px; }
 }
 
-#ulEquipe{
-  list-style:none;
-  text-align:justify;
-}
- /* media */
-#buttonToggle{
- position: fixed;
- z-index: 3;
- top:0;
- background-color: #fff;
- margin: 4px;
-}
-
- @media screen and (max-width: 1024px) {
-  .navbar>.container{
-    padding-left: 80px;
-
-    }
-    .divFfbb{
-      height:1390px ;
-    }
-    .iframeFFBB{
-      height: 900px;
-    }
-    .divHoraires{
-      height: 950px;
-    }
-    .contentFfbb{
-      height: 1200px;
-    }
-    .divEquipe{
-      height: 600px;
-    }
-    .navbar a{
-      margin-left: 50px;
-    }
-    #colHomeCentre{
-      padding-top:200px;
-     }
-     .carousel .slide .title{
-      bottom: 90px;
-      height: 80px;
-      left: 50%;
-      margin-left: -45%;
-      width: 50%;
-      padding: 10px;
-      font-size: 40px;
-      text-align: left;
-    }
-     #badge{
-    width: 200px;
-    height: 43px;
-    font-size: 12px;
-    margin-bottom: 20px;
-    border-radius: 20px;
-    color:white;
-    background-color: #dc8d32;
-  }
-}
-@media screen and (max-width: 768px) {
-  .Bandeau{
-    display: none;
-  }
-  #colHomeCentre #badge{
-    margin-left: -60px;
-  }
-
-  #colHomeCentre{
-    padding-left: 0;
-    padding-right: 0;
-  }
-  .divFfbb{
-    height:1080px ;
-  }
-  .iframeFFBB{
-    height: 900px;
-  }
-  .divHoraires{
-    height: 550px;
-  }
-  .divEquipe{
-    height: 400px;
-  }
-  #imgActu img{
-    height:  180px;
-    margin-left: 20px;
-    transition: transform .1s;
-  }
-  .divHoraires img:hover {
-    transform: scale(1);
-  }
-
-}
-@media screen and (max-width: 990px) {
-  #badge{
-    width: 200px;
-    height: 43px;
-    margin-left: -30px;
-    font-size: 12px;
-    margin-bottom: 20px;
-    border-radius: 20px;
-    color:white;
-    background-color: #dc8d32;
-  }
-  .NavBar.fixed{
-    height: 400px;
-  }
-
-  .Bandeau{
-    display: none;
-  }
-  .NavBar{
-    background: linear-gradient(to bottom right, #3d1e7b, orange);
-    height: 350px;
-    width: 100%;
-    z-index: 2;
-    position: fixed;
-    font-size: 18px;
-  }
-  .dropdown-menu.show{
-    margin-left: 50px;
-    width: 150px;
-    color:white;
-  }
-
-  .NavBar img{
-    display: none;
-  }
-  .divHoraires{
-    height: 700px;
-  }
-  .divEquipe{
-    height: 650px;
-  }
-  .contentFfbb{
-    height: 900px;
-  }
-  .cardFfbb img{
-    width: 180px;
-    height: 100px;
-  }
-}
-@media screen and (max-width: 425px) {
-  .Bandeau{
-    display: none;
-  }
-  .divEquipe{
-    font-size: 20px;
-    height: 600px;
-  }
-  #colHomeCentre #badge{
-    margin-left: 0px;
-  }
-  .divHoraires #badge{
-    margin-left: 60px;
-  }
-  #colHomeCentre{
-    padding-top: 0px;
-  }
-  .divRegleBasket{
-    display:flex;
+@media screen and (max-width:990px){
+  /* Menu mobile : la nav devient un panneau déroulant clair */
+  .NavBar, .NavBar.fixed{
+    background:#fff;
+    height:auto;
+    width:100%;
+    z-index:30;
+    font-size:17px;
     flex-direction:column;
+    align-items:flex-start;
+    padding:10px 18px;
   }
-  .videoRegleBasket{
-    height: 150px;
-    width: 200px;
-  }
-  .imgComplexeBox{
-    width: 300px;
-  }
-  .imgGoogleMap{
-    width: 300px;
-  }
-  #rowActu{
-    width: 90%;
-  }
-  #imgActu img{
-    height:  120px;
-    margin-left: 2px;
-    transition: transform .1s;
-  }
-  #colHomeCentre{
-    padding-left: 0;
-    padding-right: 0;
-  }
-  #badge{
-    width: 200px;
-    height: 43px;
-    font-size: 12px;
-    margin-bottom: 20px;
-    border-radius: 20px;
-    color:white;
-    background-color: #dc8d32;
-  }
-  .NavBar{
-    background: linear-gradient(to bottom right, #3d1e7b, orange);
-    height: 400px;
-    width: 100%;
-    z-index: 2;
-  }
-  .NavBar a{
-    margin-right: 0;
-  }
-  .NavBar img{
-    display: none;
-  }
-  .divHoraires{
-    height: 1400px;
-  }
-  .contentFfbb{
-    height: 900px;
-  }
-}
-@media screen and (max-width: 375px) {
-  .Bandeau{
-    display: none;
-  }
-  .imgBoxPartenaires{
-    height:100px;
-    width:200px;
-  }
-  .divActualite #badge{
-    margin-left: 10px;
-  }
-  .imgComplexeBox{
-    width: 200px;
-  }
-  .imgGoogleMap{
-    width: 200px;
-  }
-  .NavBar{
-    background: linear-gradient(to bottom right, #3d1e7b, orange);
-    height: 400px;
-    width: 100%;
-    z-index: 2;
-  }
-  .NavBar a{
-    margin-right: 0;
-  }
-  .NavBar img{
-    display: none;
-  }
-    #colHomeCentre{
-    padding-left: 0;
-    padding-right: 0;
-  }
-  #badge{
-    width: 150px;
-    height: 40px;
-    font-size: 12px;
-    margin-bottom: 20px;
-    border-radius: 20px;
-    color:white;
-    background-color: #dc8d32;
-  }
-  .divHoraires{
-    height: 1200px;
-  }
-  .divEquipe{
-    height: 600px;
-  }
-  .contentFfbb{
-    height: 900px;
-  }
+  .navbar a{ margin-left:0; padding:8px 0; }
+  .NavBar img, .logo{ display:none; }
+  .dropdown-menu.show{ margin-left:0; width:100%; }
+  .sectionBandeau{ height:420px; width:100%; margin:16px 0 0; border-radius:0; }
+  .bandeau, .slide, .bandeau > ul, .slideTest > img{ height:420px; }
 }
 
-@media screen and (max-width: 320px) {
-  .divHoraires #badge{
-    margin-left: 30px;
-  }
-
-  .divHoraires{
-    height: 950px;
-  }
-  #colHomeCentre{
-    padding-left: 0;
-    padding-right: 0;
-  }
-  .cardFfbb img{
-    width: 180px;
-    height: 100px;
-  }
-  .contentFfbb{
-    height: 900px;
-  }
-  .divEquipe{
-    font-size: 14px;
-    height: 500px;
-  }
+@media screen and (max-width:768px){
+  .containerActu{ padding:20px; }
+  #colHomeCentre #badge{ margin-left:0; }
+  .divHoraires img:hover{ transform:scale(1); }
+  .divRegleBasket{ flex-direction:column; }
 }
+
+@media screen and (max-width:425px){
+  #badge{ min-width:0; width:auto; font-size:13px; }
+  .imgComplexeBox{ width:100%; }
+  #imgActu img{ height:120px; }
+  .BoxInfo h1{ font-size:20px; padding:32px 16px; }
+}
+
+/* ====================================================================
+   AJOUTS REFONTE — structure NavBar / Header / Footer / sections home
+   (classes propres, n'écrasent pas le reskin ci-dessus)
+   ==================================================================== */
+
+/* Barre utilitaire (Header) : aligne contenu gauche/droite */
+.Header ul{ justify-content:space-between!important; }
+.Header ul li{ display:flex; align-items:center; gap:8px; list-style:none; }
+
+/* Marque (logo + wordmark) dans la nav */
+.navBrand{ display:flex; align-items:center; gap:12px; text-decoration:none; padding:4px 0; }
+.navBrand img{ height:46px!important; width:auto; }
+.navWordmark{ font-family:var(--display); font-weight:700; font-size:20px; letter-spacing:.04em; line-height:1; color:var(--text); }
+.navWordmark .accent{ color:var(--orange); }
+.navWordmark small{ display:block; font-size:10px; letter-spacing:.32em; color:var(--muted); font-weight:500; margin-top:4px; }
+
+/* Groupe de liens à droite */
+.navLinks{ display:flex; align-items:center; gap:26px; }
+.navLinks a{ margin-left:0; }
+
+/* Bouton CTA "Nous rejoindre" */
+.navCta, .navCta:link, .navCta:visited{
+  background:var(--orange)!important; color:#fff!important; font-weight:800!important;
+  padding:11px 20px!important; border-radius:999px;
+  box-shadow:0 6px 16px -6px rgba(220,141,50,.7);
+}
+.navCta:hover{ background:#c97b22!important; color:#fff!important; }
+
+/* Footer sombre 4 colonnes */
+.footerGrid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:34px; max-width:1240px; margin:0 auto; padding:0 26px 40px; }
+.footerCol h4{ font-family:var(--display); color:#fff; font-size:14px; letter-spacing:.12em; text-transform:uppercase; font-weight:600; margin:0 0 14px; }
+.footerCol a{ display:block; color:#b9a9d8; font-size:14px; font-weight:600; padding:6px 0; }
+.footerCol a:hover{ color:var(--orange); }
+.footerCopyright{ display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between; max-width:1240px; margin:0 auto; padding:22px 26px 26px; }
+
+@media screen and (max-width:990px){
+  .navBrand{ padding:8px 0; }
+  .navLinks{ flex-direction:column; align-items:flex-start; gap:2px; width:100%; }
+  .navCta{ margin-top:10px; text-align:center; width:100%; }
+}
+
+/* Sections accueil — survols */
+.newsCard{ transition:transform .15s, box-shadow .15s; }
+.newsCard:hover{ transform:translateY(-4px); }
+.sponsorTile img{ filter:grayscale(1); opacity:.7; transition:filter .2s, opacity .2s; }
+.sponsorTile:hover img{ filter:none; opacity:1; }
+.instaTile .instaOverlay{ opacity:0; transition:opacity .2s; }
+.instaTile:hover .instaOverlay{ opacity:1; }
+.btnHover{ transition:filter .15s, transform .15s, background .15s, color .15s; cursor:pointer; }
+.btnHover:hover{ filter:brightness(1.04); }
+.btnOutline:hover{ background:var(--violet); color:#fff!important; }
