@@ -17,7 +17,7 @@ export default function Header() {
               display: "inline-block",
             }}
           />
-          Reims · Complexe sportif René Tys
+          Reims · Gymnase Barbusse
         </li>
         <li>
           <Link href="/qui/complexe">Contact</Link>
