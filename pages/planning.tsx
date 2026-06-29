@@ -47,7 +47,7 @@ export default function Planning() {
         <meta name="description" content="Planning des entraînements du RUC Basket Reims." />
       </Head>
 
-      <section style={{ background: 'linear-gradient(115deg,#2a1457,#3d1e7b 60%,#5a2f9e)', color: '#fff', padding: '56px 26px' }}>
+      <section style={{ background: 'radial-gradient(120% 140% at 0% 100%,rgba(220,141,50,.22),transparent 55%),#15141b', color: '#fff', padding: '56px 26px', borderBottom: '3px solid #dc8d32' }}>
         <div style={{ fontFamily: "'Oswald',sans-serif", fontSize: 13, letterSpacing: '.28em', textTransform: 'uppercase', color: '#f0b968', fontWeight: 600, marginBottom: 10 }}>Saison en cours</div>
         <h1 style={{ fontFamily: "'Oswald',sans-serif", fontSize: 'clamp(30px,4.4vw,52px)', fontWeight: 700, textTransform: 'uppercase', margin: 0, letterSpacing: '-.01em' }}>Planning des entraînements</h1>
       </section>
@@ -66,9 +66,9 @@ export default function Planning() {
           </div>
         )}
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 10, marginBottom: 30 }}>
-          <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: '.06em', textTransform: 'uppercase', color: '#726b86' }}>Lieux :</span>
+          <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--muted)' }}>Lieux :</span>
           {gymnases.map((g, i) => (
-            <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#fff', border: '1px solid #eee9f4', color: '#3d1e7b', fontSize: 12, fontWeight: 700, padding: '6px 12px', borderRadius: 999 }}>
+            <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'var(--paper)', border: '1px solid var(--line)', color: 'var(--brand-fg)', fontSize: 12, fontWeight: 700, padding: '6px 12px', borderRadius: 999 }}>
               <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#dc8d32', display: 'inline-block' }} />{g.titre}
             </span>
           ))}
@@ -77,18 +77,18 @@ export default function Planning() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(215px,1fr))', gap: 18, alignItems: 'start' }}>
           {parJour.map((col) => (
             <div key={col.jour} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <div style={{ fontFamily: "'Oswald',sans-serif", textTransform: 'uppercase', fontSize: 17, fontWeight: 600, color: '#1d1730', letterSpacing: '.04em', paddingBottom: 10, borderBottom: '2px solid #dc8d32' }}>{col.jour}</div>
+              <div style={{ fontFamily: "'Oswald',sans-serif", textTransform: 'uppercase', fontSize: 17, fontWeight: 600, color: 'var(--text)', letterSpacing: '.04em', paddingBottom: 10, borderBottom: '2px solid #dc8d32' }}>{col.jour}</div>
               {col.items.map((s) => (
-                <div key={s.id} style={{ background: '#fff', border: '1px solid #eee9f4', borderLeft: '3px solid #dc8d32', borderRadius: 12, padding: '13px 15px', boxShadow: '0 10px 24px -22px rgba(23,18,43,.5)' }}>
-                  <div style={{ fontFamily: "'Oswald',sans-serif", fontWeight: 600, fontSize: 14, color: '#3d1e7b', letterSpacing: '.02em' }}>{s.horaire}</div>
-                  <div style={{ fontWeight: 800, fontSize: 15, color: '#1d1730', marginTop: 3 }}>{(s.equipes || []).map((e: any) => e.nom).join(' · ') || s.categorie}</div>
-                  {s.annees ? <div style={{ fontSize: 12, color: '#726b86', fontWeight: 600, marginTop: 2 }}>{s.annees}</div> : null}
+                <div key={s.id} style={{ background: 'var(--paper)', border: '1px solid var(--line)', borderLeft: '3px solid #dc8d32', borderRadius: 12, padding: '13px 15px', boxShadow: '0 10px 24px -22px rgba(23,18,43,.5)' }}>
+                  <div style={{ fontFamily: "'Oswald',sans-serif", fontWeight: 600, fontSize: 14, color: 'var(--brand-fg)', letterSpacing: '.02em' }}>{s.horaire}</div>
+                  <div style={{ fontWeight: 800, fontSize: 15, color: 'var(--text)', marginTop: 3 }}>{(s.equipes || []).map((e: any) => e.nom).join(' · ') || s.categorie}</div>
+                  {s.annees ? <div style={{ fontSize: 12, color: 'var(--muted)', fontWeight: 600, marginTop: 2 }}>{s.annees}</div> : null}
                   {s.gymnase?.titre ? (
-                    <div style={{ marginTop: 9, display: 'inline-flex', alignItems: 'center', gap: 5, background: '#f1edf8', color: '#3d1e7b', fontSize: 11, fontWeight: 700, padding: '4px 9px', borderRadius: 999 }}>
+                    <div style={{ marginTop: 9, display: 'inline-flex', alignItems: 'center', gap: 5, background: 'var(--paper-2)', color: 'var(--brand-fg)', fontSize: 11, fontWeight: 700, padding: '4px 9px', borderRadius: 999 }}>
                       <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#dc8d32', display: 'inline-block' }} />{s.gymnase.titre}
                     </div>
                   ) : null}
-                  {s.detail ? <div style={{ fontSize: 11, color: '#8a7fa6', marginTop: 9, lineHeight: 1.45, fontWeight: 500 }}>{s.detail}</div> : null}
+                  {s.detail ? <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 9, lineHeight: 1.45, fontWeight: 500 }}>{s.detail}</div> : null}
                 </div>
               ))}
             </div>

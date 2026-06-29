@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 
 export default function NavBar() {
   const [fix, setFix] = useState(false);
+  const { pathname } = useRouter();
+  // Onglet actif (soulignement orange) : exact pour l'accueil, par préfixe sinon.
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/");
 
   useEffect(() => {
     function setFixed() {
@@ -27,9 +32,9 @@ export default function NavBar() {
           </Link>
 
           <div className="navLinks">
-            <Nav.Link href="/">Accueil</Nav.Link>
-            <Nav.Link href="/actus">Actualités</Nav.Link>
-            <Nav.Link href="/resultats">Résultats</Nav.Link>
+            <Nav.Link href="/" active={isActive("/")}>Accueil</Nav.Link>
+            <Nav.Link href="/actus" active={isActive("/actus")}>Actualités</Nav.Link>
+            <Nav.Link href="/resultats" active={isActive("/resultats")}>Résultats</Nav.Link>
             <NavDropdown title="Le club" id="basic-nav-dropdown">
               <NavDropdown.Item id="linkDropdown" href="/qui/historique">
                 Histoire du RUC

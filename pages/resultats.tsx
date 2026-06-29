@@ -104,7 +104,7 @@ export default function Resultats() {
 
       <section style={{ maxWidth: 1100, margin: "0 auto", padding: "44px 26px 80px" }}>
         {loading ? (
-          <div style={{ padding: "40px 0", textAlign: "center", color: "#726b86", fontWeight: 600 }}>
+          <div style={{ padding: "40px 0", textAlign: "center", color: "var(--muted)", fontWeight: 600 }}>
             Chargement des résultats…
           </div>
         ) : cartes.length > 0 ? (
@@ -113,7 +113,7 @@ export default function Resultats() {
               style={{
                 fontSize: 15.5,
                 lineHeight: 1.6,
-                color: "#4a4360",
+                color: "var(--text-soft)",
                 fontWeight: 500,
                 margin: "0 0 22px",
                 maxWidth: 760,
@@ -145,9 +145,9 @@ export default function Resultats() {
                         fontSize: 13.5,
                         padding: "9px 17px",
                         borderRadius: 999,
-                        border: isActive ? "1.5px solid #3d1e7b" : "1.5px solid #e1dcec",
-                        background: isActive ? "#3d1e7b" : "#fff",
-                        color: isActive ? "#fff" : "#3d1e7b",
+                        border: isActive ? "1.5px solid var(--orange)" : "1.5px solid var(--line)",
+                        background: isActive ? "var(--orange)" : "var(--paper-2)",
+                        color: isActive ? "#fff" : "var(--brand-fg)",
                         transition: "background .15s,color .15s",
                       }}
                     >
@@ -165,7 +165,7 @@ export default function Resultats() {
             </div>
 
             {visibles.length === 0 ? (
-              <div style={{ padding: "30px 0", textAlign: "center", color: "#726b86", fontWeight: 600 }}>
+              <div style={{ padding: "30px 0", textAlign: "center", color: "var(--muted)", fontWeight: 600 }}>
                 Aucune équipe dans cette catégorie.
               </div>
             ) : null}
@@ -185,7 +185,7 @@ export default function Resultats() {
               gap: 8,
               fontSize: 14.5,
               fontWeight: 700,
-              color: "#3d1e7b",
+              color: "var(--brand-fg)",
               textDecoration: "none",
               borderBottom: "2px solid #dc8d32",
               paddingBottom: 2,
@@ -207,8 +207,8 @@ function EquipeCard({ carte }: { carte: EquipeCarte }) {
   return (
     <div
       style={{
-        background: "#fff",
-        border: "1px solid #eee9f4",
+        background: "var(--paper)",
+        border: "1px solid var(--line)",
         borderRadius: 18,
         overflow: "hidden",
         boxShadow: "0 14px 34px -24px rgba(23,18,43,.5)",
@@ -217,7 +217,8 @@ function EquipeCard({ carte }: { carte: EquipeCarte }) {
       {/* En-tête équipe */}
       <div
         style={{
-          background: "linear-gradient(115deg,#2a1457,#3d1e7b 70%)",
+          background: "radial-gradient(120% 200% at 0% 0%,rgba(220,141,50,.22),transparent 55%),#15141b",
+          borderBottom: "2px solid #dc8d32",
           color: "#fff",
           padding: "14px 20px",
           display: "flex",
@@ -252,7 +253,7 @@ function EquipeCard({ carte }: { carte: EquipeCarte }) {
             gap: 6,
             flexWrap: "wrap",
             padding: "12px 14px 0",
-            borderBottom: "1px solid #f0ecf6",
+            borderBottom: "1px solid var(--line)",
           }}
         >
           {carte.widgets.map((w, i) => {
@@ -272,8 +273,8 @@ function EquipeCard({ carte }: { carte: EquipeCarte }) {
                   fontSize: 13.5,
                   padding: "9px 15px",
                   borderRadius: "10px 10px 0 0",
-                  background: isActive ? "#3d1e7b" : "#f4f2f8",
-                  color: isActive ? "#fff" : "#3d1e7b",
+                  background: isActive ? "var(--orange)" : "var(--paper-2)",
+                  color: isActive ? "#fff" : "var(--brand-fg)",
                   marginBottom: -1,
                 }}
               >
@@ -327,8 +328,8 @@ function EmptyState() {
   return (
     <div
       style={{
-        background: "#fff",
-        border: "1px solid #eee9f4",
+        background: "var(--paper)",
+        border: "1px solid var(--line)",
         borderRadius: 20,
         padding: "34px 30px",
         boxShadow: "0 18px 40px -28px rgba(23,18,43,.5)",
@@ -351,14 +352,14 @@ function EmptyState() {
           fontFamily: "'Oswald',sans-serif",
           fontSize: "clamp(22px,3vw,30px)",
           fontWeight: 700,
-          color: "#1d1730",
+          color: "var(--text)",
           margin: "8px 0 10px",
           textTransform: "uppercase",
         }}
       >
         Les résultats par catégorie arrivent
       </h2>
-      <p style={{ fontSize: 15, lineHeight: 1.6, color: "#4a4360", fontWeight: 500, maxWidth: 680, margin: "0 0 26px" }}>
+      <p style={{ fontSize: 15, lineHeight: 1.6, color: "var(--text-soft)", fontWeight: 500, maxWidth: 680, margin: "0 0 26px" }}>
         Chaque équipe affichera son <strong>classement</strong>, ses{" "}
         <strong>résultats</strong> et son <strong>calendrier</strong> —
         automatiquement, sans saisie manuelle, grâce aux widgets gratuits de{" "}
@@ -375,7 +376,7 @@ function EmptyState() {
                 width: 30,
                 height: 30,
                 borderRadius: "50%",
-                background: "#3d1e7b",
+                background: "var(--orange)",
                 color: "#fff",
                 fontWeight: 800,
                 fontSize: 14,
@@ -387,8 +388,8 @@ function EmptyState() {
               {i + 1}
             </span>
             <div>
-              <div style={{ fontWeight: 800, color: "#1d1730", fontSize: 15 }}>{s.t}</div>
-              <div style={{ fontSize: 14, lineHeight: 1.55, color: "#726b86", fontWeight: 500 }}>{s.d}</div>
+              <div style={{ fontWeight: 800, color: "var(--text)", fontSize: 15 }}>{s.t}</div>
+              <div style={{ fontSize: 14, lineHeight: 1.55, color: "var(--muted)", fontWeight: 500 }}>{s.d}</div>
             </div>
           </li>
         ))}
@@ -416,8 +417,8 @@ function EmptyState() {
           href="/admin"
           style={{
             background: "none",
-            color: "#3d1e7b",
-            border: "1.5px solid #3d1e7b",
+            color: "var(--brand-fg)",
+            border: "1.5px solid var(--orange)",
             fontWeight: 800,
             fontSize: 14.5,
             padding: "13px 22px",

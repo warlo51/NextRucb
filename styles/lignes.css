@@ -1,0 +1,39 @@
+/* =====================================================================
+   RUC BASKET — LIGNES BLANCHES VERTICALES (trame "affiche")
+   À mettre dans styles/lignes.css et importer dans pages/_app.tsx APRÈS
+   globals.css :
+       import "../styles/globals.css";
+       import "../styles/lignes.css";
+   5 traits verticaux qui descendent du logo (haut-gauche), placés en FOND
+   du conteneur racine → toujours DERRIÈRE les composants, non répétés.
+   ===================================================================== */
+
+html, body { background:#101015; }
+
+/* La trame est posée sur #__next (présent sur toutes les pages Next). */
+#__next{
+  background-color:#101015;
+  background-image:
+    linear-gradient(rgba(255,255,255,.06),rgba(255,255,255,.06)),
+    linear-gradient(rgba(255,255,255,.11),rgba(255,255,255,.11)),
+    linear-gradient(rgba(255,255,255,.17),rgba(255,255,255,.17)),
+    linear-gradient(rgba(255,255,255,.10),rgba(255,255,255,.10)),
+    linear-gradient(rgba(255,255,255,.06),rgba(255,255,255,.06));
+  background-repeat:no-repeat;
+  background-size:3px 100%,3px 100%,4px 100%,3px 100%,3px 100%;
+  background-position:34px 0,46px 0,58px 0,71px 0,83px 0;
+}
+
+/* IMPORTANT : pour que les lignes se voient, le conteneur du Layout qui
+   enveloppe {children} doit être TRANSPARENT (sinon il masque #__next).
+   Si besoin, ajoute la classe .trame-host à ce wrapper dans Layout.tsx
+   et il restera transparent : */
+.trame-host{ background:transparent !important; }
+
+/* Rappels :
+   - Les sections à fond OPAQUE (Valeurs #2a1457, cartes #1b1a22, CTA,
+     footer) masquent les lignes → voulu (elles passent derrière).
+   - Les sections SANS fond (Actualités, 3 cartes, Instagram) les laissent
+     voir.
+   Réglages : background-position (placement), background-size (épaisseur),
+   alpha des linear-gradient (intensité). */

@@ -180,108 +180,53 @@ const Home: NextPage = () => {
       </Head>
 
       {/* ============================ HERO ============================ */}
-      <section
-        style={{
-          position: "relative",
-          backgroundImage: `linear-gradient(105deg,rgba(42,20,87,.94) 0%,rgba(42,20,87,.62) 48%,rgba(220,141,50,.30) 100%),url('${bandeau || "/gymnase3.jpg"}')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          color: "#fff",
-          padding: "78px 26px 92px",
-          overflow: "hidden",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            top: -60,
-            right: -40,
-            width: 240,
-            height: 240,
-            border: "2px solid rgba(220,141,50,.4)",
-            borderRadius: "50%",
-          }}
-        />
-        <div style={{ position: "relative", zIndex: 2, maxWidth: 680 }}>
-          <div
+        <section
             style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 9,
-              fontFamily: "'Oswald',sans-serif",
-              fontSize: 13,
-              letterSpacing: ".28em",
-              textTransform: "uppercase",
-              color: "#f0b968",
-              fontWeight: 600,
-              marginBottom: 20,
+                position: "relative",
+                overflow: "hidden",
+                background: "#15141b",
+                display: "flex",
+                alignItems: "stretch",
+                minHeight: 600,
             }}
-          >
-            <span style={{ width: 26, height: 2, background: "#dc8d32", display: "inline-block" }} />
-            RUC Basket · depuis 2003
-          </div>
-          <h1
-            style={{
-              fontFamily: "'Oswald',sans-serif",
-              fontWeight: 700,
-              fontSize: "clamp(38px,6.2vw,68px)",
-              lineHeight: 1.02,
-              margin: "0 0 20px",
-              letterSpacing: "-.005em",
-              textTransform: "uppercase",
-            }}
-          >
-            Grandir ensemble,
-            <br />
-            <span style={{ color: "#f0a93f" }}>gagner ensemble.</span>
-          </h1>
-          <p
-            style={{
-              fontSize: "clamp(16px,1.6vw,19px)",
-              lineHeight: 1.55,
-              color: "#e7ddf6",
-              maxWidth: 540,
-              margin: "0 0 34px",
-              fontWeight: 500,
-            }}
-          >
-            Club de basket formateur à Reims — de l'école de basket aux seniors. Compétition,
-            respect et convivialité au cœur du jeu.
-          </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
-            <Link
-              href="/qui/historique"
-              className="btnHover"
-              style={{
-                background: "#dc8d32",
-                color: "#fff",
-                fontWeight: 800,
-                fontSize: 16,
-                padding: "16px 30px",
-                borderRadius: 999,
-                boxShadow: "0 12px 30px -10px rgba(220,141,50,.8)",
-              }}
-            >
-              Rejoindre le club
-            </Link>
-            <Link
-              href="/actus"
-              className="btnHover"
-              style={{
-                background: "rgba(255,255,255,.12)",
-                border: "1.5px solid rgba(255,255,255,.5)",
-                color: "#fff",
-                fontWeight: 700,
-                fontSize: 16,
-                padding: "16px 30px",
-                borderRadius: 999,
-              }}
-            >
-              Voir les actualités
-            </Link>
-          </div>
-        </div>
-      </section>
+        >
+            {/* halo orange + bande orange diagonale en bas */}
+            <div style={{ position: "absolute", left: -140, bottom: -160, width: 480, height: 480, borderRadius: "50%", background: "radial-gradient(circle,rgba(220,141,50,.42),transparent 62%)", filter: "blur(10px)" }} />
+            <div style={{ position: "absolute", right: 0, bottom: 0, left: 0, height: 80, background: "#dc8d32", clipPath: "polygon(0 50%,100% 0,100% 100%,0 100%)", opacity: 0.96 }} />
+
+            {/* Texte */}
+            <div style={{ position: "relative", zIndex: 3, flex: 1, minWidth: 0, maxWidth: 720, padding: "64px 30px 80px 56px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 10, fontFamily: "'Oswald',sans-serif", fontSize: 12.5, letterSpacing: ".28em", textTransform: "uppercase", color: "#f0b968", fontWeight: 600, marginBottom: 22 }}>
+                    <span style={{ width: 26, height: 2, background: "#dc8d32", display: "inline-block" }} />
+                    RUC Basket · Reims · depuis 2003
+                </div>
+                <h1 style={{ fontFamily: "'Oswald',sans-serif", fontWeight: 700, fontSize: "clamp(38px,6.2vw,68px)", lineHeight: 1.02, margin: 0, textTransform: "uppercase" }}>
+                    Grandir ensemble,
+                    <br />
+                    <span style={{ color: "#f0a93f" }}>gagner ensemble.</span>
+                </h1>
+                <p style={{ color: "#c4bdd4", fontSize: 17, lineHeight: 1.55, fontWeight: 500, maxWidth: 480, margin: "22px 0 30px" }}>
+                    Club de basket formateur à Reims — de l'école de basket aux seniors. Compétition, respect et convivialité au cœur du jeu.
+                </p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
+                    <Link href="/qui/historique" className="btnHover" style={{ background: "#dc8d32", color: "#fff", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, boxShadow: "0 12px 30px -10px rgba(220,141,50,.8)" }}>
+                        Rejoindre le club
+                    </Link>
+                    <Link href="/actus" className="btnHover" style={{ background: "rgba(255,255,255,.1)", border: "1.5px solid rgba(255,255,255,.45)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "16px 30px", borderRadius: 999 }}>
+                        Voir les actualités
+                    </Link>
+                </div>
+            </div>
+
+            {/* Personnage (table `bandeau`) — PNG transparent posé à droite */}
+            <div style={{ position: "relative", zIndex: 3, width: 480, flexShrink: 0, alignSelf: "stretch" }}>
+                <img
+                    src={bandeau || "/dunk.png"}
+                    alt="Joueur RUCB"
+                    style={{ position: "absolute", right: 10, bottom: 0, height: "100%", width: "auto", maxWidth: "none", objectFit: "contain", objectPosition: "bottom right", filter: "drop-shadow(0 18px 28px rgba(0,0,0,.55))" }}
+                />
+            </div>
+        </section>
 
       {/* =========================== VALEURS ========================== */}
       <section style={{ background: "#2a1457" }}>
@@ -364,7 +309,7 @@ const Home: NextPage = () => {
                 fontWeight: 700,
                 textTransform: "uppercase",
                 margin: "6px 0 0",
-                color: "#1d1730",
+                color: "var(--text)",
                 letterSpacing: "-.01em",
               }}
             >
@@ -373,14 +318,14 @@ const Home: NextPage = () => {
           </div>
           <Link
             href="/actus"
-            style={{ color: "#3d1e7b", fontWeight: 800, fontSize: 14.5 }}
+            style={{ color: "var(--brand-fg)", fontWeight: 800, fontSize: 14.5 }}
           >
             Toutes les actus →
           </Link>
         </div>
 
         {actus.length === 0 ? (
-          <p style={{ color: "#726b86", fontWeight: 500 }}>
+          <p style={{ color: "var(--muted)", fontWeight: 500 }}>
             Les actualités du club arrivent bientôt.
           </p>
         ) : (
@@ -398,8 +343,8 @@ const Home: NextPage = () => {
                 className="newsCard"
                 style={{
                   color: "inherit",
-                  background: "#fff",
-                  border: "1px solid #eee9f4",
+                  background: "var(--paper)",
+                  border: "1px solid var(--line)",
                   borderRadius: 18,
                   overflow: "hidden",
                   boxShadow: "0 14px 34px -22px rgba(23,18,43,.5)",
@@ -413,7 +358,7 @@ const Home: NextPage = () => {
                       height: 180,
                       backgroundImage: n.image_url
                         ? `url('${n.image_url}')`
-                        : "repeating-linear-gradient(45deg,#efeaf6,#efeaf6 10px,#e7e0f1 10px,#e7e0f1 20px)",
+                        : "repeating-linear-gradient(45deg,var(--paper-2),var(--paper-2) 10px,var(--line) 10px,var(--line) 20px)",
                       backgroundSize: "cover",
                       backgroundPosition: "center",
                     }}
@@ -424,7 +369,7 @@ const Home: NextPage = () => {
                         position: "absolute",
                         top: 14,
                         left: 14,
-                        background: "#3d1e7b",
+                        background: "var(--orange)",
                         color: "#fff",
                         fontSize: 11,
                         fontWeight: 800,
@@ -457,12 +402,12 @@ const Home: NextPage = () => {
                       fontWeight: 600,
                       lineHeight: 1.18,
                       margin: 0,
-                      color: "#1d1730",
+                      color: "var(--text)",
                     }}
                   >
                     {n.titre}
                   </h3>
-                  <p style={{ fontSize: 14, lineHeight: 1.55, color: "#726b86", margin: 0, fontWeight: 500 }}>
+                  <p style={{ fontSize: 14, lineHeight: 1.55, color: "var(--muted)", margin: 0, fontWeight: 500 }}>
                     {n.extrait}
                   </p>
                 </div>
@@ -485,14 +430,14 @@ const Home: NextPage = () => {
           {/* Entraînements */}
           <div
             style={{
-              background: "#fff",
+              background: "var(--paper)",
               borderRadius: 18,
-              border: "1px solid #eee9f4",
+              border: "1px solid var(--line)",
               boxShadow: "0 14px 34px -26px rgba(23,18,43,.5)",
               overflow: "hidden",
             }}
           >
-            <div style={{ background: "linear-gradient(120deg,#3d1e7b,#5a35a0)", padding: "22px 24px" }}>
+            <div style={{ background: "transparent", padding: "22px 24px" }}>
               <div
                 style={{
                   fontFamily: "'Oswald',sans-serif",
@@ -505,13 +450,13 @@ const Home: NextPage = () => {
               >
                 Entraînements
               </div>
-              <div style={{ fontSize: 13, color: "#cdbce8", fontWeight: 600, marginTop: 3 }}>
+              <div style={{ fontSize: 13, color: "var(--muted)", fontWeight: 600, marginTop: 3 }}>
                 Créneaux de la saison
               </div>
             </div>
             <div style={{ padding: "10px 22px 22px" }}>
               {creneauxParJour.length === 0 ? (
-                <div style={{ padding: "13px 0", color: "#726b86", fontWeight: 600, fontSize: 14 }}>
+                <div style={{ padding: "13px 0", color: "var(--muted)", fontWeight: 600, fontSize: 14 }}>
                   Planning disponible sur la page dédiée.
                 </div>
               ) : (
@@ -523,11 +468,11 @@ const Home: NextPage = () => {
                       alignItems: "center",
                       justifyContent: "space-between",
                       padding: "13px 0",
-                      borderBottom: "1px solid #f0edf6",
+                      borderBottom: "1px solid var(--line)",
                     }}
                   >
-                    <span style={{ fontWeight: 700, fontSize: 14.5, color: "#1d1730" }}>{c.jour}</span>
-                    <span style={{ fontSize: 13, color: "#726b86", fontWeight: 600 }}>
+                    <span style={{ fontWeight: 700, fontSize: 14.5, color: "var(--text)" }}>{c.jour}</span>
+                    <span style={{ fontSize: 13, color: "var(--muted)", fontWeight: 600 }}>
                       {c.count} séance{c.count > 1 ? "s" : ""}
                     </span>
                   </div>
@@ -539,11 +484,11 @@ const Home: NextPage = () => {
                 style={{
                   display: "block",
                   textAlign: "center",
-                  color: "#3d1e7b",
+                  color: "var(--brand-fg)",
                   fontWeight: 800,
                   fontSize: 14,
                   marginTop: 18,
-                  border: "1.5px solid #3d1e7b",
+                  border: "1.5px solid var(--orange)",
                   padding: 12,
                   borderRadius: 999,
                   transition: "background .15s,color .15s",
@@ -557,14 +502,14 @@ const Home: NextPage = () => {
           {/* Nos équipes */}
           <div
             style={{
-              background: "#fff",
+              background: "var(--paper)",
               borderRadius: 18,
-              border: "1px solid #eee9f4",
+              border: "1px solid var(--line)",
               boxShadow: "0 14px 34px -26px rgba(23,18,43,.5)",
               overflow: "hidden",
             }}
           >
-            <div style={{ background: "linear-gradient(120deg,#3d1e7b,#5a35a0)", padding: "22px 24px" }}>
+            <div style={{ background: "transparent", padding: "22px 24px" }}>
               <div
                 style={{
                   fontFamily: "'Oswald',sans-serif",
@@ -577,7 +522,7 @@ const Home: NextPage = () => {
               >
                 Nos équipes
               </div>
-              <div style={{ fontSize: 13, color: "#cdbce8", fontWeight: 600, marginTop: 3 }}>
+              <div style={{ fontSize: 13, color: "var(--muted)", fontWeight: 600, marginTop: 3 }}>
                 De l'U7 aux seniors
               </div>
             </div>
@@ -601,8 +546,8 @@ const Home: NextPage = () => {
                       <span
                         key={cat}
                         style={{
-                          background: "#f1edf8",
-                          color: "#3d1e7b",
+                          background: "var(--paper-2)",
+                          color: "var(--brand-fg)",
                           fontWeight: 700,
                           fontSize: 13,
                           padding: "7px 13px",
@@ -621,16 +566,16 @@ const Home: NextPage = () => {
           {/* Actu FFBB */}
           <div
             style={{
-              background: "#fff",
+              background: "var(--paper)",
               borderRadius: 18,
-              border: "1px solid #eee9f4",
+              border: "1px solid var(--line)",
               boxShadow: "0 14px 34px -26px rgba(23,18,43,.5)",
               overflow: "hidden",
             }}
           >
             <div
               style={{
-                background: "linear-gradient(120deg,#3d1e7b,#5a35a0)",
+                background: "transparent",
                 padding: "22px 24px",
                 display: "flex",
                 alignItems: "center",
@@ -650,7 +595,7 @@ const Home: NextPage = () => {
                 >
                   Actu FFBB
                 </div>
-                <div style={{ fontSize: 13, color: "#cdbce8", fontWeight: 600, marginTop: 3 }}>
+                <div style={{ fontSize: 13, color: "var(--muted)", fontWeight: 600, marginTop: 3 }}>
                   Fil fédéral
                 </div>
               </div>
@@ -662,7 +607,7 @@ const Home: NextPage = () => {
             </div>
             <div style={{ padding: "8px 22px 22px" }}>
               {ffbb.length === 0 ? (
-                <div style={{ padding: "14px 0", color: "#726b86", fontWeight: 600, fontSize: 14 }}>
+                <div style={{ padding: "14px 0", color: "var(--muted)", fontWeight: 600, fontSize: 14 }}>
                   Fil fédéral momentanément indisponible.
                 </div>
               ) : (
@@ -672,7 +617,7 @@ const Home: NextPage = () => {
                     href={f.link}
                     target="_blank"
                     rel="noreferrer"
-                    style={{ display: "block", padding: "14px 0", borderBottom: "1px solid #f0edf6" }}
+                    style={{ display: "block", padding: "14px 0", borderBottom: "1px solid var(--line)" }}
                   >
                     <div
                       style={{
@@ -686,7 +631,7 @@ const Home: NextPage = () => {
                     >
                       FFBB
                     </div>
-                    <div style={{ fontWeight: 700, fontSize: 14.5, color: "#1d1730", lineHeight: 1.3 }}>
+                    <div style={{ fontWeight: 700, fontSize: 14.5, color: "var(--text)", lineHeight: 1.3 }}>
                       {f.title}
                     </div>
                   </a>
@@ -729,13 +674,13 @@ const Home: NextPage = () => {
                 fontWeight: 700,
                 textTransform: "uppercase",
                 margin: "6px 0 0",
-                color: "#1d1730",
+                color: "var(--text)",
                 letterSpacing: "-.01em",
               }}
             >
               Sur Instagram
             </h2>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#3d1e7b", marginTop: 6 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "var(--brand-fg)", marginTop: 6 }}>
               @{IG_HANDLE}
             </div>
           </div>
@@ -780,7 +725,7 @@ const Home: NextPage = () => {
                 aspectRatio: "1/1",
                 borderRadius: 14,
                 overflow: "hidden",
-                background: "#efeaf6",
+                background: "var(--paper-2)",
                 display: "block",
               }}
             >
@@ -861,9 +806,9 @@ const Home: NextPage = () => {
       {/* ========================== SPONSORS ========================== */}
       <section
         style={{
-          background: "#fff",
-          borderTop: "1px solid #eee9f4",
-          borderBottom: "1px solid #eee9f4",
+          background: "var(--paper)",
+          borderTop: "1px solid var(--line)",
+          borderBottom: "1px solid var(--line)",
           padding: "48px 26px",
         }}
       >
@@ -887,7 +832,7 @@ const Home: NextPage = () => {
               fontWeight: 700,
               textTransform: "uppercase",
               margin: "6px 0 0",
-              color: "#1d1730",
+              color: "var(--text)",
             }}
           >
             Ils nous soutiennent
@@ -913,7 +858,7 @@ const Home: NextPage = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 background: "#faf9fc",
-                border: "1px solid #eee9f4",
+                border: "1px solid var(--line)",
                 borderRadius: 14,
                 padding: 14,
               }}

@@ -9,12 +9,22 @@ type Props = {
 
 // En-tête de page : bande dégradée + kicker + H1 (reprend la maquette refonte).
 export default function PageHeader({ kicker, title, variant = "violet" }: Props) {
-  const background =
+  // Bandeau anthracite + halo/bande orange (cohérent avec le hero et la maquette).
+  const accent =
     variant === "club"
-      ? "linear-gradient(105deg,#2a1457,#3d1e7b 55%,rgba(220,141,50,.85))"
-      : "linear-gradient(115deg,#2a1457,#3d1e7b 60%,#5a2f9e)";
+      ? "radial-gradient(120% 140% at 100% 0%,rgba(220,141,50,.28),transparent 55%)"
+      : "radial-gradient(120% 140% at 0% 100%,rgba(220,141,50,.22),transparent 55%)";
   return (
-    <section style={{ background, color: "#fff", padding: "56px 26px" }}>
+    <section
+      style={{
+        position: "relative",
+        overflow: "hidden",
+        background: `${accent},#15141b`,
+        color: "#fff",
+        padding: "56px 26px",
+        borderBottom: "3px solid #dc8d32",
+      }}
+    >
       {kicker ? (
         <div
           style={{

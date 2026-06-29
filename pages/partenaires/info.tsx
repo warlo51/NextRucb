@@ -94,7 +94,7 @@ export default function PartenairesInfo() {
           style={{
             fontSize: 16,
             lineHeight: 1.65,
-            color: "#4a4360",
+            color: "var(--text-soft)",
             fontWeight: 500,
             maxWidth: 640,
             margin: "0 0 34px",
@@ -118,8 +118,8 @@ export default function PartenairesInfo() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  background: "#fff",
-                  border: "1px solid #eee9f4",
+                  background: "#faf9fc",
+                  border: "1px solid var(--line)",
                   borderRadius: 16,
                   padding: 20,
                   boxShadow: "0 14px 34px -28px rgba(23,18,43,.5)",
@@ -153,9 +153,9 @@ export default function PartenairesInfo() {
         >
           <div
             style={{
-              background: "#fff",
+              background: "var(--paper)",
               borderRadius: 18,
-              border: "1px solid #eee9f4",
+              border: "1px solid var(--line)",
               borderLeft: "4px solid #dc8d32",
               padding: 30,
               boxShadow: "0 14px 34px -28px rgba(23,18,43,.5)",
@@ -167,23 +167,23 @@ export default function PartenairesInfo() {
                 fontSize: 22,
                 fontWeight: 600,
                 textTransform: "uppercase",
-                color: "#3d1e7b",
+                color: "var(--brand-fg)",
                 margin: "0 0 12px",
               }}
             >
               Mécénat
             </h3>
-            <p style={{ fontSize: 15, lineHeight: 1.6, color: "#4a4360", fontWeight: 500, margin: 0 }}>
+            <p style={{ fontSize: 15, lineHeight: 1.6, color: "var(--text-soft)", fontWeight: 500, margin: 0 }}>
               Soutenez un projet associatif local et bénéficiez d'une réduction d'impôt. Votre don
               finance la formation des jeunes et l'achat d'équipements.
             </p>
           </div>
           <div
             style={{
-              background: "#fff",
+              background: "var(--paper)",
               borderRadius: 18,
-              border: "1px solid #eee9f4",
-              borderLeft: "4px solid #3d1e7b",
+              border: "1px solid var(--line)",
+              borderLeft: "4px solid var(--orange)",
               padding: 30,
               boxShadow: "0 14px 34px -28px rgba(23,18,43,.5)",
             }}
@@ -194,7 +194,7 @@ export default function PartenairesInfo() {
                 fontSize: 22,
                 fontWeight: 600,
                 textTransform: "uppercase",
-                color: "#3d1e7b",
+                color: "var(--brand-fg)",
                 margin: "0 0 12px",
               }}
             >
@@ -204,7 +204,7 @@ export default function PartenairesInfo() {
               style={{
                 fontSize: 15,
                 lineHeight: 1.6,
-                color: "#4a4360",
+                color: "var(--text-soft)",
                 fontWeight: 500,
                 margin: "0 0 18px",
               }}

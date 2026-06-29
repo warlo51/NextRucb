@@ -10,18 +10,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 :root{
+  /* Couleurs de marque (conservées : utilisées dans les dégradés, badges, états actifs) */
   --violet:#3d1e7b;
   --violet-deep:#2a1457;
   --violet-soft:#5a35a0;
-  --ink:#17122b;
   --orange:#dc8d32;
   --orange-bright:#f0a93f;
-  --bg:#f4f2f8;
-  --paper:#ffffff;
-  --text:#1d1730;
-  --muted:#726b86;
-  --line:#eee9f4;
-  --shadow-card:0 14px 34px -26px rgba(23,18,43,.5);
+
+  /* ---- THÈME SOMBRE ANTHRACITE + ORANGE ---- */
+  --ink:#0a090d;          /* le plus foncé : pied de page */
+  --bg:#0d0c11;           /* fond de page (anthracite quasi noir) */
+  --paper:#15141b;        /* surfaces / cartes / panneaux (teinte des blocs) */
+  --paper-2:#211f2a;      /* surface surélevée : puces, onglets inactifs, placeholders */
+  --text:#f4f2f7;         /* texte principal (titres) */
+  --text-soft:#d3d0da;    /* corps de texte */
+  --muted:#9a93a6;        /* texte secondaire / méta (gris des sous-titres) */
+  --line:#2a2833;         /* bordures / séparateurs */
+  --brand-fg:#e6a24a;     /* accent texte chaud (orange clair) lisible sur fond sombre */
+
+  --shadow-card:0 14px 34px -20px rgba(0,0,0,.7);
   --radius:18px;
   --display:'Oswald',system-ui,sans-serif;
   --body:'Manrope',system-ui,sans-serif;
@@ -92,29 +99,36 @@ h1,h2,h3{ font-family:var(--display); text-transform:uppercase; letter-spacing:-
   z-index:2;
 }
 .NavBar{
-  background:#fff;
+  background:var(--paper);
   height:auto;
   min-height:64px;
   width:100%;
   z-index:20;
   align-items:center;
+  padding-left:26px;
+  padding-right:26px;
   border-bottom:1px solid var(--line);
 }
 .NavBar.fixed{
   width:100%;
   min-height:64px;
   top:0;
-  background:#fff;
+  background:var(--paper);
   position:fixed;
   z-index:30;
   border-bottom:1px solid var(--line);
   box-shadow:0 6px 20px -16px rgba(23,18,43,.5);
 }
-#basic-nav-dropdown, #basic-nav-dropdown-black{ color:var(--text)!important; font-weight:700; }
+#basic-nav-dropdown, #basic-nav-dropdown-black{ color:var(--muted)!important; font-weight:700; }
+#basic-nav-dropdown:hover, #basic-nav-dropdown-black:hover{ color:#fff!important; }
 #linkDropdown{ color:var(--text); margin-left:0; font-weight:600; }
-#linkDropdown:hover{ color:var(--violet); }
-.dropdown-menu.show{ margin-left:0; border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow-card); }
-#basic-navbar-nav #nav, #basic-navbar-nav{ justify-content:center; align-items:center; }
+#linkDropdown:hover{ color:var(--orange); }
+.dropdown-menu, .dropdown-menu.show{ margin-left:0; background:var(--paper)!important; border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow-card); }
+.dropdown-menu .dropdown-item{ color:var(--text); }
+.dropdown-menu .dropdown-item:hover, .dropdown-menu .dropdown-item:focus{ background:var(--paper-2); color:var(--orange); }
+#basic-navbar-nav{ justify-content:flex-start; align-items:center; }
+#basic-navbar-nav #nav{ flex:1 1 auto; width:100%; justify-content:space-between; align-items:center; }
+.navbar a.navBrand{ margin-left:0; }
 
 #buttonToggle{
   position:fixed; z-index:31; top:8px; right:12px;
@@ -124,13 +138,13 @@ h1,h2,h3{ font-family:var(--display); text-transform:uppercase; letter-spacing:-
 /* ------------------------------ FOOTER ------------------------------ */
 .footer{
   background:var(--ink);
-  color:#b9a9d8;
+  color:var(--muted);
   width:100%;
   bottom:0;
   padding-top:32px;
 }
 .footer a{ color:var(--orange); }
-.footer-copyright{ color:#7d719c; font-size:12.5px; border-top:1px solid rgba(255,255,255,.12); margin-top:24px; }
+.footer-copyright{ color:#6e6878; font-size:12.5px; border-top:1px solid rgba(255,255,255,.1); margin-top:24px; }
 
 /* ---------------------------- HERO / BANDEAU ------------------------ */
 .containerSectionBandeau{ display:flex; justify-content:center; }
@@ -195,7 +209,7 @@ h1,h2,h3{ font-family:var(--display); text-transform:uppercase; letter-spacing:-
   box-shadow:var(--shadow-card);
   border-radius:var(--radius);
   text-align:center;
-  color:var(--violet);
+  color:var(--brand-fg);
   background:var(--paper);
   padding:48px 24px;
   font-size:26px;
@@ -256,7 +270,7 @@ h1,h2,h3{ font-family:var(--display); text-transform:uppercase; letter-spacing:-
   padding:32px;
   background:var(--paper);
 }
-.boxPartenaires h1{ color:var(--violet); text-align:center; margin-bottom:20px; }
+.boxPartenaires h1{ color:var(--brand-fg); text-align:center; margin-bottom:20px; }
 .containerImgPartenaires{ text-align:center; margin-top:30px; }
 
 .divImageComplexe{ display:flex; flex-direction:column; align-items:center; }
@@ -280,9 +294,9 @@ h1,h2,h3{ font-family:var(--display); text-transform:uppercase; letter-spacing:-
 }
 
 @media screen and (max-width:990px){
-  /* Menu mobile : la nav devient un panneau déroulant clair */
+  /* Menu mobile : la nav devient un panneau déroulant sombre */
   .NavBar, .NavBar.fixed{
-    background:#fff;
+    background:var(--paper);
     height:auto;
     width:100%;
     z-index:30;
@@ -329,8 +343,19 @@ h1,h2,h3{ font-family:var(--display); text-transform:uppercase; letter-spacing:-
 .navWordmark small{ display:block; font-size:10px; letter-spacing:.32em; color:var(--muted); font-weight:500; margin-top:4px; }
 
 /* Groupe de liens à droite */
-.navLinks{ display:flex; align-items:center; gap:26px; }
+.navLinks{ display:flex; align-items:center; gap:30px; }
 .navLinks a{ margin-left:0; }
+/* Liens : gris au repos, blanc + soulignement orange sur l'actif (cible navbar) */
+.navLinks .nav-link{ position:relative; color:var(--muted)!important; font-weight:700; padding:6px 0; }
+.navLinks .nav-link:hover{ color:var(--text)!important; }
+.navLinks .nav-link.active{ color:#fff!important; }
+.navLinks .nav-link.active::after{
+  content:""; position:absolute; left:0; right:0; bottom:-4px;
+  height:3px; border-radius:2px; background:var(--orange);
+}
+/* Le bouton CTA n'est pas concerné par le style de lien ci-dessus */
+.navLinks .nav-link.navCta, .navLinks .nav-link.navCta.active{ color:#fff!important; padding:11px 20px!important; }
+.navLinks .nav-link.navCta.active::after{ display:none; }
 
 /* Bouton CTA "Nous rejoindre" */
 .navCta, .navCta:link, .navCta:visited{
@@ -343,7 +368,7 @@ h1,h2,h3{ font-family:var(--display); text-transform:uppercase; letter-spacing:-
 /* Footer sombre 4 colonnes */
 .footerGrid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:34px; max-width:1240px; margin:0 auto; padding:0 26px 40px; }
 .footerCol h4{ font-family:var(--display); color:#fff; font-size:14px; letter-spacing:.12em; text-transform:uppercase; font-weight:600; margin:0 0 14px; }
-.footerCol a{ display:block; color:#b9a9d8; font-size:14px; font-weight:600; padding:6px 0; }
+.footerCol a{ display:block; color:var(--muted); font-size:14px; font-weight:600; padding:6px 0; }
 .footerCol a:hover{ color:var(--orange); }
 .footerCopyright{ display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between; max-width:1240px; margin:0 auto; padding:22px 26px 26px; }
 
@@ -362,4 +387,4 @@ h1,h2,h3{ font-family:var(--display); text-transform:uppercase; letter-spacing:-
 .instaTile:hover .instaOverlay{ opacity:1; }
 .btnHover{ transition:filter .15s, transform .15s, background .15s, color .15s; cursor:pointer; }
 .btnHover:hover{ filter:brightness(1.04); }
-.btnOutline:hover{ background:var(--violet); color:#fff!important; }
+.btnOutline:hover{ background:var(--orange); color:#fff!important; border-color:var(--orange)!important; }
