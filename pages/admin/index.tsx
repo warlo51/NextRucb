@@ -15,6 +15,7 @@ const SECTIONS = [
   { key: 'complexe', label: 'Complexe' },
   { key: 'mecenat', label: 'Mécénat' },
   { key: 'equipe', label: 'Équipes' },
+  { key: 'resultats', label: 'Résultats' },
   { key: 'bandeau', label: 'Accueil' },
 ];
 
@@ -58,6 +59,7 @@ export default function Admin() {
   const [mecenats, setMecenats] = React.useState<any[]>([]);
   const [equipes, setEquipes] = React.useState<any[]>([]);
   const [bandeaux, setBandeaux] = React.useState<any[]>([]);
+  const [resultats, setResultats] = React.useState<any[]>([]);
 
   const [cForm, setCForm] = React.useState<any>(null);   // créneau
   const [aForm, setAForm] = React.useState<any>(null);   // actu
@@ -68,6 +70,7 @@ export default function Admin() {
   const [gForm, setGForm] = React.useState<any>(null);   // photo complexe (galerie)
   const [meForm, setMeForm] = React.useState<any>(null); // article mécénat
   const [eqForm, setEqForm] = React.useState<any>(null); // équipe
+  const [rForm, setRForm] = React.useState<any>(null);   // résultats (widgets équipe)
 
   // --- Auth ---
   React.useEffect(() => {
@@ -85,7 +88,7 @@ export default function Admin() {
   }, []);
 
   async function load() {
-    const [{ data: cr }, { data: gy }, { data: ac }, { data: pa }, { data: co }, { data: en }, { data: fo }, { data: hi }, { data: sf }, { data: cp }, { data: me }, { data: eq }, { data: lf }, { data: bn }] = await Promise.all([
+    const [{ data: cr }, { data: gy }, { data: ac }, { data: pa }, { data: co }, { data: en }, { data: fo }, { data: hi }, { data: sf }, { data: cp }, { data: me }, { data: eq }, { data: lf }, { data: bn }, { data: rs }] = await Promise.all([
       supabase.from('creneau').select('*, equipes:equipe(id, nom)').order('heure_debut'),
       supabase.from('gymnase').select('id, titre').order('titre'),
       supabase.from('actu').select('*').order('date_publication', { ascending: false }),
@@ -100,12 +103,13 @@ export default function Admin() {
       supabase.from('equipe').select('*').order('ordre'),
       supabase.from('licence_file').select('*').order('created_at', { ascending: false }),
       supabase.from('bandeau').select('*').order('created_at', { ascending: false }),
+      supabase.from('equipe_resultat').select('*').order('ordre'),
     ]);
     setCreneaux(cr || []); setGymnases(gy || []); setActus(ac || []);
     setPartenaires(pa || []); setComite(co || []); setEntraineurs(en || []);
     setFormations(fo || []); setHistoriques(hi || []); setSponsorFiles(sf || []);
     setComplexePhotos(cp || []); setMecenats(me || []); setEquipes(eq || []);
-    setLicenceFiles(lf || []); setBandeaux(bn || []);
+    setLicenceFiles(lf || []); setBandeaux(bn || []); setResultats(rs || []);
   }
   React.useEffect(() => { if (session) load(); }, [session]);
 
@@ -241,6 +245,15 @@ export default function Admin() {
     setEqForm(null); load();
   }
   async function delEquipe(id: string) { if (confirm('Supprimer cette équipe ?')) { await supabase.from('equipe').delete().eq('id', id); load(); } }
+
+  // --- CRUD résultats (widgets Score'n'co par équipe) ---
+  async function saveResultat() {
+    if (!rForm.equipe) { alert("Le nom de l'équipe est requis."); return; }
+    if (rForm.id) await supabase.from('equipe_resultat').update(rForm).eq('id', rForm.id);
+    else await supabase.from('equipe_resultat').insert(rForm);
+    setRForm(null); load();
+  }
+  async function delResultat(id: string) { if (confirm('Retirer cette équipe des résultats ?')) { await supabase.from('equipe_resultat').delete().eq('id', id); load(); } }
 
   // ===================== LOGIN =====================
   if (!session) {
@@ -731,6 +744,80 @@ export default function Admin() {
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* ---------- RÉSULTATS ---------- */}
+          {section === 'resultats' && (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 22 }}>
+                <div><h2 style={h2}>Résultats par équipe</h2><div style={{ fontSize: 13, color: '#726b86', fontWeight: 600, marginTop: 4 }}>{resultats.length} équipe(s)</div></div>
+                <button onClick={() => setRForm({ equipe: '', categorie: '', ordre: resultats.length + 1, classement: '', resultat: '', prochain: '', direct: '', actif: true })} style={btnOrange}>+ Nouvelle équipe</button>
+              </div>
+
+              <div style={{ ...card, borderTopColor: '#3d1e7b' }}>
+                <div style={{ fontFamily: "'Oswald',sans-serif", fontSize: 16, fontWeight: 700, textTransform: 'uppercase', color: '#1d1730' }}>Comment ça marche</div>
+                <div style={{ fontSize: 13.5, color: '#726b86', fontWeight: 600, marginTop: 6, lineHeight: 1.6 }}>
+                  Crée tes widgets sur <a href="https://scorenco.com/clubs/widgets" target="_blank" rel="noreferrer" style={{ color: '#3d1e7b', fontWeight: 800 }}>Score&apos;n&apos;co</a> (partenaire officiel FFBB),
+                  puis colle le code d&apos;intégration (iframe) — ou simplement l&apos;URL du widget — dans la case correspondante.
+                  Laisse vide les widgets non créés ; seules les cases remplies apparaissent en onglets sur la page Résultats.
+                </div>
+              </div>
+
+              {rForm && (
+                <div style={card}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))', gap: 16 }}>
+                    <div><label style={label}>Équipe (libellé affiché)</label><input value={rForm.equipe} onChange={(e) => setRForm({ ...rForm, equipe: e.target.value })} placeholder="U13 Féminines 2" style={input} /></div>
+                    <div><label style={label}>Catégorie (regroupement)</label><input list="resultat-categories" value={rForm.categorie || ''} onChange={(e) => setRForm({ ...rForm, categorie: e.target.value })} placeholder="U13" style={input} /><datalist id="resultat-categories">{Array.from(new Set(resultats.map((x) => x.categorie).filter(Boolean))).map((c) => <option key={c} value={c} />)}</datalist></div>
+                    <div><label style={label}>Ordre</label><input type="number" value={rForm.ordre} onChange={(e) => setRForm({ ...rForm, ordre: parseInt(e.target.value, 10) || 0 })} style={input} /></div>
+                  </div>
+                  {[
+                    { key: 'classement', lab: 'Classement' },
+                    { key: 'resultat', lab: 'Derniers résultats' },
+                    { key: 'prochain', lab: 'Prochain match' },
+                    { key: 'direct', lab: 'Match en direct' },
+                  ].map((w) => (
+                    <div key={w.key} style={{ marginTop: 16 }}>
+                      <label style={label}>{w.lab} — iframe ou URL Score&apos;n&apos;co</label>
+                      <textarea value={rForm[w.key] || ''} onChange={(e) => setRForm({ ...rForm, [w.key]: e.target.value })} rows={2} placeholder={'<iframe src="https://widgets.scorenco.com/ranking/123456" ...></iframe>'} style={{ ...input, resize: 'vertical', fontFamily: 'monospace', fontSize: 12.5 }} />
+                    </div>
+                  ))}
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 9, marginTop: 16, fontSize: 14, fontWeight: 700, color: '#1d1730', cursor: 'pointer' }}>
+                    <input type="checkbox" checked={rForm.actif !== false} onChange={(e) => setRForm({ ...rForm, actif: e.target.checked })} />
+                    Équipe visible sur le site
+                  </label>
+                  <div style={{ display: 'flex', gap: 10, marginTop: 20 }}><button onClick={saveResultat} style={btnPrimary}>Enregistrer</button><button onClick={() => setRForm(null)} style={btnGhost}>Annuler</button></div>
+                </div>
+              )}
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {resultats.map((r) => {
+                  const slots = [
+                    { key: 'classement', lab: 'Classement' },
+                    { key: 'resultat', lab: 'Résultats' },
+                    { key: 'prochain', lab: 'Prochain' },
+                    { key: 'direct', lab: 'Direct' },
+                  ];
+                  return (
+                    <div key={r.id} style={{ background: '#fff', border: '1px solid #eee9f4', borderRadius: 14, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+                      <span style={{ fontSize: 11, fontWeight: 800, color: '#dc8d32', minWidth: 24 }}>#{r.ordre}</span>
+                      <div style={{ flex: 1, minWidth: 160 }}>
+                        <div style={{ fontWeight: 800, fontSize: 15, color: '#1d1730' }}>{r.equipe}{r.actif === false ? <span style={{ color: '#c0392b', fontWeight: 700, fontSize: 12 }}> · masqué</span> : null}</div>
+                        {r.categorie ? <div style={{ fontSize: 12, color: '#726b86', fontWeight: 700 }}>{r.categorie}</div> : null}
+                      </div>
+                      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                        {slots.map((s) => (
+                          <span key={s.key} style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: '.03em', textTransform: 'uppercase', padding: '4px 8px', borderRadius: 6, background: r[s.key] ? '#ece6f6' : '#f4f2f8', color: r[s.key] ? '#3d1e7b' : '#c3bdd2' }}>{s.lab}</span>
+                        ))}
+                      </div>
+                      <div style={{ display: 'flex', gap: 6 }}>
+                        <button onClick={() => setRForm({ ...r })} style={{ background: '#f1edf8', color: '#3d1e7b', border: 'none', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 8, cursor: 'pointer' }}>Éditer</button>
+                        <button onClick={() => delResultat(r.id)} style={{ background: '#fbeaea', color: '#c0392b', border: 'none', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 8, cursor: 'pointer' }}>Suppr.</button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}

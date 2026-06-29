@@ -42,6 +42,7 @@ const FooterPage = () => {
           <Link href="/qui/historique">Histoire du RUC</Link>
           <Link href="/qui/entraineurs">Nos entraîneurs</Link>
           <Link href="/planning">Créneaux</Link>
+          <Link href="/resultats">Résultats</Link>
           <Link href="/actus">Actualités</Link>
         </div>
 

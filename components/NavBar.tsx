@@ -29,6 +29,7 @@ export default function NavBar() {
           <div className="navLinks">
             <Nav.Link href="/">Accueil</Nav.Link>
             <Nav.Link href="/actus">Actualités</Nav.Link>
+            <Nav.Link href="/resultats">Résultats</Nav.Link>
             <NavDropdown title="Le club" id="basic-nav-dropdown">
               <NavDropdown.Item id="linkDropdown" href="/qui/historique">
                 Histoire du RUC
