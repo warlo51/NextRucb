@@ -1,45 +1,59 @@
 import * as React from "react";
 import Head from "next/head";
 import Link from "next/link";
+import Script from "next/script";
 import { Layout } from "../components/Layout";
 import PageHeader from "../components/PageHeader";
 import { supabase } from "../lib/supabaseClient";
 
 // =====================================================================
 // RÉSULTATS — lit la table Supabase `equipe_resultat` (gérée dans /admin →
-// Résultats). Chaque ligne = une équipe ; ses widgets Score'n'co (classement,
-// résultats, prochain match, match en direct) sont collés depuis l'admin et
-// affichés ici en onglets. Aucune modif de code pour ajouter/changer une équipe.
+// Résultats). 1 ligne = 1 équipe, avec 2 widgets Score'n'co :
+//   • widget : combiné (classement + résultats + calendrier)
+//   • direct : match en direct (optionnel)
+// Le code d'intégration collé est rendu TEL QUEL : avec le code « script »
+// Score'n'co (loader chargé plus bas), l'iframe s'auto-redimensionne — donc
+// aucune hauteur imposée. La page affiche une carte/équipe (onglets si les 2
+// widgets sont remplis), filtrable par catégorie.
 // =====================================================================
 
-// Colonnes Supabase -> onglets (ordre d'affichage).
-const SLOTS: { key: "classement" | "resultat" | "prochain" | "direct"; label: string; live?: boolean }[] = [
-  { key: "classement", label: "Classement" },
-  { key: "resultat", label: "Résultats" },
-  { key: "prochain", label: "Prochain match" },
-  { key: "direct", label: "En direct", live: true },
-];
+// Ordre logique des catégories pour la barre de filtres (le reste suit en alpha).
+const CAT_ORDER = ["U7", "U9", "U11", "U13", "U15", "U17", "U18", "U20", "Seniors", "SE", "Séniors", "Vétérans"];
+const catRank = (c: string) => {
+  const i = CAT_ORDER.findIndex((x) => x.toLowerCase() === c.toLowerCase());
+  return i === -1 ? 999 : i;
+};
+const triCategories = (cats: string[]) =>
+  [...cats].sort((a, b) => catRank(a) - catRank(b) || a.localeCompare(b, "fr"));
 
 // Page club officielle FFBB (repli « voir tous les résultats »).
 const FFBB_CLUB_URL =
   "https://competitions.ffbb.com/ligues/ges/comites/0051/clubs/ges0051003";
 
-// Extrait le src d'un <iframe> collé dans l'admin, ou renvoie la valeur telle
-// quelle si c'est déjà une URL. Vide sinon.
-function widgetSrc(v?: string | null): string {
-  if (!v) return "";
-  const m = v.match(/src=["']([^"']+)["']/i);
-  if (m) return m[1];
-  const t = v.trim();
-  return /^https?:\/\//i.test(t) ? t : "";
+// Transforme la valeur collée dans l'admin en HTML à injecter :
+//  - code d'intégration complet (script-embed ou iframe) : rendu tel quel
+//    (on retire les <script>, inertes via innerHTML — le loader est chargé une
+//    seule fois sur la page) ;
+//  - URL seule : iframe responsive de repli.
+function renderEmbed(v?: string | null): string {
+  const t = (v || "").trim();
+  if (!t) return "";
+  if (/<iframe|<div/i.test(t)) {
+    return t.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
+  }
+  if (/^https?:\/\//i.test(t)) {
+    return `<iframe src="${t}" style="width:100%;height:640px;border:0" referrerpolicy="unsafe-url" loading="lazy"></iframe>`;
+  }
+  return "";
 }
 
-type Widget = { key: string; label: string; live?: boolean; src: string };
+type Widget = { key: string; label: string; live?: boolean; html: string };
 type EquipeCarte = { id: string; equipe: string; categorie?: string; widgets: Widget[] };
 
 export default function Resultats() {
   const [rows, setRows] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(true);
+  const [filtre, setFiltre] = React.useState<string>("all");
 
   React.useEffect(() => {
     async function load() {
@@ -59,9 +73,19 @@ export default function Resultats() {
       id: r.id,
       equipe: r.equipe,
       categorie: r.categorie,
-      widgets: SLOTS.map((s) => ({ ...s, src: widgetSrc(r[s.key]) })).filter((w) => w.src),
+      widgets: [
+        { key: "widget", label: "Classement & résultats", html: renderEmbed(r.widget) },
+        { key: "direct", label: "En direct", live: true, html: renderEmbed(r.direct) },
+      ].filter((w) => w.html),
     }))
     .filter((c) => c.widgets.length > 0);
+
+  // Catégories présentes (pour la barre de filtres) + cartes visibles.
+  const categories = triCategories(
+    Array.from(new Set(cartes.map((c) => c.categorie).filter(Boolean))) as string[]
+  );
+  const visibles =
+    filtre === "all" ? cartes : cartes.filter((c) => (c.categorie || "") === filtre);
 
   return (
     <Layout>
@@ -69,9 +93,12 @@ export default function Resultats() {
         <title>Derniers résultats — RUC Basket Reims</title>
         <meta
           name="description"
-          content="Résultats, classements, prochains matchs et matchs en direct des équipes du RUC Basket Reims, par catégorie."
+          content="Classements, résultats et calendrier des équipes du RUC Basket Reims, par catégorie."
         />
       </Head>
+
+      {/* Loader Score'n'co : hydrate et auto-redimensionne les widgets « script ». */}
+      <Script src="https://widgets.scorenco.com/host/widgets.js" strategy="afterInteractive" />
 
       <PageHeader kicker="Saison en cours" title="Derniers résultats" variant="club" />
 
@@ -88,20 +115,60 @@ export default function Resultats() {
                 lineHeight: 1.6,
                 color: "#4a4360",
                 fontWeight: 500,
-                margin: "0 0 28px",
+                margin: "0 0 22px",
                 maxWidth: 760,
               }}
             >
-              Classement, résultats, prochain match et match en direct de chaque
-              équipe, mis à jour automatiquement via la fédération
-              (Score&apos;n&apos;co · partenaire officiel FFBB).
+              Classement, résultats et calendrier de chaque équipe, mis à jour
+              automatiquement via la fédération (Score&apos;n&apos;co · partenaire
+              officiel FFBB).
             </p>
 
+            {/* Filtre par catégorie */}
+            {categories.length > 1 ? (
+              <div
+                role="tablist"
+                aria-label="Filtrer par catégorie"
+                style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 26 }}
+              >
+                {[{ k: "all", l: "Toutes" }, ...categories.map((c) => ({ k: c, l: c }))].map((opt) => {
+                  const isActive = filtre === opt.k;
+                  return (
+                    <button
+                      key={opt.k}
+                      type="button"
+                      onClick={() => setFiltre(opt.k)}
+                      aria-pressed={isActive}
+                      style={{
+                        cursor: "pointer",
+                        fontWeight: 800,
+                        fontSize: 13.5,
+                        padding: "9px 17px",
+                        borderRadius: 999,
+                        border: isActive ? "1.5px solid #3d1e7b" : "1.5px solid #e1dcec",
+                        background: isActive ? "#3d1e7b" : "#fff",
+                        color: isActive ? "#fff" : "#3d1e7b",
+                        transition: "background .15s,color .15s",
+                      }}
+                    >
+                      {opt.l}
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+
             <div style={{ display: "flex", flexDirection: "column", gap: 30 }}>
-              {cartes.map((c) => (
+              {visibles.map((c) => (
                 <EquipeCard key={c.id} carte={c} />
               ))}
             </div>
+
+            {visibles.length === 0 ? (
+              <div style={{ padding: "30px 0", textAlign: "center", color: "#726b86", fontWeight: 600 }}>
+                Aucune équipe dans cette catégorie.
+              </div>
+            ) : null}
           </>
         ) : (
           <EmptyState />
@@ -132,7 +199,7 @@ export default function Resultats() {
   );
 }
 
-// Carte d'une équipe : en-tête + onglets (un par widget) + iframe du widget actif.
+// Carte d'une équipe : en-tête + onglets (combiné / en direct) + widget actif.
 function EquipeCard({ carte }: { carte: EquipeCarte }) {
   const [active, setActive] = React.useState(0);
   const current = carte.widgets[active] ?? carte.widgets[0];
@@ -177,7 +244,7 @@ function EquipeCard({ carte }: { carte: EquipeCarte }) {
         ) : null}
       </div>
 
-      {/* Onglets (seulement si plus d'un widget) */}
+      {/* Onglets (seulement si combiné + direct sont tous les deux remplis) */}
       {carte.widgets.length > 1 ? (
         <div
           style={{
@@ -230,14 +297,8 @@ function EquipeCard({ carte }: { carte: EquipeCarte }) {
         </div>
       ) : null}
 
-      {/* Widget actif */}
-      <iframe
-        title={`${carte.equipe} — ${current.label}`}
-        src={current.src}
-        loading="lazy"
-        referrerPolicy="unsafe-url"
-        style={{ width: "100%", height: 520, border: "none", display: "block", background: "#fff" }}
-      />
+      {/* Widget actif — code d'intégration Score'n'co rendu tel quel (auto-resize). */}
+      <div key={active} style={{ width: "100%" }} dangerouslySetInnerHTML={{ __html: current.html }} />
     </div>
   );
 }
@@ -250,16 +311,16 @@ function EmptyState() {
       d: "Gratuit. Partenaire officiel FFBB depuis 2017 (données officielles, mises à jour automatiques).",
     },
     {
-      t: "Créer les widgets par équipe",
-      d: "Pour « Reims Université Club Basket » : Classement, Résultats, Prochain match, En direct. Couleurs #3d1e7b / #dc8d32.",
+      t: "Créer un widget par équipe",
+      d: "Pour « Reims Université Club Basket » : le widget combiné classement + résultats + calendrier. Couleurs #3d1e7b / #dc8d32.",
     },
     {
-      t: "Copier le code d'intégration",
-      d: "Chaque widget fournit un <iframe>. Copie-le (ou juste son URL).",
+      t: "Copier le code d'intégration « script »",
+      d: "Préfère le code « script » (data-widget-id + widgets.js) : il s'auto-redimensionne.",
     },
     {
       t: "Coller dans l'admin",
-      d: "Espace admin → Résultats → Nouvelle équipe, puis colle chaque iframe dans sa case.",
+      d: "Espace admin → Résultats → Nouvelle équipe, puis colle le code dans la case Widget (et Direct si besoin).",
     },
   ];
 
@@ -299,10 +360,10 @@ function EmptyState() {
       </h2>
       <p style={{ fontSize: 15, lineHeight: 1.6, color: "#4a4360", fontWeight: 500, maxWidth: 680, margin: "0 0 26px" }}>
         Chaque équipe affichera son <strong>classement</strong>, ses{" "}
-        <strong>résultats</strong>, son <strong>prochain match</strong> et le{" "}
-        <strong>match en direct</strong> — automatiquement, sans saisie manuelle,
-        grâce aux widgets gratuits de <strong>Score&apos;n&apos;co</strong>{" "}
-        (partenaire officiel de la FFBB). Voici les 4 étapes :
+        <strong>résultats</strong> et son <strong>calendrier</strong> —
+        automatiquement, sans saisie manuelle, grâce aux widgets gratuits de{" "}
+        <strong>Score&apos;n&apos;co</strong> (partenaire officiel de la FFBB).
+        Voici les 4 étapes :
       </p>
 
       <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 14 }}>

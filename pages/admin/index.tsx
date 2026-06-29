@@ -753,14 +753,15 @@ export default function Admin() {
             <div>
               <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 22 }}>
                 <div><h2 style={h2}>Résultats par équipe</h2><div style={{ fontSize: 13, color: '#726b86', fontWeight: 600, marginTop: 4 }}>{resultats.length} équipe(s)</div></div>
-                <button onClick={() => setRForm({ equipe: '', categorie: '', ordre: resultats.length + 1, classement: '', resultat: '', prochain: '', direct: '', actif: true })} style={btnOrange}>+ Nouvelle équipe</button>
+                <button onClick={() => setRForm({ equipe: '', categorie: '', ordre: resultats.length + 1, widget: '', direct: '', actif: true })} style={btnOrange}>+ Nouvelle équipe</button>
               </div>
 
               <div style={{ ...card, borderTopColor: '#3d1e7b' }}>
                 <div style={{ fontFamily: "'Oswald',sans-serif", fontSize: 16, fontWeight: 700, textTransform: 'uppercase', color: '#1d1730' }}>Comment ça marche</div>
                 <div style={{ fontSize: 13.5, color: '#726b86', fontWeight: 600, marginTop: 6, lineHeight: 1.6 }}>
                   Crée tes widgets sur <a href="https://scorenco.com/clubs/widgets" target="_blank" rel="noreferrer" style={{ color: '#3d1e7b', fontWeight: 800 }}>Score&apos;n&apos;co</a> (partenaire officiel FFBB),
-                  puis colle le code d&apos;intégration (iframe) — ou simplement l&apos;URL du widget — dans la case correspondante.
+                  puis colle le code d&apos;intégration dans la case correspondante.
+                  Astuce : préfère le code <strong>« script »</strong> (avec <code>data-widget-id</code> + <code>widgets.js</code>) — il <strong>s&apos;adapte tout seul en hauteur</strong>. Le code « iframe » fonctionne aussi mais garde sa hauteur fixe. Une URL seule marche également.
                   Laisse vide les widgets non créés ; seules les cases remplies apparaissent en onglets sur la page Résultats.
                 </div>
               </div>
@@ -772,17 +773,14 @@ export default function Admin() {
                     <div><label style={label}>Catégorie (regroupement)</label><input list="resultat-categories" value={rForm.categorie || ''} onChange={(e) => setRForm({ ...rForm, categorie: e.target.value })} placeholder="U13" style={input} /><datalist id="resultat-categories">{Array.from(new Set(resultats.map((x) => x.categorie).filter(Boolean))).map((c) => <option key={c} value={c} />)}</datalist></div>
                     <div><label style={label}>Ordre</label><input type="number" value={rForm.ordre} onChange={(e) => setRForm({ ...rForm, ordre: parseInt(e.target.value, 10) || 0 })} style={input} /></div>
                   </div>
-                  {[
-                    { key: 'classement', lab: 'Classement' },
-                    { key: 'resultat', lab: 'Derniers résultats' },
-                    { key: 'prochain', lab: 'Prochain match' },
-                    { key: 'direct', lab: 'Match en direct' },
-                  ].map((w) => (
-                    <div key={w.key} style={{ marginTop: 16 }}>
-                      <label style={label}>{w.lab} — iframe ou URL Score&apos;n&apos;co</label>
-                      <textarea value={rForm[w.key] || ''} onChange={(e) => setRForm({ ...rForm, [w.key]: e.target.value })} rows={2} placeholder={'<iframe src="https://widgets.scorenco.com/ranking/123456" ...></iframe>'} style={{ ...input, resize: 'vertical', fontFamily: 'monospace', fontSize: 12.5 }} />
-                    </div>
-                  ))}
+                  <div style={{ marginTop: 16 }}>
+                    <label style={label}>Widget combiné (classement + résultats + calendrier) — code d&apos;intégration ou URL</label>
+                    <textarea value={rForm.widget || ''} onChange={(e) => setRForm({ ...rForm, widget: e.target.value })} rows={3} placeholder={'<div class="scorenco-widget" data-widget-id="123456" ...></div><script ... src="https://widgets.scorenco.com/host/widgets.js"></script>'} style={{ ...input, resize: 'vertical', fontFamily: 'monospace', fontSize: 12.5 }} />
+                  </div>
+                  <div style={{ marginTop: 16 }}>
+                    <label style={label}>Match en direct (optionnel) — code d&apos;intégration ou URL</label>
+                    <textarea value={rForm.direct || ''} onChange={(e) => setRForm({ ...rForm, direct: e.target.value })} rows={2} placeholder={'<div class="scorenco-widget" data-widget-id="123456" ...></div><script ... src="https://widgets.scorenco.com/host/widgets.js"></script>'} style={{ ...input, resize: 'vertical', fontFamily: 'monospace', fontSize: 12.5 }} />
+                  </div>
                   <label style={{ display: 'flex', alignItems: 'center', gap: 9, marginTop: 16, fontSize: 14, fontWeight: 700, color: '#1d1730', cursor: 'pointer' }}>
                     <input type="checkbox" checked={rForm.actif !== false} onChange={(e) => setRForm({ ...rForm, actif: e.target.checked })} />
                     Équipe visible sur le site
@@ -792,32 +790,23 @@ export default function Admin() {
               )}
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {resultats.map((r) => {
-                  const slots = [
-                    { key: 'classement', lab: 'Classement' },
-                    { key: 'resultat', lab: 'Résultats' },
-                    { key: 'prochain', lab: 'Prochain' },
-                    { key: 'direct', lab: 'Direct' },
-                  ];
-                  return (
-                    <div key={r.id} style={{ background: '#fff', border: '1px solid #eee9f4', borderRadius: 14, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: 11, fontWeight: 800, color: '#dc8d32', minWidth: 24 }}>#{r.ordre}</span>
-                      <div style={{ flex: 1, minWidth: 160 }}>
-                        <div style={{ fontWeight: 800, fontSize: 15, color: '#1d1730' }}>{r.equipe}{r.actif === false ? <span style={{ color: '#c0392b', fontWeight: 700, fontSize: 12 }}> · masqué</span> : null}</div>
-                        {r.categorie ? <div style={{ fontSize: 12, color: '#726b86', fontWeight: 700 }}>{r.categorie}</div> : null}
-                      </div>
-                      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                        {slots.map((s) => (
-                          <span key={s.key} style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: '.03em', textTransform: 'uppercase', padding: '4px 8px', borderRadius: 6, background: r[s.key] ? '#ece6f6' : '#f4f2f8', color: r[s.key] ? '#3d1e7b' : '#c3bdd2' }}>{s.lab}</span>
-                        ))}
-                      </div>
-                      <div style={{ display: 'flex', gap: 6 }}>
-                        <button onClick={() => setRForm({ ...r })} style={{ background: '#f1edf8', color: '#3d1e7b', border: 'none', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 8, cursor: 'pointer' }}>Éditer</button>
-                        <button onClick={() => delResultat(r.id)} style={{ background: '#fbeaea', color: '#c0392b', border: 'none', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 8, cursor: 'pointer' }}>Suppr.</button>
-                      </div>
+                {resultats.map((r) => (
+                  <div key={r.id} style={{ background: '#fff', border: '1px solid #eee9f4', borderRadius: 14, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: 11, fontWeight: 800, color: '#dc8d32', minWidth: 24 }}>#{r.ordre}</span>
+                    <div style={{ flex: 1, minWidth: 160 }}>
+                      <div style={{ fontWeight: 800, fontSize: 15, color: '#1d1730' }}>{r.equipe}{r.actif === false ? <span style={{ color: '#c0392b', fontWeight: 700, fontSize: 12 }}> · masqué</span> : null}</div>
+                      {r.categorie ? <div style={{ fontSize: 12, color: '#726b86', fontWeight: 700 }}>{r.categorie}</div> : null}
                     </div>
-                  );
-                })}
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                      <span style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: '.03em', textTransform: 'uppercase', padding: '4px 8px', borderRadius: 6, background: r.widget ? '#e6f3ec' : '#fdecea', color: r.widget ? '#1f7a4d' : '#c0392b' }}>{r.widget ? 'Widget OK' : 'widget manquant'}</span>
+                      <span style={{ fontSize: 10.5, fontWeight: 800, letterSpacing: '.03em', textTransform: 'uppercase', padding: '4px 8px', borderRadius: 6, background: r.direct ? '#e6f3ec' : '#f4f2f8', color: r.direct ? '#1f7a4d' : '#c3bdd2' }}>Direct</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      <button onClick={() => setRForm({ ...r })} style={{ background: '#f1edf8', color: '#3d1e7b', border: 'none', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 8, cursor: 'pointer' }}>Éditer</button>
+                      <button onClick={() => delResultat(r.id)} style={{ background: '#fbeaea', color: '#c0392b', border: 'none', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 8, cursor: 'pointer' }}>Suppr.</button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
