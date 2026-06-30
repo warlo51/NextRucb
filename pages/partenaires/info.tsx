@@ -156,7 +156,7 @@ export default function PartenairesInfo() {
               background: "var(--paper)",
               borderRadius: 18,
               border: "1px solid var(--line)",
-              borderLeft: "4px solid #dc8d32",
+              borderLeft: "4px solid var(--violet-soft)",
               padding: 30,
               boxShadow: "0 14px 34px -28px rgba(23,18,43,.5)",
             }}

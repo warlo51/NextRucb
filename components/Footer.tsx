@@ -58,13 +58,10 @@ const FooterPage = () => {
         <div className="footerCol">
           <h4>Contact</h4>
           <div style={{ fontSize: 14, lineHeight: 1.7, fontWeight: 600, marginBottom: 12 }}>
-            Complexe René Tys
+            Gymnase Barbusse
             <br />
             Reims (51100)
           </div>
-          <a href={FB} target="_blank" rel="noreferrer">
-            Facebook
-          </a>
           <a href={IG} target="_blank" rel="noreferrer">
             Instagram @reims_universite_club_basket
           </a>

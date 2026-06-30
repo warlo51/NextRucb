@@ -39,15 +39,16 @@ Public pages read **client-side in `useEffect`** through the shared client `lib/
 Still GROQ-fetched client-side via `src/client.ts` + `urlFor()` (`src/fonctions/urlImageSanity.ts`): `pages/qui/historique.tsx` (`historiqueRucb`), `pages/qui/entraineurs.tsx` (`entraineurs`), `pages/formation.tsx` (`formations`), `pages/partenaires/mecenat.tsx` (`mecenat`). `pages/qui/complexe.tsx` is static. Sanity deps stay installed until these are migrated too.
 
 ### API routes
-- `pages/api/loadFFBB.ts` — fetches the FFBB RSS feed (`ffbb.com/rss2.xml`), **ISO-8859-1 encoded** (decoded explicitly), hand-parsed into `{title, link, description}`. Used by the homepage "Actu FFBB" card. **Kept as-is** by the migration.
 - `pages/api/sitemap.js` — sitemap from a **hardcoded URL list** (add new public pages here manually).
 - `pages/api/auth/*` — legacy Auth0 flow, now unused (see Environment).
+
+> The old `pages/api/loadFFBB.ts` (FFBB RSS → homepage "Actu FFBB" card) was **removed** (June 2026): the FFBB rebuilt their site as an SPA and `ffbb.com/rss2.xml` no longer serves RSS, while their Directus API (`api.ffbb.app`) returns 403. The homepage no longer has an FFBB card; `iconv-lite` + `fast-xml-parser` were only used here.
 
 ## UI conventions
 
 - The redesign is driven by `styles/globals.css`: it keeps the **existing class/id names** (`#badge`, `.divHoraires`, `.boxX`, `.NavBar`, `.footer`…) so the reskin applies without JSX changes, then adds a "AJOUTS REFONTE" block for new structural classes (`.navBrand`, `.navLinks`, `.navCta`, `.footerGrid`, `.newsCard`, `.sponsorTile`, `.instaTile`…). Fonts (Oswald/Manrope) load via `@import` at the top of the file.
 - `components/Layout.tsx` (`Header` + `NavBar` + children + `Footer`) wraps every page. `components/PageHeader.tsx` renders the gradient page-title band used on internal pages.
-- The homepage `pages/index.tsx` is a full custom layout (Hero → Valeurs → Actualités → 3 info cards → Instagram → Sponsors → CTA) with mostly **inline styles** matching the mockup; the section components from the old homepage were deleted.
+- The homepage `pages/index.tsx` is a full custom layout (Hero → Valeurs → Actualités → 2 info cards [Entraînements · Nos équipes] → Instagram → Sponsors → CTA) with mostly **inline styles** matching the mockup; the section components from the old homepage were deleted.
 - Mixed component libs: **react-bootstrap** (NavBar, Container; `_app.tsx` wraps the app in `<SSRProvider>`) and **MUI** with Emotion, on the legacy pages.
 - Internal navigation uses `next/link`; `<img>` is used throughout (the `no-img-element` lint warnings are intentionally left).
 - The NavBar keeps the sticky-on-scroll behavior (`fix` state → `.NavBar.fixed`) and the react-bootstrap mobile `Toggle`/`Collapse`.

@@ -59,7 +59,6 @@ const formatDate = (d: string) =>
 const Home: NextPage = () => {
   const [actus, setActus] = useState<any[]>([]);
   const [creneaux, setCreneaux] = useState<any[]>([]);
-  const [ffbb, setFfbb] = useState<any[]>([]);
   const [sponsors, setSponsors] = useState<string[]>(FALLBACK_SPONSORS);
   const [equipes, setEquipes] = useState<any[]>([]);
   const [instaPosts, setInstaPosts] = useState<any[]>([]);
@@ -114,17 +113,6 @@ const Home: NextPage = () => {
       if (bn && bn[0]?.image_url) setBandeau(bn[0].image_url);
     }
     loadSupabase().catch(() => undefined);
-
-    async function loadFFBB() {
-      try {
-        const res = await fetch("/api/loadFFBB");
-        const json = await res.json();
-        setFfbb((json.data || []).slice(0, 3));
-      } catch {
-        setFfbb([]);
-      }
-    }
-    loadFFBB();
 
     async function loadInstagram() {
       if (!IG_FEED_URL) return;
@@ -438,11 +426,11 @@ const Home: NextPage = () => {
               overflow: "hidden",
             }}
           >
-            <div style={{ background: "transparent", padding: "22px 24px" }}>
+            <div style={{ background: "transparent", padding: "26px 28px 20px" }}>
               <div
                 style={{
                   fontFamily: "'Oswald',sans-serif",
-                  fontSize: 19,
+                  fontSize: 23,
                   fontWeight: 600,
                   letterSpacing: ".04em",
                   textTransform: "uppercase",
@@ -468,12 +456,12 @@ const Home: NextPage = () => {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
-                      padding: "13px 0",
+                      padding: "15px 0",
                       borderBottom: "1px solid var(--line)",
                     }}
                   >
-                    <span style={{ fontWeight: 700, fontSize: 14.5, color: "var(--text)" }}>{c.jour}</span>
-                    <span style={{ fontSize: 13, color: "var(--muted)", fontWeight: 600 }}>
+                    <span style={{ fontWeight: 700, fontSize: 16, color: "var(--text)" }}>{c.jour}</span>
+                    <span style={{ fontSize: 14, color: "var(--muted)", fontWeight: 600 }}>
                       {c.count} séance{c.count > 1 ? "s" : ""}
                     </span>
                   </div>
@@ -510,11 +498,11 @@ const Home: NextPage = () => {
               overflow: "hidden",
             }}
           >
-            <div style={{ background: "transparent", padding: "22px 24px" }}>
+            <div style={{ background: "transparent", padding: "26px 28px 20px" }}>
               <div
                 style={{
                   fontFamily: "'Oswald',sans-serif",
-                  fontSize: 19,
+                  fontSize: 23,
                   fontWeight: 600,
                   letterSpacing: ".04em",
                   textTransform: "uppercase",
@@ -542,7 +530,7 @@ const Home: NextPage = () => {
                   >
                     {g.groupe}
                   </div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 9 }}>
                     {g.cats.map((cat) => (
                       <span
                         key={cat}
@@ -551,9 +539,9 @@ const Home: NextPage = () => {
                           color: "#e2d6f7",
                           border: "1px solid rgba(124,79,196,.5)",
                           fontWeight: 700,
-                          fontSize: 13,
-                          padding: "7px 13px",
-                          borderRadius: 8,
+                          fontSize: 14.5,
+                          padding: "9px 16px",
+                          borderRadius: 9,
                         }}
                       >
                         {cat}
@@ -562,83 +550,6 @@ const Home: NextPage = () => {
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
-
-          {/* Actu FFBB */}
-          <div
-            style={{
-              background: "var(--paper)",
-              borderRadius: 18,
-              border: "1px solid var(--line)",
-              boxShadow: "0 14px 34px -26px rgba(23,18,43,.5)",
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                background: "transparent",
-                padding: "22px 24px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontFamily: "'Oswald',sans-serif",
-                    fontSize: 19,
-                    fontWeight: 600,
-                    letterSpacing: ".04em",
-                    textTransform: "uppercase",
-                    color: "#fff",
-                  }}
-                >
-                  Actu FFBB
-                </div>
-                <div style={{ fontSize: 13, color: "var(--muted)", fontWeight: 600, marginTop: 3 }}>
-                  Fil fédéral
-                </div>
-              </div>
-              <img
-                src="/logoFFBB.png"
-                alt="FFBB"
-                style={{ height: 42, width: "auto", background: "#fff", borderRadius: 8, padding: 3 }}
-              />
-            </div>
-            <div style={{ padding: "8px 22px 22px" }}>
-              {ffbb.length === 0 ? (
-                <div style={{ padding: "14px 0", color: "var(--muted)", fontWeight: 600, fontSize: 14 }}>
-                  Fil fédéral momentanément indisponible.
-                </div>
-              ) : (
-                ffbb.map((f, i) => (
-                  <a
-                    key={i}
-                    href={f.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ display: "block", padding: "14px 0", borderBottom: "1px solid var(--line)" }}
-                  >
-                    <div
-                      style={{
-                        fontSize: 11,
-                        fontWeight: 800,
-                        letterSpacing: ".06em",
-                        textTransform: "uppercase",
-                        color: "#dc8d32",
-                        marginBottom: 4,
-                      }}
-                    >
-                      FFBB
-                    </div>
-                    <div style={{ fontWeight: 700, fontSize: 14.5, color: "var(--text)", lineHeight: 1.3 }}>
-                      {f.title}
-                    </div>
-                  </a>
-                ))
-              )}
             </div>
           </div>
         </div>

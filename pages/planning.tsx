@@ -6,6 +6,21 @@ import { forceDownload } from '../lib/forceDownload';
 
 const JOURS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
 
+// Une couleur distincte par lieu. Couleurs claires et vives pour ressortir sur
+// le fond sombre du site (--bg #0d0c11 / --paper #15141b) — contraste >= 4.5:1.
+const PALETTE = [
+  '#e6a24a', // orange (accent charte, --brand-fg)
+  '#60a5fa', // bleu ciel
+  '#4ade80', // vert
+  '#f472b6', // rose
+  '#b794f6', // lavande
+  '#2dd4bf', // cyan
+  '#fb7185', // corail
+  '#fcd34d', // ambre
+  '#818cf8', // pervenche
+  '#a3e635', // citron vert
+];
+
 export default function Planning() {
   const [creneaux, setCreneaux] = React.useState<any[]>([]);
   const [gymnases, setGymnases] = React.useState<any[]>([]);
@@ -32,6 +47,14 @@ export default function Planning() {
     }
     load();
   }, []);
+
+  const colorByLieu = React.useMemo(() => {
+    const map: Record<string, string> = {};
+    gymnases.forEach((g, i) => {
+      map[g.titre] = PALETTE[i % PALETTE.length];
+    });
+    return map;
+  }, [gymnases]);
 
   const parJour = JOURS.map((jour) => ({
     jour,
@@ -67,30 +90,36 @@ export default function Planning() {
         )}
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 10, marginBottom: 30 }}>
           <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--muted)' }}>Lieux :</span>
-          {gymnases.map((g, i) => (
-            <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'var(--paper)', border: '1px solid var(--line)', color: 'var(--brand-fg)', fontSize: 12, fontWeight: 700, padding: '6px 12px', borderRadius: 999 }}>
-              <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#dc8d32', display: 'inline-block' }} />{g.titre}
-            </span>
-          ))}
+          {gymnases.map((g, i) => {
+            const color = colorByLieu[g.titre] || '#dc8d32';
+            return (
+              <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `${color}14`, border: `1px solid ${color}`, color, fontSize: 12, fontWeight: 700, padding: '6px 12px', borderRadius: 999 }}>
+                <span style={{ width: 7, height: 7, borderRadius: '50%', background: color, display: 'inline-block' }} />{g.titre}
+              </span>
+            );
+          })}
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(215px,1fr))', gap: 18, alignItems: 'start' }}>
           {parJour.map((col) => (
             <div key={col.jour} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{ fontFamily: "'Oswald',sans-serif", textTransform: 'uppercase', fontSize: 17, fontWeight: 600, color: 'var(--text)', letterSpacing: '.04em', paddingBottom: 10, borderBottom: '2px solid #dc8d32' }}>{col.jour}</div>
-              {col.items.map((s) => (
-                <div key={s.id} style={{ background: 'var(--paper)', border: '1px solid var(--line)', borderLeft: '3px solid #dc8d32', borderRadius: 12, padding: '13px 15px', boxShadow: '0 10px 24px -22px rgba(23,18,43,.5)' }}>
-                  <div style={{ fontFamily: "'Oswald',sans-serif", fontWeight: 600, fontSize: 14, color: 'var(--brand-fg)', letterSpacing: '.02em' }}>{s.horaire}</div>
-                  <div style={{ fontWeight: 800, fontSize: 15, color: 'var(--text)', marginTop: 3 }}>{(s.equipes || []).map((e: any) => e.nom).join(' · ') || s.categorie}</div>
-                  {s.annees ? <div style={{ fontSize: 12, color: 'var(--muted)', fontWeight: 600, marginTop: 2 }}>{s.annees}</div> : null}
-                  {s.gymnase?.titre ? (
-                    <div style={{ marginTop: 9, display: 'inline-flex', alignItems: 'center', gap: 5, background: 'var(--paper-2)', color: 'var(--brand-fg)', fontSize: 11, fontWeight: 700, padding: '4px 9px', borderRadius: 999 }}>
-                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#dc8d32', display: 'inline-block' }} />{s.gymnase.titre}
-                    </div>
-                  ) : null}
-                  {s.detail ? <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 9, lineHeight: 1.45, fontWeight: 500 }}>{s.detail}</div> : null}
-                </div>
-              ))}
+              {col.items.map((s) => {
+                const color = colorByLieu[s.gymnase?.titre] || '#dc8d32';
+                return (
+                  <div key={s.id} style={{ background: 'var(--paper)', border: '1px solid var(--line)', borderLeft: `3px solid ${color}`, borderRadius: 12, padding: '13px 15px', boxShadow: '0 10px 24px -22px rgba(23,18,43,.5)' }}>
+                    <div style={{ fontFamily: "'Oswald',sans-serif", fontWeight: 600, fontSize: 14, color: 'var(--brand-fg)', letterSpacing: '.02em' }}>{s.horaire}</div>
+                    <div style={{ fontWeight: 800, fontSize: 15, color: 'var(--text)', marginTop: 3 }}>{(s.equipes || []).map((e: any) => e.nom).join(' · ') || s.categorie}</div>
+                    {s.annees ? <div style={{ fontSize: 12, color: 'var(--muted)', fontWeight: 600, marginTop: 2 }}>{s.annees}</div> : null}
+                    {s.gymnase?.titre ? (
+                      <div style={{ marginTop: 9, display: 'inline-flex', alignItems: 'center', gap: 5, background: `${color}14`, color, fontSize: 11, fontWeight: 700, padding: '4px 9px', borderRadius: 999 }}>
+                        <span style={{ width: 6, height: 6, borderRadius: '50%', background: color, display: 'inline-block' }} />{s.gymnase.titre}
+                      </div>
+                    ) : null}
+                    {s.detail ? <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 9, lineHeight: 1.45, fontWeight: 500 }}>{s.detail}</div> : null}
+                  </div>
+                );
+              })}
             </div>
           ))}
         </div>
