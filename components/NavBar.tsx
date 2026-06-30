@@ -19,7 +19,14 @@ export default function NavBar() {
   }, []);
 
   return (
-    <Navbar bg="" expand="lg">
+    <Navbar bg="" expand="lg" className="rucNavbar">
+      {/* Barre mobile : logo + hamburger, toujours visible (masquée ≥ lg) */}
+      <Link className="navBrandMobile" href="/" aria-label="Accueil RUC Basket">
+        <img alt="logo RUC Basket" src="../logoruc.png" />
+        <span className="navWordmark">
+          RUC<span className="accent">BASKET</span>
+        </span>
+      </Link>
       <Navbar.Toggle id="buttonToggle" aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav id="nav" className={fix ? "NavBar fixed" : "NavBar"}>

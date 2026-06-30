@@ -388,3 +388,62 @@ h1,h2,h3{ font-family:var(--display); text-transform:uppercase; letter-spacing:-
 .btnHover{ transition:filter .15s, transform .15s, background .15s, color .15s; cursor:pointer; }
 .btnHover:hover{ filter:brightness(1.04); }
 .btnOutline:hover{ background:var(--orange); color:#fff!important; border-color:var(--orange)!important; }
+
+/* ====================================================================
+   MOBILE — Accueil (hero en styles inline) + en-tête collant
+   Les sections de l'accueil sont stylées en inline (pas de media query
+   possible) : on cible donc les classes ajoutées au JSX et on force le
+   layout responsive ici.
+   ==================================================================== */
+
+/* HERO : empile en colonne sous 900px. Sinon l'image du joueur (480px,
+   flex-shrink:0) déborde et écrase le texte sur petit écran. */
+@media screen and (max-width:900px){
+  .homeHero{ flex-direction:column!important; min-height:0!important; }
+  .homeHeroText{
+    max-width:100%!important;
+    padding:52px 22px 32px!important;
+    align-items:center!important;
+    text-align:center;
+  }
+  .homeHeroText p{ margin-left:auto!important; margin-right:auto!important; }
+  .homeHeroBtns{ justify-content:center!important; }
+  .homeHeroArt{
+    width:100%!important;
+    flex-shrink:1!important;
+    height:340px;
+    align-self:stretch;
+  }
+  .homeHeroArt img{
+    height:100%!important;
+    left:50%!important;
+    right:auto!important;
+    transform:translateX(-50%);
+  }
+}
+@media screen and (max-width:480px){
+  .homeHeroText{ padding:44px 18px 26px!important; }
+  .homeHeroText h1{ font-size:clamp(32px,9vw,44px)!important; }
+  .homeHeroArt{ height:250px; }
+}
+
+/* EN-TÊTE MOBILE : barre logo + hamburger toujours visible et collante,
+   au lieu d'un hamburger flottant qui chevauchait la barre utilitaire. */
+.navBrandMobile{ display:none; }
+@media screen and (max-width:991px){
+  .rucNavbar{
+    position:sticky; top:0; z-index:30;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:12px; padding:8px 16px;
+    background:var(--paper); border-bottom:1px solid var(--line);
+  }
+  .navBrandMobile{ display:flex; align-items:center; gap:10px; text-decoration:none; }
+  .navBrandMobile img{ height:42px; width:auto; }
+  .navBrandMobile .navWordmark{ font-size:18px; }
+  /* hamburger remis dans le flux (à droite de la barre) */
+  #buttonToggle{ position:static; top:auto; right:auto; }
+  /* le panneau de menu déroulant ne doit pas se figer par-dessus la barre */
+  .NavBar.fixed{ position:static!important; box-shadow:none; }
+  /* marque dupliquée dans le menu : masquée (déjà présente dans la barre) */
+  .NavBar .navBrand{ display:none; }
+}

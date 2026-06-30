@@ -181,6 +181,7 @@ const Home: NextPage = () => {
 
       {/* ============================ HERO ============================ */}
         <section
+            className="homeHero"
             style={{
                 position: "relative",
                 overflow: "hidden",
@@ -195,7 +196,7 @@ const Home: NextPage = () => {
             <div style={{ position: "absolute", right: 0, bottom: 0, left: 0, height: 80, background: "#dc8d32", clipPath: "polygon(0 50%,100% 0,100% 100%,0 100%)", opacity: 0.96 }} />
 
             {/* Texte */}
-            <div style={{ position: "relative", zIndex: 3, flex: 1, minWidth: 0, maxWidth: 720, padding: "64px 30px 80px 56px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <div className="homeHeroText" style={{ position: "relative", zIndex: 3, flex: 1, minWidth: 0, maxWidth: 720, padding: "64px 30px 80px 56px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
                 <div style={{ display: "inline-flex", alignItems: "center", gap: 10, fontFamily: "'Oswald',sans-serif", fontSize: 12.5, letterSpacing: ".28em", textTransform: "uppercase", color: "#f0b968", fontWeight: 600, marginBottom: 22 }}>
                     <span style={{ width: 26, height: 2, background: "#dc8d32", display: "inline-block" }} />
                     RUC Basket · Reims · depuis 2003
@@ -208,7 +209,7 @@ const Home: NextPage = () => {
                 <p style={{ color: "#c4bdd4", fontSize: 17, lineHeight: 1.55, fontWeight: 500, maxWidth: 480, margin: "22px 0 30px" }}>
                     Club de basket formateur à Reims — de l'école de basket aux seniors. Compétition, respect et convivialité au cœur du jeu.
                 </p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
+                <div className="homeHeroBtns" style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
                     <Link href="/qui/historique" className="btnHover" style={{ background: "#dc8d32", color: "#fff", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, boxShadow: "0 12px 30px -10px rgba(220,141,50,.8)" }}>
                         Rejoindre le club
                     </Link>
@@ -219,7 +220,7 @@ const Home: NextPage = () => {
             </div>
 
             {/* Personnage (table `bandeau`) — PNG transparent posé à droite */}
-            <div style={{ position: "relative", zIndex: 3, width: 480, flexShrink: 0, alignSelf: "stretch" }}>
+            <div className="homeHeroArt" style={{ position: "relative", zIndex: 3, width: 480, flexShrink: 0, alignSelf: "stretch" }}>
                 <img
                     src={bandeau || "/dunk.png"}
                     alt="Joueur RUCB"
@@ -546,8 +547,9 @@ const Home: NextPage = () => {
                       <span
                         key={cat}
                         style={{
-                          background: "var(--paper-2)",
-                          color: "var(--brand-fg)",
+                          background: "rgba(90,53,160,.32)",
+                          color: "#e2d6f7",
+                          border: "1px solid rgba(124,79,196,.5)",
                           fontWeight: 700,
                           fontSize: 13,
                           padding: "7px 13px",
