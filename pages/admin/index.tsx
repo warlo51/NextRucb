@@ -118,7 +118,7 @@ export default function Admin() {
       supabase.from('actu').select('*').order('date_publication', { ascending: false }),
       supabase.from('partenaire').select('*').order('ordre'),
       supabase.from('comite').select('*').order('ordre'),
-      supabase.from('entraineur').select('*').order('ordre'),
+      supabase.from('entraineur').select('*, equipes:equipe(id, nom)').order('ordre'),
       supabase.from('formation').select('*').order('ordre'),
       supabase.from('historique').select('*').order('ordre'),
       supabase.from('sponsor_file').select('*').order('created_at', { ascending: false }),
@@ -222,8 +222,20 @@ export default function Admin() {
 
   // --- CRUD entraîneurs ---
   async function saveEntraineur() {
-    if (eForm.id) await supabase.from('entraineur').update(eForm).eq('id', eForm.id);
-    else await supabase.from('entraineur').insert(eForm);
+    // On retire les champs relationnels du payload de la table entraineur.
+    const { equipe_ids, equipes, equipe, equipe_id, ...rest } = eForm;
+    let entraineurId = eForm.id;
+    if (eForm.id) {
+      await supabase.from('entraineur').update(rest).eq('id', eForm.id);
+    } else {
+      const { data } = await supabase.from('entraineur').insert(rest).select('id').single();
+      entraineurId = data?.id;
+    }
+    if (entraineurId) {
+      // Synchronise la table de liaison : on remplace toutes les équipes de l'entraîneur.
+      await supabase.from('entraineur_equipe').delete().eq('entraineur_id', entraineurId);
+      if (equipe_ids?.length) await supabase.from('entraineur_equipe').insert(equipe_ids.map((eid: string) => ({ entraineur_id: entraineurId, equipe_id: eid })));
+    }
     setEForm(null); load();
   }
   async function delEntraineur(id: string) { if (confirm('Supprimer cet entraîneur ?')) { await supabase.from('entraineur').delete().eq('id', id); load(); } }
@@ -605,17 +617,37 @@ export default function Admin() {
             <div>
               <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 22 }}>
                 <div><h2 style={h2}>Entraîneurs</h2><div style={{ fontSize: 13, color: '#726b86', fontWeight: 600, marginTop: 4 }}>{entraineurs.length} entraîneur(s)</div></div>
-                <button onClick={() => setEForm({ nom: '', role: '', equipe_id: null, email: '', telephone: '', photo_url: '', ordre: entraineurs.length + 1, actif: true })} style={btnOrange}>+ Nouvel entraîneur</button>
+                <button onClick={() => setEForm({ nom: '', role: '', equipe_ids: [], email: '', telephone: '', photo_url: '', ordre: entraineurs.length + 1, actif: true })} style={btnOrange}>+ Nouvel entraîneur</button>
               </div>
               {eForm && (
                 <div style={card}>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 16 }}>
                     <div><label style={label}>Nom</label><input value={eForm.nom} onChange={(e) => setEForm({ ...eForm, nom: e.target.value })} placeholder="Prénom Nom" style={input} /></div>
-                    <div><label style={label}>Équipe encadrée</label><select value={eForm.equipe_id || ''} onChange={(e) => setEForm({ ...eForm, equipe_id: e.target.value || null })} style={input}><option value="">— Aucune —</option>{Array.from(new Set(equipes.map((x) => x.categorie))).map((cat) => (<optgroup key={cat} label={cat}>{equipes.filter((x) => x.categorie === cat).map((eq) => <option key={eq.id} value={eq.id}>{eq.nom}</option>)}</optgroup>))}</select></div>
                     <div><label style={label}>Rôle / fonction</label><input value={eForm.role || ''} onChange={(e) => setEForm({ ...eForm, role: e.target.value })} placeholder="Entraîneur principal, Assistant..." style={input} /></div>
                     <div><label style={label}>Téléphone</label><input value={eForm.telephone || ''} onChange={(e) => setEForm({ ...eForm, telephone: e.target.value })} placeholder="06 00 00 00 00" style={input} /></div>
                     <div><label style={label}>E-mail</label><input type="email" value={eForm.email || ''} onChange={(e) => setEForm({ ...eForm, email: e.target.value })} placeholder="contact@rucb.fr" style={input} /></div>
                     <div><label style={label}>Photo (optionnel)</label><input type="file" accept="image/*" onChange={async (e) => { if (e.target.files?.[0]) { const u = await uploadTo('entraineurs', e.target.files[0]); if (u) setEForm((f: any) => ({ ...f, photo_url: u })); } }} style={{ ...input, padding: 8 }} />{eForm.photo_url ? <img src={eForm.photo_url} alt="" style={{ marginTop: 8, height: 52, borderRadius: '50%' }} /> : null}</div>
+                  </div>
+                  <div style={{ marginTop: 16 }}>
+                    <label style={label}>Équipes encadrées</label>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 22, padding: '12px 14px', border: '1px solid #e1dcec', borderRadius: 10, background: '#faf9fc' }}>
+                      {equipes.length === 0 ? <span style={{ fontSize: 13, color: '#726b86' }}>Ajoute d'abord des équipes dans l'onglet Équipes.</span> : Array.from(new Set(equipes.map((x) => x.categorie))).map((cat) => (
+                        <div key={cat}>
+                          <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '.04em', textTransform: 'uppercase', color: '#dc8d32', marginBottom: 7 }}>{cat}</div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                            {equipes.filter((x) => x.categorie === cat).map((eq) => {
+                              const checked = (eForm.equipe_ids || []).includes(eq.id);
+                              return (
+                                <label key={eq.id} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, color: '#1d1730', cursor: 'pointer' }}>
+                                  <input type="checkbox" checked={checked} onChange={() => { const cur = eForm.equipe_ids || []; setEForm({ ...eForm, equipe_ids: checked ? cur.filter((id: string) => id !== eq.id) : [...cur, eq.id] }); }} />
+                                  {eq.nom}
+                                </label>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                   <div style={{ display: 'flex', gap: 10, marginTop: 20 }}><button onClick={saveEntraineur} style={btnPrimary}>Enregistrer</button><button onClick={() => setEForm(null)} style={btnGhost}>Annuler</button></div>
                 </div>
@@ -629,11 +661,12 @@ export default function Admin() {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontWeight: 800, fontSize: 15, color: '#1d1730' }}>{en.nom}</div>
                       {en.role ? <div style={{ fontSize: 13, color: '#dc8d32', fontWeight: 700 }}>{en.role}</div> : null}
+                      {(en.equipes || []).length ? <div style={{ fontSize: 12, color: '#726b86', marginTop: 2 }}>{(en.equipes || []).map((e: any) => e.nom).join(' · ')}</div> : null}
                       {en.telephone ? <div style={{ fontSize: 12, color: '#726b86' }}>{en.telephone}</div> : null}
                       {en.email ? <div style={{ fontSize: 12, color: '#726b86', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{en.email}</div> : null}
                     </div>
                     <div style={{ display: 'flex', gap: 6 }}>
-                      <button onClick={() => setEForm({ ...en })} style={{ background: '#f1edf8', color: '#3d1e7b', border: 'none', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 8, cursor: 'pointer' }}>Éditer</button>
+                      <button onClick={() => setEForm({ ...en, equipe_ids: (en.equipes || []).map((e: any) => e.id) })} style={{ background: '#f1edf8', color: '#3d1e7b', border: 'none', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 8, cursor: 'pointer' }}>Éditer</button>
                       <button onClick={() => delEntraineur(en.id)} style={{ background: '#fbeaea', color: '#c0392b', border: 'none', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 8, cursor: 'pointer' }}>Suppr.</button>
                     </div>
                   </div>
