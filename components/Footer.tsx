@@ -58,7 +58,7 @@ const FooterPage = () => {
         <div className="footerCol">
           <h4>Contact</h4>
           <div style={{ fontSize: 14, lineHeight: 1.7, fontWeight: 600, marginBottom: 12 }}>
-            Gymnase Barbusse
+            Gymnase Endy Miyem
             <br />
             Reims (51100)
           </div>

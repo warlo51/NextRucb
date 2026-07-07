@@ -17,7 +17,7 @@ export default function Header() {
               display: "inline-block",
             }}
           />
-          Reims · Gymnase Barbusse
+          Reims · Gymnase Endy Miyem
         </li>
         <li>
           <Link href="/qui/complexe">Contact</Link>

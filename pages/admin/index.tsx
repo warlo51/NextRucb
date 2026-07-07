@@ -36,6 +36,7 @@ const SECTIONS = [
   { key: 'formation', label: 'Formation' },
   { key: 'historique', label: 'Historique' },
   { key: 'complexe', label: 'Complexe' },
+  { key: 'minibasket', label: 'Mini-Basket' },
   { key: 'mecenat', label: 'Mécénat' },
   { key: 'equipe', label: 'Équipes' },
   { key: 'resultats', label: 'Résultats' },
@@ -67,6 +68,7 @@ export default function Admin() {
   const [authError, setAuthError] = React.useState('');
   const [section, setSection] = React.useState('planning');
   const [isMobile, setIsMobile] = React.useState(false);
+  const [vidUploading, setVidUploading] = React.useState(false); // upload vidéo d'actu en cours
 
   const [creneaux, setCreneaux] = React.useState<any[]>([]);
   const [gymnases, setGymnases] = React.useState<any[]>([]);
@@ -83,6 +85,7 @@ export default function Admin() {
   const [equipes, setEquipes] = React.useState<any[]>([]);
   const [bandeaux, setBandeaux] = React.useState<any[]>([]);
   const [resultats, setResultats] = React.useState<any[]>([]);
+  const [miniBasket, setMiniBasket] = React.useState<any[]>([]);
 
   const [cForm, setCForm] = React.useState<any>(null);   // créneau
   const [planDay, setPlanDay] = React.useState('Lundi'); // jour sélectionné (vue mobile)
@@ -95,6 +98,7 @@ export default function Admin() {
   const [meForm, setMeForm] = React.useState<any>(null); // article mécénat
   const [eqForm, setEqForm] = React.useState<any>(null); // équipe
   const [rForm, setRForm] = React.useState<any>(null);   // résultats (widgets équipe)
+  const [mbForm, setMbForm] = React.useState<any>(null); // page mini-basket
 
   // --- Auth ---
   React.useEffect(() => {
@@ -112,7 +116,7 @@ export default function Admin() {
   }, []);
 
   async function load() {
-    const [{ data: cr }, { data: gy }, { data: ac }, { data: pa }, { data: co }, { data: en }, { data: fo }, { data: hi }, { data: sf }, { data: cp }, { data: me }, { data: eq }, { data: lf }, { data: bn }, { data: rs }] = await Promise.all([
+    const [{ data: cr }, { data: gy }, { data: ac }, { data: pa }, { data: co }, { data: en }, { data: fo }, { data: hi }, { data: sf }, { data: cp }, { data: me }, { data: eq }, { data: lf }, { data: bn }, { data: rs }, { data: mb }] = await Promise.all([
       supabase.from('creneau').select('*, equipes:equipe(id, nom)').order('heure_debut'),
       supabase.from('gymnase').select('id, titre').order('titre'),
       supabase.from('actu').select('*').order('date_publication', { ascending: false }),
@@ -128,12 +132,14 @@ export default function Admin() {
       supabase.from('licence_file').select('*').order('created_at', { ascending: false }),
       supabase.from('bandeau').select('*').order('created_at', { ascending: false }),
       supabase.from('equipe_resultat').select('*').order('ordre'),
+      supabase.from('mini_basket').select('*').order('ordre'),
     ]);
     setCreneaux(cr || []); setGymnases(gy || []); setActus(ac || []);
     setPartenaires(pa || []); setComite(co || []); setEntraineurs(en || []);
     setFormations(fo || []); setHistoriques(hi || []); setSponsorFiles(sf || []);
     setComplexePhotos(cp || []); setMecenats(me || []); setEquipes(eq || []);
     setLicenceFiles(lf || []); setBandeaux(bn || []); setResultats(rs || []);
+    setMiniBasket(mb || []);
   }
   React.useEffect(() => { if (session) load(); }, [session]);
 
@@ -290,6 +296,16 @@ export default function Admin() {
     setRForm(null); load();
   }
   async function delResultat(id: string) { if (confirm('Retirer cette équipe des résultats ?')) { await supabase.from('equipe_resultat').delete().eq('id', id); load(); } }
+
+  // --- CRUD Mini-Basket (sous-menus = pages /mini-basket/[slug]) ---
+  async function saveMiniBasket() {
+    if (!mbForm.titre) { alert('Le titre est requis.'); return; }
+    const p = { ...mbForm, slug: mbForm.slug || slugify(mbForm.titre) };
+    if (mbForm.id) await supabase.from('mini_basket').update(p).eq('id', mbForm.id);
+    else await supabase.from('mini_basket').insert(p);
+    setMbForm(null); load();
+  }
+  async function delMiniBasket(id: string) { if (confirm('Supprimer cette page Mini-Basket ?')) { await supabase.from('mini_basket').delete().eq('id', id); load(); } }
 
   // ===================== LOGIN =====================
   if (!session) {
@@ -489,7 +505,7 @@ export default function Admin() {
             <div>
               <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 22 }}>
                 <div><h2 style={h2}>Actualités</h2><div style={{ fontSize: 13, color: '#726b86', fontWeight: 600, marginTop: 4 }}>{actus.length} article(s)</div></div>
-                <button onClick={() => setAForm({ titre: '', categorie: CATEGORIES[0], date_publication: new Date().toISOString().slice(0, 10), date_fin_publication: '', extrait: '', contenu: '', image_url: '', actif: true })} style={btnOrange}>+ Nouvel article</button>
+                <button onClick={() => setAForm({ titre: '', categorie: CATEGORIES[0], date_publication: new Date().toISOString().slice(0, 10), date_fin_publication: '', extrait: '', contenu: '', image_url: '', video_url: '', actif: true })} style={btnOrange}>+ Nouvel article</button>
               </div>
               {aForm && (
                 <div style={card}>
@@ -499,6 +515,24 @@ export default function Admin() {
                     <div><label style={label}>Date de publication</label><input type="date" value={aForm.date_publication || ''} onChange={(e) => setAForm({ ...aForm, date_publication: e.target.value })} style={input} /></div>
                     <div><label style={label}>Date de fin (optionnel)</label><input type="date" value={aForm.date_fin_publication || ''} onChange={(e) => setAForm({ ...aForm, date_fin_publication: e.target.value })} style={input} /></div>
                     <div><label style={label}>Image</label><input type="file" accept="image/*" onChange={async (e) => { if (e.target.files?.[0]) { const u = await uploadTo('actus', e.target.files[0]); if (u) setAForm((f: any) => ({ ...f, image_url: u })); } }} style={{ ...input, padding: 8 }} />{aForm.image_url ? <img src={aForm.image_url} alt="" style={{ marginTop: 8, height: 60, borderRadius: 8 }} /> : null}</div>
+                  </div>
+                  <div style={{ marginTop: 16 }}>
+                    <label style={label}>Vidéo (MP4, optionnel)</label>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center' }}>
+                      <label style={{ ...btnPrimary, display: 'inline-block', opacity: vidUploading ? .6 : 1, pointerEvents: vidUploading ? 'none' : 'auto' }}>
+                        {vidUploading ? 'Envoi en cours…' : '+ Téléverser un MP4'}
+                        <input type="file" accept="video/mp4,video/*" onChange={async (e) => { const file = e.target.files?.[0]; if (!file) return; setVidUploading(true); const u = await uploadTo('actus', file); setVidUploading(false); if (u) setAForm((f: any) => ({ ...f, video_url: u })); }} style={{ display: 'none' }} />
+                      </label>
+                      <span style={{ fontSize: 12, color: '#9a93ad', fontWeight: 700 }}>ou</span>
+                      <input value={aForm.video_url || ''} onChange={(e) => setAForm({ ...aForm, video_url: e.target.value })} placeholder="Colle une URL (YouTube, Vimeo, .mp4)" style={{ ...input, flex: 1, minWidth: 200 }} />
+                    </div>
+                    {aForm.video_url ? (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 10, padding: '10px 14px', border: '1px solid #eee9f4', borderRadius: 10, background: '#faf9fc' }}>
+                        <span style={{ fontSize: 12, fontWeight: 800, color: '#1f7a4d', whiteSpace: 'nowrap' }}>✓ Vidéo</span>
+                        <a href={aForm.video_url} target="_blank" rel="noreferrer" style={{ flex: 1, minWidth: 0, fontSize: 13, color: '#3d1e7b', fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{aForm.video_url}</a>
+                        <button onClick={() => setAForm({ ...aForm, video_url: '' })} style={{ background: '#fbeaea', color: '#c0392b', border: 'none', fontWeight: 700, fontSize: 12, padding: '7px 12px', borderRadius: 8, cursor: 'pointer' }}>Retirer</button>
+                      </div>
+                    ) : null}
                   </div>
                   <div style={{ marginTop: 16 }}><label style={label}>Extrait</label><textarea value={aForm.extrait || ''} onChange={(e) => setAForm({ ...aForm, extrait: e.target.value })} rows={2} style={{ ...input, resize: 'vertical' }} /></div>
                   <div style={{ marginTop: 16 }}><label style={label}>Contenu</label><textarea value={aForm.contenu || ''} onChange={(e) => setAForm({ ...aForm, contenu: e.target.value })} rows={6} style={{ ...input, resize: 'vertical' }} /></div>
@@ -916,6 +950,49 @@ export default function Admin() {
                     <div style={{ display: 'flex', gap: 6 }}>
                       <button onClick={() => setRForm({ ...r })} style={{ background: '#f1edf8', color: '#3d1e7b', border: 'none', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 8, cursor: 'pointer' }}>Éditer</button>
                       <button onClick={() => delResultat(r.id)} style={{ background: '#fbeaea', color: '#c0392b', border: 'none', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 8, cursor: 'pointer' }}>Suppr.</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ---------- MINI-BASKET ---------- */}
+          {section === 'minibasket' && (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 22 }}>
+                <div><h2 style={h2}>Mini-Basket</h2><div style={{ fontSize: 13, color: '#726b86', fontWeight: 600, marginTop: 4 }}>{miniBasket.length} page(s) · chaque page est un sous-menu de l&apos;onglet « Mini-Basket ».</div></div>
+                <button onClick={() => setMbForm({ titre: '', slug: '', extrait: '', contenu: '', image_url: '', ordre: miniBasket.length + 1, actif: true })} style={btnOrange}>+ Nouvelle page</button>
+              </div>
+              {mbForm && (
+                <div style={card}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 16 }}>
+                    <div><label style={label}>Titre (libellé du menu)</label><input value={mbForm.titre} onChange={(e) => setMbForm({ ...mbForm, titre: e.target.value })} placeholder="Baby Basket" style={input} /></div>
+                    <div><label style={label}>Lien (slug)</label><input value={mbForm.slug || ''} onChange={(e) => setMbForm({ ...mbForm, slug: slugify(e.target.value) })} placeholder="auto depuis le titre" style={input} /><div style={{ fontSize: 11, color: '#9a93ad', marginTop: 4 }}>/mini-basket/{mbForm.slug || slugify(mbForm.titre || '') || '…'}</div></div>
+                    <div><label style={label}>Ordre (dans le menu)</label><input type="number" value={mbForm.ordre} onChange={(e) => setMbForm({ ...mbForm, ordre: parseInt(e.target.value, 10) || 0 })} style={input} /></div>
+                    <div><label style={label}>Image (optionnel)</label><input type="file" accept="image/*" onChange={async (e) => { if (e.target.files?.[0]) { const u = await uploadTo('mini-basket', e.target.files[0]); if (u) setMbForm((f: any) => ({ ...f, image_url: u })); } }} style={{ ...input, padding: 8 }} />{mbForm.image_url ? <img src={mbForm.image_url} alt="" style={{ marginTop: 8, height: 60, borderRadius: 8 }} /> : null}</div>
+                  </div>
+                  <div style={{ marginTop: 16 }}><label style={label}>Extrait (chapô, optionnel)</label><textarea value={mbForm.extrait || ''} onChange={(e) => setMbForm({ ...mbForm, extrait: e.target.value })} rows={2} style={{ ...input, resize: 'vertical' }} /></div>
+                  <div style={{ marginTop: 16 }}><label style={label}>Contenu</label><textarea value={mbForm.contenu || ''} onChange={(e) => setMbForm({ ...mbForm, contenu: e.target.value })} rows={6} style={{ ...input, resize: 'vertical' }} /></div>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 9, marginTop: 16, fontSize: 14, fontWeight: 700, color: '#1d1730', cursor: 'pointer' }}>
+                    <input type="checkbox" checked={mbForm.actif !== false} onChange={(e) => setMbForm({ ...mbForm, actif: e.target.checked })} />
+                    Page active (visible dans le menu)
+                  </label>
+                  <div style={{ display: 'flex', gap: 10, marginTop: 20 }}><button onClick={saveMiniBasket} style={btnPrimary}>Enregistrer</button><button onClick={() => setMbForm(null)} style={btnGhost}>Annuler</button></div>
+                </div>
+              )}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {miniBasket.map((m) => (
+                  <div key={m.id} style={{ background: '#fff', border: '1px solid #eee9f4', borderRadius: 14, padding: 14, display: 'flex', alignItems: 'center', gap: 16 }}>
+                    <span style={{ fontSize: 11, fontWeight: 800, color: '#dc8d32', minWidth: 24 }}>#{m.ordre}</span>
+                    <div style={{ width: 84, height: 60, borderRadius: 10, flexShrink: 0, backgroundImage: m.image_url ? `url('${m.image_url}')` : 'repeating-linear-gradient(45deg,#efeaf6,#efeaf6 8px,#e7e0f1 8px,#e7e0f1 16px)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: 800, fontSize: 15, color: '#1d1730', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{m.titre}{m.actif === false ? <span style={{ color: '#c0392b', fontWeight: 700, fontSize: 12 }}> · masqué</span> : null}</div>
+                      <div style={{ fontSize: 12, color: '#726b86' }}>/mini-basket/{m.slug}</div>
+                    </div>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      <button onClick={() => setMbForm({ ...m })} style={{ background: '#f1edf8', color: '#3d1e7b', border: 'none', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 8, cursor: 'pointer' }}>Éditer</button>
+                      <button onClick={() => delMiniBasket(m.id)} style={{ background: '#fbeaea', color: '#c0392b', border: 'none', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 8, cursor: 'pointer' }}>Suppr.</button>
                     </div>
                   </div>
                 ))}

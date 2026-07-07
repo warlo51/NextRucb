@@ -4,6 +4,27 @@ import { useRouter } from 'next/router';
 import { Layout } from '../../components/Layout';
 import { supabase } from '../../lib/supabaseClient';
 
+// Média vidéo d'une actu : iframe pour YouTube/Vimeo, balise <video> sinon (MP4…).
+function ActuVideo({ url, poster }: { url: string; poster?: string }) {
+  const yt = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/);
+  const vimeo = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  const box: React.CSSProperties = { borderRadius: 18, marginBottom: 28, overflow: 'hidden', boxShadow: '0 20px 44px -24px rgba(23,18,43,.5)' };
+  if (yt || vimeo) {
+    const src = yt ? `https://www.youtube.com/embed/${yt[1]}` : `https://player.vimeo.com/video/${vimeo![1]}`;
+    return (
+      <div style={{ ...box, position: 'relative', paddingBottom: '56.25%', height: 0 }}>
+        <iframe src={src} title="Vidéo de l'actualité" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }} />
+      </div>
+    );
+  }
+  return (
+    <video controls playsInline poster={poster} style={{ ...box, width: '100%', display: 'block', background: '#000' }}>
+      <source src={url} />
+      Votre navigateur ne peut pas lire cette vidéo.
+    </video>
+  );
+}
+
 export default function ActuDetail() {
   const router = useRouter();
   const { slug } = router.query;
@@ -61,7 +82,9 @@ export default function ActuDetail() {
         ) : null}
         <div style={{ fontSize: 13, fontWeight: 700, color: '#dc8d32', letterSpacing: '.05em', margin: '16px 0 8px' }}>{formatDate(actu.date_publication)}</div>
         <h1 style={{ fontFamily: "'Oswald',sans-serif", fontSize: 'clamp(28px,4vw,44px)', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text)', margin: '0 0 24px', lineHeight: 1.1 }}>{actu.titre}</h1>
-        {actu.image_url ? (
+        {actu.video_url ? (
+          <ActuVideo url={actu.video_url} poster={actu.image_url || undefined} />
+        ) : actu.image_url ? (
           <img src={actu.image_url} alt={actu.titre} style={{ width: '100%', borderRadius: 18, marginBottom: 28, boxShadow: '0 20px 44px -24px rgba(23,18,43,.5)' }} />
         ) : null}
         {actu.extrait ? <p style={{ fontSize: 18, lineHeight: 1.6, color: 'var(--brand-fg)', fontWeight: 600, margin: '0 0 20px' }}>{actu.extrait}</p> : null}

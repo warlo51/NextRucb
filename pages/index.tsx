@@ -70,7 +70,7 @@ const Home: NextPage = () => {
       const today = new Date().toISOString().slice(0, 10);
       const { data: ac } = await supabase
         .from("actu")
-        .select("id, titre, slug, categorie, date_publication, extrait, image_url")
+        .select("id, titre, slug, categorie, date_publication, extrait, image_url, video_url")
         .eq("actif", true)
         .lte("date_publication", today)
         .or(`date_fin_publication.is.null,date_fin_publication.gte.${today}`)
@@ -369,6 +369,25 @@ const Home: NextPage = () => {
                       }}
                     >
                       {n.categorie}
+                    </span>
+                  ) : null}
+                  {n.video_url ? (
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: 14,
+                        right: 14,
+                        background: "rgba(23,18,43,.82)",
+                        color: "#fff",
+                        fontSize: 11,
+                        fontWeight: 800,
+                        letterSpacing: ".04em",
+                        textTransform: "uppercase",
+                        padding: "6px 11px",
+                        borderRadius: 999,
+                      }}
+                    >
+                      ▶ Vidéo
                     </span>
                   ) : null}
                 </div>

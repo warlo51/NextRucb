@@ -7,7 +7,7 @@ import { supabase } from '../../lib/supabaseClient';
 // Galerie de repli (utilisée tant que la table complexe_photo est vide).
 // Mets `ph: true` pour afficher un placeholder rayé en attendant une image.
 const IMAGES = [
-  { src: '/complexe/facade.jpg', cap: 'Façade — Complexe Henri Barbusse', ph: true },
+  { src: '/complexe/facade.jpg', cap: 'Façade — Complexe Endy Miyem', ph: true },
   { src: '/gymnase3.jpg', cap: 'La grande salle' },
   { src: '/gymnase2.jpg', cap: 'Les coursives' },
   { src: '/complexe/terrain.jpg', cap: 'Terrain principal', ph: true },
@@ -47,7 +47,7 @@ export default function Complexe() {
     <Layout>
       <Head>
         <title>Complexe sportif</title>
-        <meta name="description" content="Le complexe sportif Henri Barbusse, salle du RUC Basket Reims." />
+        <meta name="description" content="Le complexe sportif Endy Miyem, salle du RUC Basket Reims." />
       </Head>
 
       {/* En-tête */}
@@ -60,12 +60,12 @@ export default function Complexe() {
       <section style={{ padding: '54px 26px 24px', maxWidth: 1240, margin: '0 auto' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 36, alignItems: 'center' }}>
           <div>
-            <h2 style={{ fontFamily: "'Oswald',sans-serif", fontSize: 'clamp(24px,3vw,34px)', fontWeight: 700, textTransform: 'uppercase', color: 'var(--brand-fg)', margin: '0 0 14px' }}>Complexe Henri Barbusse</h2>
+            <h2 style={{ fontFamily: "'Oswald',sans-serif", fontSize: 'clamp(24px,3vw,34px)', fontWeight: 700, textTransform: 'uppercase', color: 'var(--brand-fg)', margin: '0 0 14px' }}>Complexe Endy Miyem</h2>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 9, background: 'var(--paper-2)', color: 'var(--brand-fg)', fontWeight: 700, fontSize: 14, padding: '9px 15px', borderRadius: 999, marginBottom: 18 }}>
               <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#dc8d32', display: 'inline-block' }} />{ADRESSE}
             </div>
             <p style={{ fontSize: 16, lineHeight: 1.65, color: 'var(--text-soft)', fontWeight: 500, margin: '0 0 22px' }}>
-              Le RUC Basket évolue au complexe sportif Henri Barbusse : une salle moderne et homologuée, au cœur de Reims, où s'entraînent et jouent toutes nos équipes, de l'école de basket aux seniors.
+              Le RUC Basket évolue au complexe sportif Endy Miyem : une salle moderne et homologuée, au cœur de Reims, où s'entraînent et jouent toutes nos équipes, de l'école de basket aux seniors.
             </p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 10, marginBottom: 26 }}>
               {FACTS.map((f) => (
