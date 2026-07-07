@@ -27,6 +27,7 @@ function slotTint(hex: string): string {
 }
 
 const CATEGORIES = ['Compétition', 'Club', 'Partenaires', 'Événement'];
+const ROLES = ['Entraîneur', 'Assistant']; // rôles d'un entraîneur (page « Nos entraîneurs »)
 const SECTIONS = [
   { key: 'planning', label: 'Planning' },
   { key: 'actus', label: 'Actualités' },
@@ -41,6 +42,14 @@ const SECTIONS = [
   { key: 'equipe', label: 'Équipes' },
   { key: 'resultats', label: 'Résultats' },
   { key: 'bandeau', label: 'Accueil' },
+];
+// Sous-onglets de la section Mini-Basket (= les 5 pages du menu).
+const MINI_SUBS = [
+  { key: 'organigramme', label: 'Organigramme' },
+  { key: 'entrainements', label: 'Entraînements' },
+  { key: 'minis', label: 'Les minis' },
+  { key: 'evenements', label: 'Évènements' },
+  { key: 'calendrier', label: 'Calendrier des plateaux' },
 ];
 
 const input: React.CSSProperties = { width: '100%', boxSizing: 'border-box', padding: '10px 12px', border: '1px solid #e1dcec', borderRadius: 10, fontFamily: "'Manrope',sans-serif", fontSize: 14, color: '#1d1730', background: '#faf9fc' };
@@ -85,7 +94,10 @@ export default function Admin() {
   const [equipes, setEquipes] = React.useState<any[]>([]);
   const [bandeaux, setBandeaux] = React.useState<any[]>([]);
   const [resultats, setResultats] = React.useState<any[]>([]);
-  const [miniBasket, setMiniBasket] = React.useState<any[]>([]);
+  const [miniPhotos, setMiniPhotos] = React.useState<any[]>([]);
+  const [miniEvents, setMiniEvents] = React.useState<any[]>([]);
+  const [miniPlateaux, setMiniPlateaux] = React.useState<any[]>([]);
+  const [miniSub, setMiniSub] = React.useState('organigramme'); // sous-onglet Mini-Basket
 
   const [cForm, setCForm] = React.useState<any>(null);   // créneau
   const [planDay, setPlanDay] = React.useState('Lundi'); // jour sélectionné (vue mobile)
@@ -98,7 +110,9 @@ export default function Admin() {
   const [meForm, setMeForm] = React.useState<any>(null); // article mécénat
   const [eqForm, setEqForm] = React.useState<any>(null); // équipe
   const [rForm, setRForm] = React.useState<any>(null);   // résultats (widgets équipe)
-  const [mbForm, setMbForm] = React.useState<any>(null); // page mini-basket
+  const [pForm, setPForm] = React.useState<any>(null);   // photo mini
+  const [evForm, setEvForm] = React.useState<any>(null); // évènement mini
+  const [plForm, setPlForm] = React.useState<any>(null); // plateau (calendrier)
 
   // --- Auth ---
   React.useEffect(() => {
@@ -116,7 +130,7 @@ export default function Admin() {
   }, []);
 
   async function load() {
-    const [{ data: cr }, { data: gy }, { data: ac }, { data: pa }, { data: co }, { data: en }, { data: fo }, { data: hi }, { data: sf }, { data: cp }, { data: me }, { data: eq }, { data: lf }, { data: bn }, { data: rs }, { data: mb }] = await Promise.all([
+    const [{ data: cr }, { data: gy }, { data: ac }, { data: pa }, { data: co }, { data: en }, { data: fo }, { data: hi }, { data: sf }, { data: cp }, { data: me }, { data: eq }, { data: lf }, { data: bn }, { data: rs }, { data: mp }, { data: mev }, { data: mpl }] = await Promise.all([
       supabase.from('creneau').select('*, equipes:equipe(id, nom)').order('heure_debut'),
       supabase.from('gymnase').select('id, titre').order('titre'),
       supabase.from('actu').select('*').order('date_publication', { ascending: false }),
@@ -132,14 +146,16 @@ export default function Admin() {
       supabase.from('licence_file').select('*').order('created_at', { ascending: false }),
       supabase.from('bandeau').select('*').order('created_at', { ascending: false }),
       supabase.from('equipe_resultat').select('*').order('ordre'),
-      supabase.from('mini_basket').select('*').order('ordre'),
+      supabase.from('mini_photo').select('*').order('ordre'),
+      supabase.from('mini_evenement').select('*').order('date_event'),
+      supabase.from('mini_plateau').select('*').order('date_event'),
     ]);
     setCreneaux(cr || []); setGymnases(gy || []); setActus(ac || []);
     setPartenaires(pa || []); setComite(co || []); setEntraineurs(en || []);
     setFormations(fo || []); setHistoriques(hi || []); setSponsorFiles(sf || []);
     setComplexePhotos(cp || []); setMecenats(me || []); setEquipes(eq || []);
     setLicenceFiles(lf || []); setBandeaux(bn || []); setResultats(rs || []);
-    setMiniBasket(mb || []);
+    setMiniPhotos(mp || []); setMiniEvents(mev || []); setMiniPlateaux(mpl || []);
   }
   React.useEffect(() => { if (session) load(); }, [session]);
 
@@ -297,15 +313,37 @@ export default function Admin() {
   }
   async function delResultat(id: string) { if (confirm('Retirer cette équipe des résultats ?')) { await supabase.from('equipe_resultat').delete().eq('id', id); load(); } }
 
-  // --- CRUD Mini-Basket (sous-menus = pages /mini-basket/[slug]) ---
-  async function saveMiniBasket() {
-    if (!mbForm.titre) { alert('Le titre est requis.'); return; }
-    const p = { ...mbForm, slug: mbForm.slug || slugify(mbForm.titre) };
-    if (mbForm.id) await supabase.from('mini_basket').update(p).eq('id', mbForm.id);
-    else await supabase.from('mini_basket').insert(p);
-    setMbForm(null); load();
+  // --- Mini-Basket ▸ Organigramme & Entraînements : bascule du flag `mini` ---
+  async function toggleEntraineurMini(id: string, val: boolean) { await supabase.from('entraineur').update({ mini: val }).eq('id', id); load(); }
+  async function toggleCreneauMini(id: string, val: boolean) { await supabase.from('creneau').update({ mini: val }).eq('id', id); load(); }
+
+  // --- Mini-Basket ▸ Les minis (photos) ---
+  async function savePhoto() {
+    if (!pForm.image_url) { alert('Ajoute une photo.'); return; }
+    if (pForm.id) await supabase.from('mini_photo').update(pForm).eq('id', pForm.id);
+    else await supabase.from('mini_photo').insert(pForm);
+    setPForm(null); load();
   }
-  async function delMiniBasket(id: string) { if (confirm('Supprimer cette page Mini-Basket ?')) { await supabase.from('mini_basket').delete().eq('id', id); load(); } }
+  async function delPhoto(id: string) { if (confirm('Supprimer cette photo ?')) { await supabase.from('mini_photo').delete().eq('id', id); load(); } }
+
+  // --- Mini-Basket ▸ Les évènements ---
+  async function saveEvent() {
+    if (!evForm.titre) { alert('Le titre est requis.'); return; }
+    const p = { ...evForm, date_event: evForm.date_event || null };
+    if (evForm.id) await supabase.from('mini_evenement').update(p).eq('id', evForm.id);
+    else await supabase.from('mini_evenement').insert(p);
+    setEvForm(null); load();
+  }
+  async function delEvent(id: string) { if (confirm('Supprimer cet évènement ?')) { await supabase.from('mini_evenement').delete().eq('id', id); load(); } }
+
+  // --- Mini-Basket ▸ Calendrier des plateaux ---
+  async function savePlateau() {
+    if (!plForm.date_event) { alert('La date est requise.'); return; }
+    if (plForm.id) await supabase.from('mini_plateau').update(plForm).eq('id', plForm.id);
+    else await supabase.from('mini_plateau').insert(plForm);
+    setPlForm(null); load();
+  }
+  async function delPlateau(id: string) { if (confirm('Supprimer ce plateau ?')) { await supabase.from('mini_plateau').delete().eq('id', id); load(); } }
 
   // ===================== LOGIN =====================
   if (!session) {
@@ -651,13 +689,13 @@ export default function Admin() {
             <div>
               <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 22 }}>
                 <div><h2 style={h2}>Entraîneurs</h2><div style={{ fontSize: 13, color: '#726b86', fontWeight: 600, marginTop: 4 }}>{entraineurs.length} entraîneur(s)</div></div>
-                <button onClick={() => setEForm({ nom: '', role: '', equipe_ids: [], email: '', telephone: '', photo_url: '', ordre: entraineurs.length + 1, actif: true })} style={btnOrange}>+ Nouvel entraîneur</button>
+                <button onClick={() => setEForm({ nom: '', role: ROLES[0], equipe_ids: [], email: '', telephone: '', photo_url: '', ordre: entraineurs.length + 1, actif: true })} style={btnOrange}>+ Nouvel entraîneur</button>
               </div>
               {eForm && (
                 <div style={card}>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 16 }}>
                     <div><label style={label}>Nom</label><input value={eForm.nom} onChange={(e) => setEForm({ ...eForm, nom: e.target.value })} placeholder="Prénom Nom" style={input} /></div>
-                    <div><label style={label}>Rôle / fonction</label><input value={eForm.role || ''} onChange={(e) => setEForm({ ...eForm, role: e.target.value })} placeholder="Entraîneur principal, Assistant..." style={input} /></div>
+                    <div><label style={label}>Rôle</label><select value={eForm.role || ROLES[0]} onChange={(e) => setEForm({ ...eForm, role: e.target.value })} style={input}>{Array.from(new Set([...ROLES, eForm.role].filter(Boolean))).map((r) => <option key={r as string} value={r as string}>{r as string}</option>)}</select></div>
                     <div><label style={label}>Téléphone</label><input value={eForm.telephone || ''} onChange={(e) => setEForm({ ...eForm, telephone: e.target.value })} placeholder="06 00 00 00 00" style={input} /></div>
                     <div><label style={label}>E-mail</label><input type="email" value={eForm.email || ''} onChange={(e) => setEForm({ ...eForm, email: e.target.value })} placeholder="contact@rucb.fr" style={input} /></div>
                     <div><label style={label}>Photo (optionnel)</label><input type="file" accept="image/*" onChange={async (e) => { if (e.target.files?.[0]) { const u = await uploadTo('entraineurs', e.target.files[0]); if (u) setEForm((f: any) => ({ ...f, photo_url: u })); } }} style={{ ...input, padding: 8 }} />{eForm.photo_url ? <img src={eForm.photo_url} alt="" style={{ marginTop: 8, height: 52, borderRadius: '50%' }} /> : null}</div>
@@ -960,43 +998,182 @@ export default function Admin() {
           {/* ---------- MINI-BASKET ---------- */}
           {section === 'minibasket' && (
             <div>
-              <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 22 }}>
-                <div><h2 style={h2}>Mini-Basket</h2><div style={{ fontSize: 13, color: '#726b86', fontWeight: 600, marginTop: 4 }}>{miniBasket.length} page(s) · chaque page est un sous-menu de l&apos;onglet « Mini-Basket ».</div></div>
-                <button onClick={() => setMbForm({ titre: '', slug: '', extrait: '', contenu: '', image_url: '', ordre: miniBasket.length + 1, actif: true })} style={btnOrange}>+ Nouvelle page</button>
+              <div style={{ marginBottom: 18 }}>
+                <h2 style={h2}>Mini-Basket</h2>
+                <div style={{ fontSize: 13, color: '#726b86', fontWeight: 600, marginTop: 4 }}>Gère les 5 pages du menu Mini-Basket.</div>
               </div>
-              {mbForm && (
-                <div style={card}>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 16 }}>
-                    <div><label style={label}>Titre (libellé du menu)</label><input value={mbForm.titre} onChange={(e) => setMbForm({ ...mbForm, titre: e.target.value })} placeholder="Baby Basket" style={input} /></div>
-                    <div><label style={label}>Lien (slug)</label><input value={mbForm.slug || ''} onChange={(e) => setMbForm({ ...mbForm, slug: slugify(e.target.value) })} placeholder="auto depuis le titre" style={input} /><div style={{ fontSize: 11, color: '#9a93ad', marginTop: 4 }}>/mini-basket/{mbForm.slug || slugify(mbForm.titre || '') || '…'}</div></div>
-                    <div><label style={label}>Ordre (dans le menu)</label><input type="number" value={mbForm.ordre} onChange={(e) => setMbForm({ ...mbForm, ordre: parseInt(e.target.value, 10) || 0 })} style={input} /></div>
-                    <div><label style={label}>Image (optionnel)</label><input type="file" accept="image/*" onChange={async (e) => { if (e.target.files?.[0]) { const u = await uploadTo('mini-basket', e.target.files[0]); if (u) setMbForm((f: any) => ({ ...f, image_url: u })); } }} style={{ ...input, padding: 8 }} />{mbForm.image_url ? <img src={mbForm.image_url} alt="" style={{ marginTop: 8, height: 60, borderRadius: 8 }} /> : null}</div>
+              {/* Sous-navigation : une entrée par page */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 24 }}>
+                {MINI_SUBS.map((s) => { const on = miniSub === s.key; return (
+                  <button key={s.key} onClick={() => setMiniSub(s.key)} style={{ fontFamily: "'Manrope',sans-serif", fontWeight: 700, fontSize: 13.5, padding: '9px 16px', borderRadius: 999, cursor: 'pointer', border: `1.5px solid ${on ? '#3d1e7b' : '#e1dcec'}`, background: on ? '#3d1e7b' : '#fff', color: on ? '#fff' : '#3d1e7b' }}>{s.label}</button>
+                ); })}
+              </div>
+
+              {/* ===== Organigramme : réutilise les entraîneurs (flag mini) ===== */}
+              {miniSub === 'organigramme' && (
+                <div>
+                  <div style={{ ...card, borderTopColor: '#3d1e7b' }}>
+                    <div style={{ fontFamily: "'Oswald',sans-serif", fontSize: 16, fontWeight: 700, textTransform: 'uppercase', color: '#1d1730' }}>Comment ça marche</div>
+                    <div style={{ fontSize: 13.5, color: '#726b86', fontWeight: 600, marginTop: 6, lineHeight: 1.6 }}>Coche les entraîneurs à afficher sur la page <strong>Mini-Basket › Organigramme</strong>. Les fiches (nom, rôle, photo, équipes) se créent et se modifient dans la section <strong>Entraîneurs</strong>.</div>
                   </div>
-                  <div style={{ marginTop: 16 }}><label style={label}>Extrait (chapô, optionnel)</label><textarea value={mbForm.extrait || ''} onChange={(e) => setMbForm({ ...mbForm, extrait: e.target.value })} rows={2} style={{ ...input, resize: 'vertical' }} /></div>
-                  <div style={{ marginTop: 16 }}><label style={label}>Contenu</label><textarea value={mbForm.contenu || ''} onChange={(e) => setMbForm({ ...mbForm, contenu: e.target.value })} rows={6} style={{ ...input, resize: 'vertical' }} /></div>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 9, marginTop: 16, fontSize: 14, fontWeight: 700, color: '#1d1730', cursor: 'pointer' }}>
-                    <input type="checkbox" checked={mbForm.actif !== false} onChange={(e) => setMbForm({ ...mbForm, actif: e.target.checked })} />
-                    Page active (visible dans le menu)
-                  </label>
-                  <div style={{ display: 'flex', gap: 10, marginTop: 20 }}><button onClick={saveMiniBasket} style={btnPrimary}>Enregistrer</button><button onClick={() => setMbForm(null)} style={btnGhost}>Annuler</button></div>
+                  <div style={{ fontSize: 13, color: '#726b86', fontWeight: 700, margin: '0 0 12px' }}>{entraineurs.filter((e) => e.mini).length} affiché(s) sur {entraineurs.length}</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {entraineurs.length === 0 ? <div style={{ fontSize: 13.5, color: '#726b86' }}>Ajoute d&apos;abord des entraîneurs dans la section « Entraîneurs ».</div> : entraineurs.map((en) => (
+                      <label key={en.id} style={{ display: 'flex', alignItems: 'center', gap: 14, background: '#fff', border: `1px solid ${en.mini ? '#c9b8ef' : '#eee9f4'}`, borderRadius: 12, padding: '12px 16px', cursor: 'pointer' }}>
+                        <input type="checkbox" checked={!!en.mini} onChange={() => toggleEntraineurMini(en.id, !en.mini)} style={{ width: 18, height: 18, flexShrink: 0 }} />
+                        {en.photo_url
+                          ? <img src={en.photo_url} alt={en.nom} style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                          : <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'linear-gradient(135deg,#3d1e7b,#5a35a0)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Oswald',sans-serif", fontWeight: 700, fontSize: 17, flexShrink: 0 }}>{(en.nom || '?').trim().charAt(0).toUpperCase()}</div>}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontWeight: 800, fontSize: 14.5, color: '#1d1730' }}>{en.nom}</div>
+                          <div style={{ fontSize: 12.5, color: '#726b86' }}>{[en.role, (en.equipes || []).map((e: any) => e.nom).join(' · ')].filter(Boolean).join(' — ')}</div>
+                        </div>
+                        {en.mini ? <span style={{ fontSize: 11, fontWeight: 800, color: '#3d1e7b', letterSpacing: '.04em', textTransform: 'uppercase' }}>Affiché</span> : null}
+                      </label>
+                    ))}
+                  </div>
                 </div>
               )}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {miniBasket.map((m) => (
-                  <div key={m.id} style={{ background: '#fff', border: '1px solid #eee9f4', borderRadius: 14, padding: 14, display: 'flex', alignItems: 'center', gap: 16 }}>
-                    <span style={{ fontSize: 11, fontWeight: 800, color: '#dc8d32', minWidth: 24 }}>#{m.ordre}</span>
-                    <div style={{ width: 84, height: 60, borderRadius: 10, flexShrink: 0, backgroundImage: m.image_url ? `url('${m.image_url}')` : 'repeating-linear-gradient(45deg,#efeaf6,#efeaf6 8px,#e7e0f1 8px,#e7e0f1 16px)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontWeight: 800, fontSize: 15, color: '#1d1730', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{m.titre}{m.actif === false ? <span style={{ color: '#c0392b', fontWeight: 700, fontSize: 12 }}> · masqué</span> : null}</div>
-                      <div style={{ fontSize: 12, color: '#726b86' }}>/mini-basket/{m.slug}</div>
-                    </div>
-                    <div style={{ display: 'flex', gap: 6 }}>
-                      <button onClick={() => setMbForm({ ...m })} style={{ background: '#f1edf8', color: '#3d1e7b', border: 'none', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 8, cursor: 'pointer' }}>Éditer</button>
-                      <button onClick={() => delMiniBasket(m.id)} style={{ background: '#fbeaea', color: '#c0392b', border: 'none', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 8, cursor: 'pointer' }}>Suppr.</button>
-                    </div>
+
+              {/* ===== Entraînements : réutilise les créneaux (flag mini) ===== */}
+              {miniSub === 'entrainements' && (
+                <div>
+                  <div style={{ ...card, borderTopColor: '#3d1e7b' }}>
+                    <div style={{ fontFamily: "'Oswald',sans-serif", fontSize: 16, fontWeight: 700, textTransform: 'uppercase', color: '#1d1730' }}>Comment ça marche</div>
+                    <div style={{ fontSize: 13.5, color: '#726b86', fontWeight: 600, marginTop: 6, lineHeight: 1.6 }}>Coche les créneaux à afficher sur la page <strong>Mini-Basket › Les entraînements</strong>. Les créneaux se créent et se modifient dans la section <strong>Planning</strong>.</div>
                   </div>
-                ))}
-              </div>
+                  <div style={{ fontSize: 13, color: '#726b86', fontWeight: 700, margin: '0 0 12px' }}>{creneaux.filter((c) => c.mini).length} affiché(s) sur {creneaux.length}</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {creneaux.length === 0 ? <div style={{ fontSize: 13.5, color: '#726b86' }}>Ajoute d&apos;abord des créneaux dans la section « Planning ».</div> : [...creneaux].sort((a, b) => (JOURS.indexOf(a.jour) - JOURS.indexOf(b.jour)) || ((a.heure_debut ?? 0) - (b.heure_debut ?? 0))).map((c) => (
+                      <label key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 14, background: '#fff', border: `1px solid ${c.mini ? '#c9b8ef' : '#eee9f4'}`, borderRadius: 12, padding: '12px 16px', cursor: 'pointer' }}>
+                        <input type="checkbox" checked={!!c.mini} onChange={() => toggleCreneauMini(c.id, !c.mini)} style={{ width: 18, height: 18, flexShrink: 0 }} />
+                        <div style={{ minWidth: 74, flexShrink: 0 }}>
+                          <div style={{ fontFamily: "'Oswald',sans-serif", fontWeight: 600, fontSize: 13, textTransform: 'uppercase', color: '#3d1e7b' }}>{c.jour}</div>
+                          <div style={{ fontSize: 12, color: '#726b86', fontWeight: 700 }}>{c.horaire}</div>
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontWeight: 800, fontSize: 14.5, color: '#1d1730' }}>{creneauEquipes(c) || c.categorie || '—'}</div>
+                          <div style={{ fontSize: 12.5, color: '#726b86' }}>{venueName(c.gymnase_id)}</div>
+                        </div>
+                        {c.mini ? <span style={{ fontSize: 11, fontWeight: 800, color: '#3d1e7b', letterSpacing: '.04em', textTransform: 'uppercase' }}>Affiché</span> : null}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ===== Les minis : galerie photos ===== */}
+              {miniSub === 'minis' && (
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 22 }}>
+                    <div><div style={{ fontFamily: "'Oswald',sans-serif", fontSize: 20, fontWeight: 700, textTransform: 'uppercase', color: '#1d1730' }}>Les minis</div><div style={{ fontSize: 13, color: '#726b86', fontWeight: 600, marginTop: 4 }}>{miniPhotos.length} photo(s) · regroupées par équipe sur le site.</div></div>
+                    <button onClick={() => setPForm({ equipe: '', image_url: '', ordre: miniPhotos.length + 1, actif: true })} style={btnOrange}>+ Nouvelle photo</button>
+                  </div>
+                  {pForm && (
+                    <div style={card}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))', gap: 16 }}>
+                        <div><label style={label}>Équipe</label><input list="mini-equipes" value={pForm.equipe || ''} onChange={(e) => setPForm({ ...pForm, equipe: e.target.value })} placeholder="U9, Baby Basket…" style={input} /><datalist id="mini-equipes">{Array.from(new Set(equipes.map((x) => x.nom).filter(Boolean))).map((n) => <option key={n} value={n} />)}</datalist></div>
+                        <div><label style={label}>Ordre</label><input type="number" value={pForm.ordre} onChange={(e) => setPForm({ ...pForm, ordre: parseInt(e.target.value, 10) || 0 })} style={input} /></div>
+                        <div><label style={label}>Photo</label><input type="file" accept="image/*" onChange={async (e) => { if (e.target.files?.[0]) { const u = await uploadTo('mini-basket', e.target.files[0]); if (u) setPForm((f: any) => ({ ...f, image_url: u })); } }} style={{ ...input, padding: 8 }} />{pForm.image_url ? <img src={pForm.image_url} alt="" style={{ marginTop: 8, height: 60, borderRadius: 8 }} /> : null}</div>
+                      </div>
+                      <div style={{ display: 'flex', gap: 10, marginTop: 20 }}><button onClick={savePhoto} style={btnPrimary}>Enregistrer</button><button onClick={() => setPForm(null)} style={btnGhost}>Annuler</button></div>
+                    </div>
+                  )}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 16 }}>
+                    {miniPhotos.map((p) => (
+                      <div key={p.id} style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', border: '1px solid #eee9f4', background: '#fff' }}>
+                        <div style={{ height: 150, backgroundImage: p.image_url ? `url('${p.image_url}')` : 'none', backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#efeaf6' }} />
+                        <div style={{ padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <div style={{ flex: 1, minWidth: 0, fontSize: 13, fontWeight: 700, color: '#1d1730', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.equipe || '—'}</div>
+                          <button onClick={() => setPForm({ ...p })} style={{ background: '#f1edf8', color: '#3d1e7b', border: 'none', fontWeight: 700, fontSize: 12, padding: '7px 10px', borderRadius: 8, cursor: 'pointer' }}>Éditer</button>
+                          <button onClick={() => delPhoto(p.id)} style={{ background: '#fbeaea', color: '#c0392b', border: 'none', fontWeight: 700, fontSize: 12, padding: '7px 10px', borderRadius: 8, cursor: 'pointer' }}>Suppr.</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ===== Les évènements ===== */}
+              {miniSub === 'evenements' && (
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 22 }}>
+                    <div><div style={{ fontFamily: "'Oswald',sans-serif", fontSize: 20, fontWeight: 700, textTransform: 'uppercase', color: '#1d1730' }}>Les évènements</div><div style={{ fontSize: 13, color: '#726b86', fontWeight: 600, marginTop: 4 }}>{miniEvents.length} évènement(s)</div></div>
+                    <button onClick={() => setEvForm({ titre: '', date_event: '', lieu: '', description: '', image_url: '', ordre: miniEvents.length + 1, actif: true })} style={btnOrange}>+ Nouvel évènement</button>
+                  </div>
+                  {evForm && (
+                    <div style={card}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))', gap: 16 }}>
+                        <div><label style={label}>Titre</label><input value={evForm.titre} onChange={(e) => setEvForm({ ...evForm, titre: e.target.value })} placeholder="Fête du Mini-Basket" style={input} /></div>
+                        <div><label style={label}>Date</label><input type="date" value={evForm.date_event || ''} onChange={(e) => setEvForm({ ...evForm, date_event: e.target.value })} style={input} /></div>
+                        <div><label style={label}>Lieu</label><input value={evForm.lieu || ''} onChange={(e) => setEvForm({ ...evForm, lieu: e.target.value })} placeholder="Gymnase Barbusse" style={input} /></div>
+                        <div><label style={label}>Image (optionnel)</label><input type="file" accept="image/*" onChange={async (e) => { if (e.target.files?.[0]) { const u = await uploadTo('mini-basket', e.target.files[0]); if (u) setEvForm((f: any) => ({ ...f, image_url: u })); } }} style={{ ...input, padding: 8 }} />{evForm.image_url ? <img src={evForm.image_url} alt="" style={{ marginTop: 8, height: 60, borderRadius: 8 }} /> : null}</div>
+                      </div>
+                      <div style={{ marginTop: 16 }}><label style={label}>Description</label><textarea value={evForm.description || ''} onChange={(e) => setEvForm({ ...evForm, description: e.target.value })} rows={4} style={{ ...input, resize: 'vertical' }} /></div>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: 9, marginTop: 16, fontSize: 14, fontWeight: 700, color: '#1d1730', cursor: 'pointer' }}>
+                        <input type="checkbox" checked={evForm.actif !== false} onChange={(e) => setEvForm({ ...evForm, actif: e.target.checked })} />
+                        Évènement visible sur le site
+                      </label>
+                      <div style={{ display: 'flex', gap: 10, marginTop: 20 }}><button onClick={saveEvent} style={btnPrimary}>Enregistrer</button><button onClick={() => setEvForm(null)} style={btnGhost}>Annuler</button></div>
+                    </div>
+                  )}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    {miniEvents.map((ev) => (
+                      <div key={ev.id} style={{ background: '#fff', border: '1px solid #eee9f4', borderRadius: 14, padding: 14, display: 'flex', alignItems: 'center', gap: 16 }}>
+                        <div style={{ width: 84, height: 60, borderRadius: 10, flexShrink: 0, backgroundImage: ev.image_url ? `url('${ev.image_url}')` : 'repeating-linear-gradient(45deg,#efeaf6,#efeaf6 8px,#e7e0f1 8px,#e7e0f1 16px)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontWeight: 800, fontSize: 15, color: '#1d1730', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{ev.titre}{ev.actif === false ? <span style={{ color: '#c0392b', fontWeight: 700, fontSize: 12 }}> · masqué</span> : null}</div>
+                          <div style={{ fontSize: 12, color: '#726b86' }}>{[ev.date_event ? new Date(ev.date_event).toLocaleDateString('fr-FR') : '', ev.lieu].filter(Boolean).join(' · ')}</div>
+                        </div>
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          <button onClick={() => setEvForm({ ...ev })} style={{ background: '#f1edf8', color: '#3d1e7b', border: 'none', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 8, cursor: 'pointer' }}>Éditer</button>
+                          <button onClick={() => delEvent(ev.id)} style={{ background: '#fbeaea', color: '#c0392b', border: 'none', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 8, cursor: 'pointer' }}>Suppr.</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ===== Calendrier des plateaux ===== */}
+              {miniSub === 'calendrier' && (
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 22 }}>
+                    <div><div style={{ fontFamily: "'Oswald',sans-serif", fontSize: 20, fontWeight: 700, textTransform: 'uppercase', color: '#1d1730' }}>Calendrier des plateaux</div><div style={{ fontSize: 13, color: '#726b86', fontWeight: 600, marginTop: 4 }}>{miniPlateaux.length} plateau(x)</div></div>
+                    <button onClick={() => setPlForm({ date_event: '', horaire: '', lieu: '', categorie: '', infos: '', ordre: miniPlateaux.length + 1, actif: true })} style={btnOrange}>+ Nouveau plateau</button>
+                  </div>
+                  {plForm && (
+                    <div style={card}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(170px,1fr))', gap: 16 }}>
+                        <div><label style={label}>Date</label><input type="date" value={plForm.date_event || ''} onChange={(e) => setPlForm({ ...plForm, date_event: e.target.value })} style={input} /></div>
+                        <div><label style={label}>Horaire</label><input value={plForm.horaire || ''} onChange={(e) => setPlForm({ ...plForm, horaire: e.target.value })} placeholder="10h00" style={input} /></div>
+                        <div><label style={label}>Catégorie</label><input value={plForm.categorie || ''} onChange={(e) => setPlForm({ ...plForm, categorie: e.target.value })} placeholder="U9" style={input} /></div>
+                        <div><label style={label}>Lieu</label><input value={plForm.lieu || ''} onChange={(e) => setPlForm({ ...plForm, lieu: e.target.value })} placeholder="Gymnase Barbusse" style={input} /></div>
+                      </div>
+                      <div style={{ marginTop: 16 }}><label style={label}>Infos (optionnel)</label><textarea value={plForm.infos || ''} onChange={(e) => setPlForm({ ...plForm, infos: e.target.value })} rows={2} style={{ ...input, resize: 'vertical' }} /></div>
+                      <div style={{ display: 'flex', gap: 10, marginTop: 20 }}><button onClick={savePlateau} style={btnPrimary}>Enregistrer</button><button onClick={() => setPlForm(null)} style={btnGhost}>Annuler</button></div>
+                    </div>
+                  )}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {miniPlateaux.map((p) => (
+                      <div key={p.id} style={{ background: '#fff', border: '1px solid #eee9f4', borderLeft: '4px solid #dc8d32', borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+                        <div style={{ minWidth: 96 }}>
+                          <div style={{ fontFamily: "'Oswald',sans-serif", fontWeight: 700, fontSize: 14, color: '#3d1e7b' }}>{p.date_event ? new Date(p.date_event).toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'short' }) : '—'}</div>
+                          {p.horaire ? <div style={{ fontSize: 12, color: '#726b86', fontWeight: 700 }}>{p.horaire}</div> : null}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 140 }}>
+                          <div style={{ fontWeight: 800, fontSize: 14.5, color: '#1d1730' }}>{[p.categorie, p.lieu].filter(Boolean).join(' · ') || 'Plateau'}</div>
+                          {p.infos ? <div style={{ fontSize: 12.5, color: '#726b86' }}>{p.infos}</div> : null}
+                        </div>
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          <button onClick={() => setPlForm({ ...p })} style={{ background: '#f1edf8', color: '#3d1e7b', border: 'none', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 8, cursor: 'pointer' }}>Éditer</button>
+                          <button onClick={() => delPlateau(p.id)} style={{ background: '#fbeaea', color: '#c0392b', border: 'none', fontWeight: 700, fontSize: 12, padding: '8px 12px', borderRadius: 8, cursor: 'pointer' }}>Suppr.</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </main>

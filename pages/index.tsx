@@ -784,21 +784,23 @@ const Home: NextPage = () => {
               key={i}
               className="sponsorTile"
               style={{
-                height: 78,
-                width: 140,
+                minWidth: 150,
+                minHeight: 96,
+                flex: "0 0 auto",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 background: "#faf9fc",
                 border: "1px solid var(--line)",
                 borderRadius: 14,
-                padding: 14,
+                padding: "16px 24px",
               }}
             >
+              {/* hauteur fixe + largeur auto : chaque logo s'affiche entier, à hauteur uniforme, sans rognage */}
               <img
                 src={s}
                 alt="partenaire"
-                style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "contain" }}
+                style={{ height: 56, width: "auto", maxWidth: 220, objectFit: "contain", display: "block" }}
               />
             </div>
           ))}

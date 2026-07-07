@@ -2,12 +2,18 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
-import { supabase } from "../lib/supabaseClient";
+
+// Sous-menus fixes de l'onglet « Mini-Basket ».
+const MINI_LINKS = [
+  { href: "/mini-basket/organigramme", label: "Organigramme" },
+  { href: "/mini-basket/entrainements", label: "Les entraînements" },
+  { href: "/mini-basket/minis", label: "Les minis" },
+  { href: "/mini-basket/evenements", label: "Les évènements" },
+  { href: "/mini-basket/calendrier-plateaux", label: "Calendrier des plateaux" },
+];
 
 export default function NavBar() {
   const [fix, setFix] = useState(false);
-  // Sous-menus de l'onglet « Mini-Basket », gérés depuis l'admin.
-  const [miniLinks, setMiniLinks] = useState<any[]>([]);
   const { pathname } = useRouter();
   // Onglet actif (soulignement orange) : exact pour l'accueil, par préfixe sinon.
   const isActive = (href: string) =>
@@ -19,15 +25,6 @@ export default function NavBar() {
     }
     window.addEventListener("scroll", setFixed);
     return () => window.removeEventListener("scroll", setFixed);
-  }, []);
-
-  useEffect(() => {
-    supabase
-      .from("mini_basket")
-      .select("titre, slug")
-      .eq("actif", true)
-      .order("ordre")
-      .then(({ data }: any) => setMiniLinks(data || []));
   }, []);
 
   return (
@@ -75,17 +72,11 @@ export default function NavBar() {
               </NavDropdown.Item>
             </NavDropdown>
             <NavDropdown title="Mini-Basket" id="basic-nav-dropdown">
-              {miniLinks.length > 0 ? (
-                miniLinks.map((m) => (
-                  <NavDropdown.Item key={m.slug} id="linkDropdown" href={`/mini-basket/${m.slug}`}>
-                    {m.titre}
-                  </NavDropdown.Item>
-                ))
-              ) : (
-                <NavDropdown.Item id="linkDropdown" disabled>
-                  Bientôt disponible
+              {MINI_LINKS.map((m) => (
+                <NavDropdown.Item key={m.href} id="linkDropdown" href={m.href}>
+                  {m.label}
                 </NavDropdown.Item>
-              )}
+              ))}
             </NavDropdown>
             <NavDropdown title="Partenaires" id="basic-nav-dropdown">
               <NavDropdown.Item id="linkDropdown" href="/partenaires/info">

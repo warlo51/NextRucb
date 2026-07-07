@@ -17,6 +17,11 @@ export default async (req, res) => {
     { url: "/partenaires/mecenat", changefreq:"monthly" , priority: 1 },
     { url: "/actus/actuRUCB", changefreq:"monthly" , priority: 1 },
     { url: "/actus/vacances", changefreq:"monthly" , priority: 1 },
+    { url: "/mini-basket/organigramme", changefreq:"monthly" , priority: 1 },
+    { url: "/mini-basket/entrainements", changefreq:"monthly" , priority: 1 },
+    { url: "/mini-basket/minis", changefreq:"monthly" , priority: 1 },
+    { url: "/mini-basket/evenements", changefreq:"monthly" , priority: 1 },
+    { url: "/mini-basket/calendrier-plateaux", changefreq:"monthly" , priority: 1 },
     
     
   ];

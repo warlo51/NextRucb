@@ -10,15 +10,19 @@ function ActuVideo({ url, poster }: { url: string; poster?: string }) {
   const vimeo = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
   const box: React.CSSProperties = { borderRadius: 18, marginBottom: 28, overflow: 'hidden', boxShadow: '0 20px 44px -24px rgba(23,18,43,.5)' };
   if (yt || vimeo) {
-    const src = yt ? `https://www.youtube.com/embed/${yt[1]}` : `https://player.vimeo.com/video/${vimeo![1]}`;
+    // autoplay=1 + mute/muted : indispensable, les navigateurs bloquent l'autoplay non muet.
+    const src = yt
+      ? `https://www.youtube.com/embed/${yt[1]}?autoplay=1&mute=1&playsinline=1&rel=0`
+      : `https://player.vimeo.com/video/${vimeo![1]}?autoplay=1&muted=1&playsinline=1`;
     return (
       <div style={{ ...box, position: 'relative', paddingBottom: '56.25%', height: 0 }}>
-        <iframe src={src} title="Vidéo de l'actualité" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }} />
+        <iframe src={src} title="Vidéo de l'actualité" allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }} />
       </div>
     );
   }
+  // muted requis pour que autoPlay soit autorisé ; le visiteur active le son via les contrôles.
   return (
-    <video controls playsInline poster={poster} style={{ ...box, width: '100%', display: 'block', background: '#000' }}>
+    <video controls autoPlay muted playsInline poster={poster} style={{ ...box, width: '100%', display: 'block', background: '#000' }}>
       <source src={url} />
       Votre navigateur ne peut pas lire cette vidéo.
     </video>
