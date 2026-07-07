@@ -41,12 +41,12 @@ const IG_FEED_URL = process.env.NEXT_PUBLIC_INSTAGRAM_FEED_URL || "";
 
 // Repli si la table partenaire Supabase est vide / non configurée.
 const FALLBACK_SPONSORS = [
-  "/sponsors/logocarrefour.png",
-  "/sponsors/NouveauLogoNorauto.jpg",
-  "/sponsors/logoBuffaloGrill.png",
-  "/sponsors/logoCIC.jpg",
-  "/sponsors/LogoVilledeReims.jpg",
-  "/sponsors/CD51.png",
+  { logo_url: "/sponsors/logocarrefour.png", site_url: "", nom: "Carrefour" },
+  { logo_url: "/sponsors/NouveauLogoNorauto.jpg", site_url: "", nom: "Norauto" },
+  { logo_url: "/sponsors/logoBuffaloGrill.png", site_url: "", nom: "Buffalo Grill" },
+  { logo_url: "/sponsors/logoCIC.jpg", site_url: "", nom: "CIC" },
+  { logo_url: "/sponsors/LogoVilledeReims.jpg", site_url: "", nom: "Ville de Reims" },
+  { logo_url: "/sponsors/CD51.png", site_url: "", nom: "Département 51" },
 ];
 
 const formatDate = (d: string) =>
@@ -59,7 +59,7 @@ const formatDate = (d: string) =>
 const Home: NextPage = () => {
   const [actus, setActus] = useState<any[]>([]);
   const [creneaux, setCreneaux] = useState<any[]>([]);
-  const [sponsors, setSponsors] = useState<string[]>(FALLBACK_SPONSORS);
+  const [sponsors, setSponsors] = useState<any[]>(FALLBACK_SPONSORS);
   const [equipes, setEquipes] = useState<any[]>([]);
   const [instaPosts, setInstaPosts] = useState<any[]>([]);
   const [licence, setLicence] = useState<{ url: string; nom: string } | null>(null);
@@ -83,10 +83,10 @@ const Home: NextPage = () => {
 
       const { data: pa } = await supabase
         .from("partenaire")
-        .select("logo_url")
+        .select("logo_url, site_url, nom")
         .eq("actif", true)
         .order("ordre");
-      const logos = (pa || []).map((p: any) => p.logo_url).filter(Boolean);
+      const logos = (pa || []).filter((p: any) => p.logo_url);
       if (logos.length) setSponsors(logos);
 
       const { data: eq } = await supabase
@@ -772,38 +772,44 @@ const Home: NextPage = () => {
         </div>
         <div
           style={{
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 18,
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill,minmax(150px,1fr))",
+            gap: 16,
+            maxWidth: 1100,
+            margin: "0 auto",
           }}
         >
-          {sponsors.map((s, i) => (
-            <div
-              key={i}
-              className="sponsorTile"
-              style={{
-                minWidth: 150,
-                minHeight: 96,
-                flex: "0 0 auto",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "#faf9fc",
-                border: "1px solid var(--line)",
-                borderRadius: 14,
-                padding: "16px 24px",
-              }}
-            >
-              {/* hauteur fixe + largeur auto : chaque logo s'affiche entier, à hauteur uniforme, sans rognage */}
-              <img
-                src={s}
-                alt="partenaire"
-                style={{ height: 56, width: "auto", maxWidth: 220, objectFit: "contain", display: "block" }}
-              />
-            </div>
-          ))}
+          {sponsors.map((s, i) => {
+            const tile = (
+              <div
+                className="sponsorTile"
+                style={{
+                  height: 110,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: "#faf9fc",
+                  border: "1px solid var(--line)",
+                  borderRadius: 14,
+                  padding: 18,
+                }}
+              >
+                {/* toutes les tuiles à la même taille ; object-fit:contain => aucun logo rogné */}
+                <img
+                  src={s.logo_url}
+                  alt={s.nom || "partenaire"}
+                  style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "contain", display: "block" }}
+                />
+              </div>
+            );
+            return s.site_url ? (
+              <a key={i} href={s.site_url} target="_blank" rel="noreferrer" title={s.nom || "Voir le site"} style={{ display: "block" }}>
+                {tile}
+              </a>
+            ) : (
+              <div key={i}>{tile}</div>
+            );
+          })}
         </div>
       </section>
 

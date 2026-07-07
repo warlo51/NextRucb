@@ -12,7 +12,7 @@ export default function Organigramme() {
     async function load() {
       const { data } = await supabase
         .from('entraineur')
-        .select('*, equipes:equipe (nom, categorie)')
+        .select('*, liens:entraineur_equipe ( role, equipe:equipe_id ( nom, categorie ) )')
         .eq('actif', true)
         .eq('mini', true)
         .order('ordre');
@@ -41,11 +41,10 @@ export default function Organigramme() {
                   ? <img src={e.photo_url} alt={e.nom} style={{ width: 90, height: 90, borderRadius: '50%', objectFit: 'cover', margin: '0 auto 14px', display: 'block' }} />
                   : <div style={{ width: 90, height: 90, borderRadius: '50%', margin: '0 auto 14px', background: 'linear-gradient(135deg,#dc8d32,#f0a93f)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Oswald',sans-serif", fontWeight: 700, fontSize: 34 }}>{(e.nom || '?').trim().charAt(0).toUpperCase()}</div>}
                 <div style={{ fontFamily: "'Oswald',sans-serif", fontSize: 19, fontWeight: 600, color: 'var(--text)', textTransform: 'uppercase' }}>{e.nom}</div>
-                {e.role && <div style={{ fontSize: 14, color: '#dc8d32', fontWeight: 700, marginTop: 4 }}>{e.role}</div>}
-                {(e.equipes || []).length > 0 && (
+                {(e.liens || []).length > 0 && (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center', marginTop: 8 }}>
-                    {e.equipes.map((eq: any) => (
-                      <span key={eq.nom} style={{ display: 'inline-block', background: 'var(--paper-2)', color: 'var(--brand-fg)', fontWeight: 700, fontSize: 12.5, padding: '5px 12px', borderRadius: 999 }}>{eq.nom}</span>
+                    {e.liens.map((l: any, i: number) => (
+                      <span key={i} style={{ display: 'inline-block', background: 'var(--paper-2)', color: 'var(--brand-fg)', fontWeight: 700, fontSize: 12.5, padding: '5px 12px', borderRadius: 999 }}>{l.equipe?.nom} · {l.role}</span>
                     ))}
                   </div>
                 )}
