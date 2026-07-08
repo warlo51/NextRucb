@@ -1,6 +1,8 @@
 import * as React from 'react';
 import Head from 'next/head';
 import { supabase } from '../../lib/supabaseClient';
+import { FaTree, FaGlassCheers, FaEgg, FaGhost, FaGraduationCap, FaSun, FaTrophy, FaBirthdayCake } from 'react-icons/fa';
+import { THEME_DECOR, resolveActiveTheme, isWithin, isPaquesWindow, ThemeKey } from '../../lib/themes';
 
 const JOURS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
 const JOUR_COURT: Record<string, string> = { Lundi: 'Lun', Mardi: 'Mar', Mercredi: 'Mer', Jeudi: 'Jeu', Vendredi: 'Ven' };
@@ -42,7 +44,22 @@ const SECTIONS = [
   { key: 'equipe', label: 'Équipes' },
   { key: 'resultats', label: 'Résultats' },
   { key: 'bandeau', label: 'Accueil' },
+  { key: 'themes', label: 'Thèmes' },
 ];
+// Section « Apparence › Thèmes » : ordre d'affichage + icône/couleur de chaque thème.
+const THEME_ORDER: ThemeKey[] = ['noel', 'nouvelan', 'paques', 'halloween', 'rentree', 'ete', 'playoffs', 'fete'];
+const THEME_ICON: Record<ThemeKey, JSX.Element> = {
+  noel: <FaTree />, nouvelan: <FaGlassCheers />, paques: <FaEgg />, halloween: <FaGhost />,
+  rentree: <FaGraduationCap />, ete: <FaSun />, playoffs: <FaTrophy />, fete: <FaBirthdayCake />,
+};
+const MONTH_ABBR = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+const CUM_DAYS = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]; // jours cumulés avant chaque mois
+const yearPct = (m: number, d: number) => ((CUM_DAYS[m - 1] + (d - 1)) / 365) * 100; // position dans l'année en %
+function themeWindowText(s: any): string {
+  if (s?.theme === 'paques' && s?.start_month == null) return 'Semaine de Pâques (avril, auto)';
+  if (s?.start_month == null) return 'Manuel uniquement';
+  return `${s.start_day} ${MONTH_ABBR[s.start_month - 1]} → ${s.end_day} ${MONTH_ABBR[s.end_month - 1]}`;
+}
 // Sous-onglets de la section Mini-Basket (= les 5 pages du menu).
 const MINI_SUBS = [
   { key: 'organigramme', label: 'Organigramme' },
@@ -98,6 +115,9 @@ export default function Admin() {
   const [miniEvents, setMiniEvents] = React.useState<any[]>([]);
   const [miniPlateaux, setMiniPlateaux] = React.useState<any[]>([]);
   const [miniSub, setMiniSub] = React.useState('organigramme'); // sous-onglet Mini-Basket
+  const [themeSettings, setThemeSettings] = React.useState<any>(null);
+  const [themeSchedules, setThemeSchedules] = React.useState<any[]>([]);
+  const [tsDates, setTsDates] = React.useState<any>(null); // édition des dates d'un thème programmé
 
   const [cForm, setCForm] = React.useState<any>(null);   // créneau
   const [planDay, setPlanDay] = React.useState('Lundi'); // jour sélectionné (vue mobile)
@@ -131,7 +151,7 @@ export default function Admin() {
   }, []);
 
   async function load() {
-    const [{ data: cr }, { data: gy }, { data: ac }, { data: pa }, { data: co }, { data: en }, { data: fo }, { data: hi }, { data: sf }, { data: cp }, { data: me }, { data: eq }, { data: lf }, { data: bn }, { data: rs }, { data: mp }, { data: mev }, { data: mpl }] = await Promise.all([
+    const [{ data: cr }, { data: gy }, { data: ac }, { data: pa }, { data: co }, { data: en }, { data: fo }, { data: hi }, { data: sf }, { data: cp }, { data: me }, { data: eq }, { data: lf }, { data: bn }, { data: rs }, { data: mp }, { data: mev }, { data: mpl }, { data: tset }, { data: tsch }] = await Promise.all([
       supabase.from('creneau').select('*, equipes:equipe(id, nom)').order('heure_debut'),
       supabase.from('gymnase').select('id, titre').order('titre'),
       supabase.from('actu').select('*').order('date_publication', { ascending: false }),
@@ -150,6 +170,8 @@ export default function Admin() {
       supabase.from('mini_photo').select('*').order('ordre'),
       supabase.from('mini_evenement').select('*').order('date_event'),
       supabase.from('mini_plateau').select('*').order('date_event'),
+      supabase.from('theme_settings').select('*').eq('id', 1).maybeSingle(),
+      supabase.from('theme_schedules').select('*'),
     ]);
     setCreneaux(cr || []); setGymnases(gy || []); setActus(ac || []);
     setPartenaires(pa || []); setComite(co || []); setEntraineurs(en || []);
@@ -157,6 +179,7 @@ export default function Admin() {
     setComplexePhotos(cp || []); setMecenats(me || []); setEquipes(eq || []);
     setLicenceFiles(lf || []); setBandeaux(bn || []); setResultats(rs || []);
     setMiniPhotos(mp || []); setMiniEvents(mev || []); setMiniPlateaux(mpl || []);
+    setThemeSettings(tset || null); setThemeSchedules(tsch || []);
   }
   React.useEffect(() => { if (session) load(); }, [session]);
 
@@ -164,6 +187,21 @@ export default function Admin() {
     e.preventDefault(); setAuthError('');
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) setAuthError(error.message);
+  }
+
+  // --- Thèmes saisonniers ---
+  async function saveThemeSettings(patch: any) {
+    // upsert résilient : recrée la ligne id=1 si le seed n'a pas encore tourné.
+    const next = { id: 1, enabled: true, manual_override: null, animations: true, ...(themeSettings || {}), ...patch, updated_at: new Date().toISOString() };
+    const { error } = await supabase.from('theme_settings').upsert(next);
+    if (error) { alert(error.message); return; }
+    load();
+  }
+  async function saveThemeSchedule(theme: string, patch: any) {
+    const { error } = await supabase.from('theme_schedules').update(patch).eq('theme', theme);
+    if (error) { alert(error.message); return; }
+    setTsDates(null);
+    load();
   }
 
   // --- CRUD créneaux ---
@@ -1209,6 +1247,156 @@ export default function Admin() {
               )}
             </div>
           )}
+
+          {/* ---------- APPARENCE › THÈMES ---------- */}
+          {section === 'themes' && (() => {
+            const master = themeSettings?.enabled ?? true;
+            const anims = themeSettings?.animations ?? true;
+            const override: string = themeSettings?.manual_override || '';
+            const activeTheme = master ? resolveActiveTheme(themeSettings, themeSchedules as any) : null;
+            const now = new Date();
+            const todayPct = yearPct(now.getMonth() + 1, now.getDate());
+            const byTheme: Record<string, any> = Object.fromEntries((themeSchedules || []).map((s) => [s.theme, s]));
+            const Switch = ({ on, onClick }: any) => (
+              <button onClick={onClick} style={{ width: 46, height: 26, borderRadius: 999, border: 'none', cursor: 'pointer', background: on ? '#2e8b57' : '#cfc9db', position: 'relative', flexShrink: 0, transition: 'background .2s' }}>
+                <span style={{ position: 'absolute', top: 3, left: on ? 23 : 3, width: 20, height: 20, borderRadius: '50%', background: '#fff', transition: 'left .2s', boxShadow: '0 1px 3px rgba(0,0,0,.3)' }} />
+              </button>
+            );
+            const statusOf = (s: any) => {
+              if (override === s.theme) return { label: 'Manuel (forcé)', bg: '#efe7fb', fg: '#5a35a0' };
+              if (!s.enabled) return { label: 'Désactivé', bg: '#f0eef4', fg: '#8a8397' };
+              const active = (s.theme === 'paques' && s.start_month == null) ? isPaquesWindow(now)
+                : (s.start_month != null && isWithin(now, s.start_month, s.start_day, s.end_month, s.end_day));
+              if (active) return { label: 'Actif', bg: '#e3f5ea', fg: '#1f8a5b' };
+              if (s.start_month != null) return yearPct(s.start_month, s.start_day) >= todayPct
+                ? { label: 'À venir', bg: '#fef3e2', fg: '#b5732a' }
+                : { label: 'Passé', bg: '#f0eef4', fg: '#8a8397' };
+              return { label: 'Programmé', bg: '#eaf1fb', fg: '#2b6fd6' };
+            };
+            return (
+              <div>
+                <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 22 }}>
+                  <div>
+                    <h2 style={h2}>Apparence — Thèmes</h2>
+                    <div style={{ fontSize: 13, color: '#726b86', fontWeight: 600, marginTop: 4 }}>Décor saisonnier par-dessus la charte — les couleurs du site ne changent jamais.</div>
+                  </div>
+                  <span style={{ alignSelf: 'center', fontFamily: "'Oswald',sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: '.05em', textTransform: 'uppercase', padding: '6px 14px', borderRadius: 999, background: override ? '#efe7fb' : '#eaf1fb', color: override ? '#5a35a0' : '#2b6fd6' }}>{override ? 'Mode manuel' : 'Mode auto (calendrier)'}</span>
+                </div>
+
+                {/* Réglages globaux */}
+                <div style={card}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+                    <Switch on={master} onClick={() => saveThemeSettings({ enabled: !master })} />
+                    <div><div style={{ fontWeight: 800, color: '#1d1730' }}>Thèmes activés</div><div style={{ fontSize: 12.5, color: '#726b86' }}>Interrupteur maître — coupe tout le décor du site.</div></div>
+                  </div>
+                  <div style={{ height: 1, background: '#eee9f4', margin: '16px 0' }} />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+                    <Switch on={anims} onClick={() => saveThemeSettings({ animations: !anims })} />
+                    <div><div style={{ fontWeight: 800, color: '#1d1730' }}>Animations d&apos;ambiance</div><div style={{ fontSize: 12.5, color: '#726b86' }}>Particules (neige, confettis…). « prefers-reduced-motion » les coupe aussi.</div></div>
+                  </div>
+                </div>
+
+                {/* Actif en ce moment */}
+                <div style={{ ...card, borderTopColor: '#3d1e7b' }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.04em', textTransform: 'uppercase', color: '#726b86', marginBottom: 10 }}>Actif en ce moment</div>
+                  {activeTheme ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <span style={{ fontSize: 26, color: THEME_DECOR[activeTheme].filigraneColor, display: 'inline-flex' }}>{THEME_ICON[activeTheme]}</span>
+                      <div>
+                        <div style={{ fontFamily: "'Oswald',sans-serif", fontWeight: 700, fontSize: 20, color: '#1d1730' }}>{THEME_DECOR[activeTheme].label}</div>
+                        <div style={{ fontSize: 12.5, color: '#726b86' }}>{override ? 'Forcé manuellement' : themeWindowText(byTheme[activeTheme] || { theme: activeTheme })}</div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ color: '#726b86', fontWeight: 600 }}>{master ? 'Aucun thème actif — site en charte permanente.' : 'Thèmes désactivés (interrupteur maître).'}</div>
+                  )}
+                  <div style={{ display: 'flex', alignItems: 'flex-end', gap: 12, flexWrap: 'wrap', marginTop: 16 }}>
+                    <div style={{ flex: 1, minWidth: 200 }}>
+                      <label style={label}>Forcer un thème</label>
+                      <select value={override} onChange={(e) => saveThemeSettings({ manual_override: e.target.value || null })} style={input}>
+                        <option value="">Aucun (auto — calendrier)</option>
+                        {THEME_ORDER.map((k) => <option key={k} value={k}>{THEME_DECOR[k].label}</option>)}
+                      </select>
+                    </div>
+                    {override ? <button onClick={() => saveThemeSettings({ manual_override: null })} style={btnGhost}>Rétablir l&apos;auto</button> : null}
+                  </div>
+                </div>
+
+                {/* Calendrier annuel */}
+                <div style={card}>
+                  <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.04em', textTransform: 'uppercase', color: '#726b86', marginBottom: 14 }}>Calendrier annuel</div>
+                  <div style={{ overflowX: 'auto' }}>
+                    <div style={{ minWidth: 520 }}>
+                      <div style={{ display: 'flex', marginBottom: 6 }}>
+                        <div style={{ width: 110, flexShrink: 0 }} />
+                        {MONTH_ABBR.map((m) => <div key={m} style={{ flex: 1, fontSize: 10, fontWeight: 700, color: '#8a8397', textAlign: 'center' }}>{m}</div>)}
+                      </div>
+                      <div style={{ position: 'relative' }}>
+                        {THEME_ORDER.filter((k) => byTheme[k]?.start_month != null).map((k) => {
+                          const s = byTheme[k];
+                          const sp = yearPct(s.start_month, s.start_day), ep = yearPct(s.end_month, s.end_day);
+                          const bars = sp <= ep ? [[sp, ep]] : [[sp, 100], [0, ep]];
+                          return (
+                            <div key={k} style={{ display: 'flex', alignItems: 'center', height: 26 }}>
+                              <div style={{ width: 110, flexShrink: 0, fontSize: 11.5, fontWeight: 700, color: '#1d1730', display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ color: THEME_DECOR[k].filigraneColor, display: 'inline-flex' }}>{THEME_ICON[k]}</span>{THEME_DECOR[k].label}</div>
+                              <div style={{ position: 'relative', flex: 1, height: 10, background: '#f0eef4', borderRadius: 999 }}>
+                                {bars.map((b, i) => <div key={i} style={{ position: 'absolute', left: `${b[0]}%`, width: `${b[1] - b[0]}%`, top: 0, height: 10, background: THEME_DECOR[k].filigraneColor, borderRadius: 999, opacity: 0.85 }} />)}
+                              </div>
+                            </div>
+                          );
+                        })}
+                        {/* Repère « aujourd'hui » aligné sur la zone des barres (offset 110px). */}
+                        <div style={{ position: 'absolute', top: 0, bottom: 0, left: 110, right: 0, pointerEvents: 'none' }}>
+                          <div style={{ position: 'absolute', top: -4, bottom: -4, left: `${todayPct}%`, width: 2, background: '#dc8d32' }} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Galerie des 8 thèmes */}
+                <div style={{ fontFamily: "'Oswald',sans-serif", fontSize: 18, fontWeight: 700, textTransform: 'uppercase', color: '#1d1730', margin: '4px 0 14px' }}>Les 8 thèmes</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(250px,1fr))', gap: 12 }}>
+                  {THEME_ORDER.map((k) => {
+                    const s = byTheme[k] || { theme: k, enabled: false, start_month: null };
+                    const st = statusOf(s);
+                    const editing = tsDates?.theme === k;
+                    const canEditDates = k !== 'paques' && k !== 'fete';
+                    return (
+                      <div key={k} style={{ background: '#fff', border: '1px solid #eee9f4', borderRadius: 14, padding: 16 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <span style={{ fontSize: 22, color: THEME_DECOR[k].filigraneColor, display: 'inline-flex' }}>{THEME_ICON[k]}</span>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontWeight: 800, fontSize: 15, color: '#1d1730' }}>{THEME_DECOR[k].label}</div>
+                            <div style={{ fontSize: 12, color: '#726b86' }}>{themeWindowText(s)}</div>
+                          </div>
+                          <Switch on={!!s.enabled} onClick={() => saveThemeSchedule(k, { enabled: !s.enabled })} />
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12 }}>
+                          <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 999, background: st.bg, color: st.fg }}>{st.label}</span>
+                          {canEditDates ? <button onClick={() => setTsDates(editing ? null : { theme: k, start_month: s.start_month || 1, start_day: s.start_day || 1, end_month: s.end_month || 1, end_day: s.end_day || 1 })} style={{ marginLeft: 'auto', background: '#f1edf8', color: '#3d1e7b', border: 'none', fontWeight: 700, fontSize: 12, padding: '6px 12px', borderRadius: 8, cursor: 'pointer' }}>{editing ? 'Fermer' : 'Modifier les dates'}</button> : null}
+                        </div>
+                        {editing ? (
+                          <div style={{ marginTop: 12, padding: 12, background: '#faf9fc', borderRadius: 10, border: '1px solid #eee9f4' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                              <div><label style={label}>Début · mois</label><input type="number" min={1} max={12} value={tsDates.start_month} onChange={(e) => setTsDates({ ...tsDates, start_month: +e.target.value })} style={input} /></div>
+                              <div><label style={label}>Début · jour</label><input type="number" min={1} max={31} value={tsDates.start_day} onChange={(e) => setTsDates({ ...tsDates, start_day: +e.target.value })} style={input} /></div>
+                              <div><label style={label}>Fin · mois</label><input type="number" min={1} max={12} value={tsDates.end_month} onChange={(e) => setTsDates({ ...tsDates, end_month: +e.target.value })} style={input} /></div>
+                              <div><label style={label}>Fin · jour</label><input type="number" min={1} max={31} value={tsDates.end_day} onChange={(e) => setTsDates({ ...tsDates, end_day: +e.target.value })} style={input} /></div>
+                            </div>
+                            <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                              <button onClick={() => saveThemeSchedule(k, { start_month: tsDates.start_month, start_day: tsDates.start_day, end_month: tsDates.end_month, end_day: tsDates.end_day })} style={{ ...btnPrimary, padding: '9px 18px' }}>Enregistrer</button>
+                              <button onClick={() => setTsDates(null)} style={{ ...btnGhost, padding: '9px 18px' }}>Annuler</button>
+                            </div>
+                          </div>
+                        ) : null}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
         </main>
       </div>
     </>

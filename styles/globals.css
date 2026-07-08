@@ -447,3 +447,23 @@ h1,h2,h3{ font-family:var(--display); text-transform:uppercase; letter-spacing:-
   /* marque dupliquée dans le menu : masquée (déjà présente dans la barre) */
   .NavBar .navBrand{ display:none; }
 }
+
+/* ============ THÈMES SAISONNIERS (décor uniquement) ============ */
+/* La charte UI ne change jamais : ce bloc ne stylise que la couche de décor. */
+@keyframes twk { 0%,100%{ opacity:.5 } 50%{ opacity:1 } }              /* scintillement (boules, étoiles, trophée) */
+@keyframes spn { to { transform:rotate(360deg) } }                     /* rotation (soleil, ballon, flocons) */
+@keyframes fly { 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(-9px) } } /* flottement (fantôme, œufs, ballons) */
+@keyframes bm  { 0%,100%{ opacity:.22; transform:rotate(-3deg) } 50%{ opacity:.5; transform:rotate(2deg) } } /* faisceaux playoffs */
+
+.seasonal-decor{
+  position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:40;
+}
+/* Animations coupées : réglage admin OFF ou prefers-reduced-motion → décor statique. */
+.seasonal-decor--static *{ animation:none!important; }
+@media (prefers-reduced-motion: reduce){ .seasonal-decor *{ animation:none!important; } }
+
+/* Mobile : rapprocher encart/filigrane du bord pour ne pas gêner le contenu. */
+@media (max-width:768px){
+  .seasonal-decor .decor-encart{ top:92px!important; right:12px!important; }
+  .seasonal-decor .decor-filigrane{ right:8px!important; font-size:84px!important; }
+}
