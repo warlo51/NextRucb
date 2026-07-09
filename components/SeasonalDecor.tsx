@@ -15,22 +15,12 @@ type Props = { theme: ThemeKey | null; animations: boolean };
 
 const C: React.CSSProperties = { position: 'absolute' }; // raccourci position:absolute
 
-// Encart orange charte « Spécial … » (élément de marque, jamais retinté).
-function Encart({ icon, text }: { icon: React.ReactNode; text: string }) {
-  return (
-    <div
-      className="decor-encart"
-      style={{
-        ...C, top: 150, right: 44, zIndex: 3, background: '#dc8d32', color: '#fff',
-        fontFamily: "'Oswald',sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: '.06em',
-        padding: '6px 12px', borderRadius: 7, boxShadow: '0 6px 16px -6px rgba(0,0,0,.55)',
-        display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap',
-      }}
-    >
-      <span style={{ display: 'inline-flex', fontSize: 11 }}>{icon}</span>
-      {text}
-    </div>
-  );
+// Encart orange charte « Spécial … » : badge texte désactivé (« MODE ÉTÉ »,
+// « SPÉCIAL NOËL », etc.). On ne veut plus afficher cette pastille sur le front ;
+// le reste du décor saisonnier (icônes, filigranes, particules) est conservé.
+// Les appels <Encart …/> restent en place mais ne rendent rien.
+function Encart(_props: { icon: React.ReactNode; text: string }) {
+  return null;
 }
 
 // Filigrane : grande icône translucide, calée en haut à droite (jamais sur le texte).
