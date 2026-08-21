@@ -22,6 +22,7 @@ npm run lint    # next lint (eslint-config-next, config in .eslintrc.json)
 Supabase config lives in `.env.local` (untracked); legacy Sanity/Auth0 config lives in `.env`.
 - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Supabase (planning, actus, comité, partenaires + admin). `lib/supabaseClient.ts` falls back to placeholders so the build never crashes when these are unset; real data needs the real keys.
 - `NEXT_PUBLIC_SANITY_PROJECT_ID` — Sanity (still used by the legacy pages below; dataset hardcoded to `production` in `src/client.ts`).
+- `SUPABASE_SERVICE_ROLE_KEY` — **server-only** (jamais `NEXT_PUBLIC_`). Utilisée uniquement par `pages/api/admin/users.ts` pour créer/supprimer des comptes admin. Sans elle, cette route renvoie 500 ; le reste du site fonctionne.
 - `AUTH0_*` — legacy Auth0 OAuth routes, now **orphaned** (admin auth moved to Supabase; the `pages/api/auth/*` routes remain but nothing links to them).
 
 ## Architecture
@@ -33,7 +34,14 @@ Public pages read **client-side in `useEffect`** through the shared client `lib/
 - Tables: `gymnase`, `creneau` (planning) · `actu` (actualités) · `partenaire`, `comite`. SQL to provision them is in `supabase/01_…`, `02_…`, `03_…` (run in order in the Supabase SQL Editor).
 - Storage buckets (public): `actus`, `partenaires`, `comite` — image uploads from the admin.
 - Pages: `pages/planning.tsx`, `pages/actus/index.tsx`, `pages/actus/[slug].tsx` (queries by `slug`), `pages/qui/comite.tsx`, and partner logos on `pages/partenaires/info.tsx`. Each falls back gracefully (placeholder copy or bundled `/public/sponsors` logos) when Supabase is empty/unconfigured.
-- **Admin** `pages/admin/index.tsx`: single page, Supabase-Auth login + left-nav sections (Planning · Actualités · Partenaires · Comité), full CRUD incl. image upload. Create the admin user in Supabase → Authentication → Users.
+- **Admin** `pages/admin/index.tsx`: single page, Supabase-Auth login + left-nav sections, full CRUD incl. image upload.
+
+### Droits d'accès à l'admin (par section)
+Chaque compte Auth doit avoir une ligne dans `admin_profile` (`role` = `superadmin` | `editeur`, `sections text[]`). Sans ligne → aucun accès.
+- **Source de vérité des sections** : `lib/adminSections.ts` (`ADMIN_SECTIONS`, `canAccess`, `allowedSections`) — partagé par la page admin et la route API. Ajouter une section = l'ajouter ici **et** mapper ses tables dans `supabase/04_admin_roles.sql`.
+- **Application des droits** : la RLS, pas seulement l'UI. `supabase/04_admin_roles.sql` remplace les policies « tout authentifié peut écrire » par des policies `public.admin_can('<section>')` sur chaque table, et pose des policies `RESTRICTIVE` sur `storage.objects` par bucket. La sidebar filtrée n'est qu'un confort.
+- **Gestion des comptes** : section « Utilisateurs » (superadmin only) → `pages/api/admin/users.ts` (GET/POST/PATCH/DELETE), qui revérifie le rôle de l'appelant à partir de son bearer token avant d'utiliser la clé `service_role`.
+- Un trigger SQL (`admin_profile_guard`) empêche de supprimer/rétrograder le **dernier superadmin actif**.
 
 ### 2. Sanity CMS (legacy — not yet migrated)
 Still GROQ-fetched client-side via `src/client.ts` + `urlFor()` (`src/fonctions/urlImageSanity.ts`): `pages/qui/historique.tsx` (`historiqueRucb`), `pages/qui/entraineurs.tsx` (`entraineurs`), `pages/formation.tsx` (`formations`), `pages/partenaires/mecenat.tsx` (`mecenat`). `pages/qui/complexe.tsx` is static. Sanity deps stay installed until these are migrated too.

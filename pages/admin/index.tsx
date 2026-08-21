@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { supabase } from '../../lib/supabaseClient';
 import { FaTree, FaGlassCheers, FaEgg, FaGhost, FaGraduationCap, FaSun, FaTrophy, FaBirthdayCake } from 'react-icons/fa';
 import { THEME_DECOR, resolveActiveTheme, isWithin, isPaquesWindow, ThemeKey } from '../../lib/themes';
+import { ADMIN_SECTIONS, allowedSections, SECTION_LABEL, type AdminProfile } from '../../lib/adminSections';
 
 const JOURS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
 const JOUR_COURT: Record<string, string> = { Lundi: 'Lun', Mardi: 'Mar', Mercredi: 'Mer', Jeudi: 'Jeu', Vendredi: 'Ven' };
@@ -30,22 +31,6 @@ function slotTint(hex: string): string {
 
 const CATEGORIES = ['Compétition', 'Club', 'Partenaires', 'Événement'];
 const ROLES = ['Entraîneur', 'Assistant']; // rôles d'un entraîneur (page « Nos entraîneurs »)
-const SECTIONS = [
-  { key: 'planning', label: 'Planning' },
-  { key: 'actus', label: 'Actualités' },
-  { key: 'partenaires', label: 'Partenaires' },
-  { key: 'comite', label: 'Comité' },
-  { key: 'entraineurs', label: 'Entraîneurs' },
-  { key: 'formation', label: 'Formation' },
-  { key: 'historique', label: 'Historique' },
-  { key: 'complexe', label: 'Complexe' },
-  { key: 'minibasket', label: 'Mini-Basket' },
-  { key: 'mecenat', label: 'Mécénat' },
-  { key: 'equipe', label: 'Équipes' },
-  { key: 'resultats', label: 'Résultats' },
-  { key: 'bandeau', label: 'Accueil' },
-  { key: 'themes', label: 'Thèmes' },
-];
 // Section « Apparence › Thèmes » : ordre d'affichage + icône/couleur de chaque thème.
 const THEME_ORDER: ThemeKey[] = ['noel', 'nouvelan', 'paques', 'halloween', 'rentree', 'ete', 'playoffs', 'fete'];
 const THEME_ICON: Record<ThemeKey, JSX.Element> = {
@@ -93,6 +78,12 @@ export default function Admin() {
   const [password, setPassword] = React.useState('');
   const [authError, setAuthError] = React.useState('');
   const [section, setSection] = React.useState('planning');
+  const [profile, setProfile] = React.useState<AdminProfile | null>(null); // droits du compte connecté
+  const [profileLoading, setProfileLoading] = React.useState(true);
+  const [admins, setAdmins] = React.useState<any[]>([]);  // section « Utilisateurs »
+  const [uForm, setUForm] = React.useState<any>(null);    // création / édition d'un compte admin
+  const [uError, setUError] = React.useState('');
+  const [uBusy, setUBusy] = React.useState(false);
   const [isMobile, setIsMobile] = React.useState(false);
   const [vidUploading, setVidUploading] = React.useState(false); // upload vidéo d'actu en cours
 
@@ -141,6 +132,30 @@ export default function Admin() {
     const { data: sub } = supabase.auth.onAuthStateChange((_e: any, s: any) => setSession(s));
     return () => sub.subscription.unsubscribe();
   }, []);
+
+  // --- Droits du compte connecté ---
+  // Sans ligne dans `admin_profile`, l'utilisateur n'a accès à rien : la RLS
+  // (supabase/04_admin_roles.sql) refuse déjà toute écriture de son côté.
+  React.useEffect(() => {
+    if (!session) { setProfile(null); setProfileLoading(false); return; }
+    let alive = true;
+    setProfileLoading(true);
+    supabase.from('admin_profile').select('*').eq('user_id', session.user.id).maybeSingle()
+      .then(({ data }: any) => { if (alive) { setProfile(data || null); setProfileLoading(false); } });
+    return () => { alive = false; };
+  }, [session]);
+
+  const visibleSections = React.useMemo(() => {
+    const list: { key: string; label: string }[] = allowedSections(profile).map((s) => ({ key: s.key, label: s.label }));
+    if (profile?.role === 'superadmin') list.push({ key: 'utilisateurs', label: 'Utilisateurs' });
+    return list;
+  }, [profile]);
+
+  // La section ouverte doit toujours faire partie des sections autorisées.
+  React.useEffect(() => {
+    if (!visibleSections.length) return;
+    if (!visibleSections.some((s) => s.key === section)) setSection(visibleSections[0].key);
+  }, [visibleSections, section]);
 
   // --- Responsive : sidebar -> barre horizontale en haut sous 768px ---
   React.useEffect(() => {
@@ -391,6 +406,52 @@ export default function Admin() {
   }
   async function delPlateau(id: string) { if (confirm('Supprimer ce plateau ?')) { await supabase.from('mini_plateau').delete().eq('id', id); load(); } }
 
+  // --- Comptes administrateurs (superadmin uniquement) ---
+  // Créer/supprimer un compte Auth exige la clé service_role : tout passe par
+  // /api/admin/users, qui revérifie côté serveur que l'appelant est superadmin.
+  async function authHeaders() {
+    const { data } = await supabase.auth.getSession();
+    return { 'Content-Type': 'application/json', Authorization: `Bearer ${data.session?.access_token || ''}` };
+  }
+  async function loadAdmins() {
+    const r = await fetch('/api/admin/users', { headers: await authHeaders() });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { setUError(j.error || 'Chargement impossible.'); return; }
+    setUError(''); setAdmins(j.users || []);
+  }
+  React.useEffect(() => { if (section === 'utilisateurs') loadAdmins(); }, [section]);
+
+  async function saveAdmin() {
+    if (!uForm) return;
+    const creating = uForm.mode === 'create';
+    if (creating && (!uForm.email || !uForm.password)) { setUError('Email et mot de passe requis.'); return; }
+    if (uForm.role === 'editeur' && !uForm.sections.length) { setUError('Sélectionne au moins une section pour un éditeur.'); return; }
+    setUBusy(true); setUError('');
+    const body = creating
+      ? { email: uForm.email, password: uForm.password, nom: uForm.nom, role: uForm.role, sections: uForm.sections }
+      : { user_id: uForm.user_id, nom: uForm.nom, role: uForm.role, sections: uForm.sections, actif: uForm.actif, ...(uForm.password ? { password: uForm.password } : {}) };
+    const r = await fetch('/api/admin/users', { method: creating ? 'POST' : 'PATCH', headers: await authHeaders(), body: JSON.stringify(body) });
+    const j = await r.json().catch(() => ({}));
+    setUBusy(false);
+    if (!r.ok) { setUError(j.error || 'Enregistrement impossible.'); return; }
+    setUForm(null); loadAdmins();
+    // Si on vient de modifier ses propres droits, on recharge sa fiche.
+    if (!creating && uForm.user_id === session?.user?.id) {
+      const { data } = await supabase.from('admin_profile').select('*').eq('user_id', uForm.user_id).maybeSingle();
+      setProfile(data || null);
+    }
+  }
+  async function delAdmin(a: any) {
+    if (!confirm(`Supprimer définitivement le compte ${a.email} ?`)) return;
+    const r = await fetch('/api/admin/users', { method: 'DELETE', headers: await authHeaders(), body: JSON.stringify({ user_id: a.user_id }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { setUError(j.error || 'Suppression impossible.'); return; }
+    setUError(''); loadAdmins();
+  }
+  function toggleFormSection(key: string) {
+    setUForm((f: any) => ({ ...f, sections: f.sections.includes(key) ? f.sections.filter((s: string) => s !== key) : [...f.sections, key] }));
+  }
+
   // ===================== LOGIN =====================
   if (!session) {
     return (
@@ -408,6 +469,35 @@ export default function Admin() {
             {authError ? <div style={{ color: '#c0392b', fontSize: 13, marginBottom: 14 }}>{authError}</div> : null}
             <button type="submit" style={{ ...btnOrange, width: '100%', padding: 13 }}>Se connecter</button>
           </form>
+        </div>
+      </>
+    );
+  }
+
+  // ===================== CHARGEMENT DES DROITS =====================
+  if (profileLoading) {
+    return (
+      <>
+        <Head><title>Admin — RUC Basket</title></Head>
+        <div style={{ minHeight: '100vh', background: '#f4f2f8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Manrope',sans-serif", color: '#726b86', fontWeight: 700 }}>Chargement…</div>
+      </>
+    );
+  }
+
+  // ===================== COMPTE SANS DROITS =====================
+  if (!visibleSections.length) {
+    return (
+      <>
+        <Head><title>Admin — Accès refusé</title></Head>
+        <div style={{ minHeight: '100vh', background: 'linear-gradient(115deg,#2a1457,#3d1e7b 60%,#5a2f9e)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '60px 26px', fontFamily: "'Manrope',sans-serif" }}>
+          <div style={{ background: '#fff', borderRadius: 20, padding: '38px 34px', width: '100%', maxWidth: 420, textAlign: 'center', boxShadow: '0 30px 70px -30px rgba(0,0,0,.5)' }}>
+            <img src="/logoruc.png" alt="RUCB" style={{ height: 62, display: 'block', margin: '0 auto 18px' }} />
+            <div style={{ fontFamily: "'Oswald',sans-serif", fontSize: 22, fontWeight: 700, textTransform: 'uppercase', color: '#1d1730' }}>Aucun droit attribué</div>
+            <div style={{ fontSize: 13.5, color: '#726b86', margin: '10px 0 24px', fontWeight: 500, lineHeight: 1.6 }}>
+              Le compte <strong>{session.user?.email}</strong> n&apos;a accès à aucune section.<br />Demande à un superadmin de t&apos;attribuer des droits.
+            </div>
+            <button onClick={() => supabase.auth.signOut()} style={{ ...btnGhost, width: '100%' }}>Se déconnecter</button>
+          </div>
         </div>
       </>
     );
@@ -431,7 +521,7 @@ export default function Admin() {
             )}
           </div>
           <div style={{ display: 'flex', flexDirection: isMobile ? 'row' : 'column', gap: isMobile ? 8 : 4, overflowX: isMobile ? 'auto' : 'visible', paddingBottom: isMobile ? 4 : 0 }}>
-            {SECTIONS.map((s) => {
+            {visibleSections.map((s) => {
               const on = section === s.key;
               return (
                 <button key={s.key} onClick={() => setSection(s.key)} style={{ display: 'block', width: isMobile ? 'auto' : '100%', flexShrink: 0, textAlign: 'left', whiteSpace: 'nowrap', background: on ? 'rgba(220,141,50,.18)' : (isMobile ? 'rgba(255,255,255,.06)' : 'transparent'), border: 'none', borderLeft: isMobile ? 'none' : `3px solid ${on ? '#dc8d32' : 'transparent'}`, borderBottom: isMobile ? `3px solid ${on ? '#dc8d32' : 'transparent'}` : 'none', color: on ? '#fff' : '#b9a9d8', fontFamily: "'Manrope',sans-serif", fontWeight: 700, fontSize: 14.5, padding: '12px 14px', borderRadius: 8, cursor: 'pointer' }}>{s.label}</button>
@@ -1397,6 +1487,130 @@ export default function Admin() {
               </div>
             );
           })()}
+
+          {/* ---------- UTILISATEURS ---------- */}
+          {section === 'utilisateurs' && (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 22 }}>
+                <div><h2 style={h2}>Administrateurs</h2><div style={{ fontSize: 13, color: '#726b86', fontWeight: 600, marginTop: 4 }}>{admins.length} compte{admins.length > 1 ? 's' : ''}</div></div>
+                <button onClick={() => { setUError(''); setUForm({ mode: 'create', email: '', password: '', nom: '', role: 'editeur', sections: [], actif: true }); }} style={btnOrange}>+ Nouvel administrateur</button>
+              </div>
+
+              {uError ? <div style={{ background: '#fdecea', border: '1px solid #f5c6c0', color: '#a02a1c', borderRadius: 10, padding: '12px 14px', fontSize: 13.5, fontWeight: 600, marginBottom: 18 }}>{uError}</div> : null}
+
+              {uForm && (
+                <div style={card}>
+                  <div style={{ fontFamily: "'Oswald',sans-serif", fontSize: 18, fontWeight: 700, textTransform: 'uppercase', color: '#1d1730', marginBottom: 18 }}>
+                    {uForm.mode === 'create' ? 'Nouvel administrateur' : `Modifier ${uForm.email}`}
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 14, marginBottom: 16 }}>
+                    <div>
+                      <label style={label}>Email</label>
+                      <input type="email" value={uForm.email} disabled={uForm.mode !== 'create'} onChange={(e) => setUForm({ ...uForm, email: e.target.value })} style={{ ...input, background: uForm.mode === 'create' ? '#faf9fc' : '#eeebf3' }} />
+                    </div>
+                    <div>
+                      <label style={label}>Nom affiché</label>
+                      <input value={uForm.nom || ''} onChange={(e) => setUForm({ ...uForm, nom: e.target.value })} style={input} />
+                    </div>
+                    <div>
+                      <label style={label}>{uForm.mode === 'create' ? 'Mot de passe' : 'Nouveau mot de passe (optionnel)'}</label>
+                      <input type="password" value={uForm.password || ''} onChange={(e) => setUForm({ ...uForm, password: e.target.value })} placeholder="8 caractères minimum" style={input} />
+                    </div>
+                    {uForm.mode !== 'create' && (
+                      <div>
+                        <label style={label}>Compte</label>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 600, color: '#1d1730', padding: '10px 0' }}>
+                          <input type="checkbox" checked={!!uForm.actif} onChange={(e) => setUForm({ ...uForm, actif: e.target.checked })} />
+                          Actif (décoché = accès suspendu)
+                        </label>
+                      </div>
+                    )}
+                  </div>
+
+                  <label style={label}>Rôle</label>
+                  <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 18 }}>
+                    {[{ v: 'editeur', t: 'Éditeur', d: 'Accès aux sections cochées' }, { v: 'superadmin', t: 'Superadmin', d: 'Accès total + gestion des comptes' }].map((r) => (
+                      <button key={r.v} type="button" onClick={() => setUForm({ ...uForm, role: r.v, sections: r.v === 'superadmin' ? [] : uForm.sections })}
+                        style={{ flex: isMobile ? '1 1 100%' : '1 1 0', textAlign: 'left', background: uForm.role === r.v ? 'rgba(61,30,123,.07)' : '#fff', border: `2px solid ${uForm.role === r.v ? '#3d1e7b' : '#e1dcec'}`, borderRadius: 12, padding: '12px 14px', cursor: 'pointer', fontFamily: "'Manrope',sans-serif" }}>
+                        <div style={{ fontWeight: 800, fontSize: 14.5, color: '#1d1730' }}>{r.t}</div>
+                        <div style={{ fontSize: 12.5, color: '#726b86', fontWeight: 600, marginTop: 2 }}>{r.d}</div>
+                      </button>
+                    ))}
+                  </div>
+
+                  {uForm.role === 'editeur' && (
+                    <>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 10 }}>
+                        <label style={{ ...label, marginBottom: 0 }}>Sections autorisées ({uForm.sections.length}/{ADMIN_SECTIONS.length})</label>
+                        <button type="button" onClick={() => setUForm({ ...uForm, sections: uForm.sections.length === ADMIN_SECTIONS.length ? [] : ADMIN_SECTIONS.map((s) => s.key) })}
+                          style={{ background: 'none', border: 'none', color: '#3d1e7b', fontWeight: 700, fontSize: 12.5, cursor: 'pointer', textDecoration: 'underline', padding: 0 }}>
+                          {uForm.sections.length === ADMIN_SECTIONS.length ? 'Tout décocher' : 'Tout cocher'}
+                        </button>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill,minmax(230px,1fr))', gap: 8, marginBottom: 20 }}>
+                        {ADMIN_SECTIONS.map((s) => {
+                          const on = uForm.sections.includes(s.key);
+                          return (
+                            <label key={s.key} style={{ display: 'flex', alignItems: 'flex-start', gap: 9, padding: '10px 12px', border: `1.5px solid ${on ? '#dc8d32' : '#eee9f4'}`, background: on ? 'rgba(220,141,50,.07)' : '#faf9fc', borderRadius: 10, cursor: 'pointer' }}>
+                              <input type="checkbox" checked={on} onChange={() => toggleFormSection(s.key)} style={{ marginTop: 3 }} />
+                              <span>
+                                <span style={{ display: 'block', fontWeight: 700, fontSize: 14, color: '#1d1730' }}>{s.label}</span>
+                                <span style={{ display: 'block', fontSize: 12, color: '#726b86', fontWeight: 600, marginTop: 1 }}>{s.hint}</span>
+                              </span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
+
+                  <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                    <button onClick={saveAdmin} disabled={uBusy} style={{ ...btnPrimary, opacity: uBusy ? .6 : 1 }}>{uBusy ? 'Enregistrement…' : 'Enregistrer'}</button>
+                    <button onClick={() => { setUForm(null); setUError(''); }} style={btnGhost}>Annuler</button>
+                  </div>
+                </div>
+              )}
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {admins.map((a) => {
+                  const me = a.user_id === session.user?.id;
+                  return (
+                    <div key={a.user_id} style={{ ...card, marginBottom: 0, borderTopColor: a.role === 'superadmin' ? '#3d1e7b' : '#dc8d32', opacity: a.actif ? 1 : .6 }}>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, flexWrap: 'wrap' }}>
+                        <div style={{ flex: 1, minWidth: 200 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                            <span style={{ fontFamily: "'Oswald',sans-serif", fontSize: 18, fontWeight: 700, color: '#1d1730' }}>{a.nom || a.email}</span>
+                            <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: '.04em', textTransform: 'uppercase', color: '#fff', background: a.role === 'superadmin' ? '#3d1e7b' : '#dc8d32', borderRadius: 999, padding: '3px 9px' }}>{a.role === 'superadmin' ? 'Superadmin' : 'Éditeur'}</span>
+                            {me ? <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: '.04em', textTransform: 'uppercase', color: '#3d1e7b', border: '1px solid #d5cce9', borderRadius: 999, padding: '2px 8px' }}>Moi</span> : null}
+                            {!a.actif ? <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: '.04em', textTransform: 'uppercase', color: '#a02a1c', background: '#fdecea', borderRadius: 999, padding: '3px 9px' }}>Suspendu</span> : null}
+                          </div>
+                          <div style={{ fontSize: 13, color: '#726b86', fontWeight: 600, marginTop: 4 }}>
+                            {a.email}
+                            {a.last_sign_in_at ? ` · dernière connexion le ${new Date(a.last_sign_in_at).toLocaleDateString('fr-FR')}` : ' · jamais connecté'}
+                          </div>
+                          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 10 }}>
+                            {a.role === 'superadmin'
+                              ? <span style={{ fontSize: 12.5, fontWeight: 700, color: '#3d1e7b' }}>Accès à toutes les sections</span>
+                              : (a.sections || []).length
+                                ? (a.sections || []).map((k: string) => (
+                                    <span key={k} style={{ fontSize: 12, fontWeight: 700, color: '#3d1e7b', background: '#f1ecfa', border: '1px solid #e1dcec', borderRadius: 999, padding: '3px 10px' }}>{SECTION_LABEL[k] || k}</span>
+                                  ))
+                                : <span style={{ fontSize: 12.5, fontWeight: 700, color: '#a02a1c' }}>Aucune section — ce compte ne peut rien modifier</span>}
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                          <button onClick={() => { setUError(''); setUForm({ mode: 'edit', user_id: a.user_id, email: a.email, nom: a.nom || '', password: '', role: a.role, sections: a.sections || [], actif: a.actif }); }} style={{ ...btnGhost, padding: '9px 18px' }}>Modifier</button>
+                          {!me && <button onClick={() => delAdmin(a)} style={{ ...btnGhost, padding: '9px 18px', color: '#c0392b', borderColor: '#f0cdc8' }}>Supprimer</button>}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+                {!admins.length && !uError ? <div style={{ ...card, marginBottom: 0, color: '#726b86', fontWeight: 600, fontSize: 14 }}>Aucun compte administrateur.</div> : null}
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </>
