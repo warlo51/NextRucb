@@ -388,6 +388,9 @@ h1,h2,h3{ font-family:var(--display); text-transform:uppercase; letter-spacing:-
 .btnHover{ transition:filter .15s, transform .15s, background .15s, color .15s; cursor:pointer; }
 .btnHover:hover{ filter:brightness(1.04); }
 .btnOutline:hover{ background:var(--orange); color:#fff!important; border-color:var(--orange)!important; }
+/* CTA blanc du hero accueil : brightness() n'a aucun effet sur du blanc,
+   on assombrit donc legerement le fond au survol pour garder un retour visuel. */
+.btnWhite:hover{ background:#f1ecfa!important; transform:translateY(-1px); }
 
 /* ====================================================================
    MOBILE — Accueil (hero en styles inline) + en-tête collant

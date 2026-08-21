@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Layout } from '../../components/Layout';
 import { supabase } from '../../lib/supabaseClient';
+import { markActusVues } from '../../lib/actusVues';
 
 // Média vidéo d'une actu : iframe pour YouTube/Vimeo, balise <video> sinon (MP4…).
 function ActuVideo({ url, poster }: { url: string; poster?: string }) {
@@ -49,6 +50,8 @@ export default function ActuDetail() {
         .or(`date_fin_publication.is.null,date_fin_publication.gte.${today}`)
         .maybeSingle();
       setActu(data);
+      // Accès direct depuis l'accueil : cette actu-là ne compte plus dans la pastille.
+      markActusVues([data?.id]);
       setLoading(false);
     }
     load();
