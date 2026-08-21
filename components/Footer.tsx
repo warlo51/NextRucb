@@ -45,6 +45,9 @@ const FooterPage = () => {
           <Link href="/planning">Créneaux</Link>
           <Link href="/resultats">Résultats</Link>
           <Link href="/actus">Actualités</Link>
+          <a href="/boutique" target="_blank" rel="noopener noreferrer">
+            Boutique officielle
+          </a>
         </div>
 
         {/* Partenaires */}

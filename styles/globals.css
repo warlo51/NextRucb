@@ -365,6 +365,17 @@ h1,h2,h3{ font-family:var(--display); text-transform:uppercase; letter-spacing:-
 }
 .navCta:hover{ background:#c97b22!important; color:#fff!important; }
 
+/* Variante « Boutique » : contour orange, pour ne pas concurrencer le CTA plein.
+   Déclarée après .navCta (même spécificité) pour l'emporter. */
+.navCtaShop, .navCtaShop:link, .navCtaShop:visited,
+.navLinks .nav-link.navCtaShop, .navLinks .nav-link.navCtaShop.active{
+  background:transparent!important; color:var(--orange)!important;
+  border:2px solid var(--orange); box-shadow:none; padding:9px 18px!important;
+}
+.navCtaShop:hover, .navLinks .nav-link.navCtaShop:hover{
+  background:var(--orange)!important; color:#fff!important;
+}
+
 /* Footer sombre 4 colonnes */
 .footerGrid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:34px; max-width:1240px; margin:0 auto; padding:0 26px 40px; }
 .footerCol h4{ font-family:var(--display); color:#fff; font-size:14px; letter-spacing:.12em; text-transform:uppercase; font-weight:600; margin:0 0 14px; }
