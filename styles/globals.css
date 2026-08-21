@@ -467,3 +467,44 @@ h1,h2,h3{ font-family:var(--display); text-transform:uppercase; letter-spacing:-
   .seasonal-decor .decor-encart{ top:92px!important; right:12px!important; }
   .seasonal-decor .decor-filigrane{ right:8px!important; font-size:84px!important; }
 }
+
+/* ============ BANDEAU COOKIES (mesure d'audience GA4) ============ */
+/* Affiché tant que le visiteur n'a pas tranché ; rouvrable via le lien du footer. */
+.cookieBanner{
+  position:fixed; z-index:1000; left:16px; right:16px; bottom:16px;
+  max-width:1180px; margin:0 auto;
+  display:flex; align-items:center; flex-wrap:wrap; gap:22px;
+  padding:18px 22px;
+  background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:0 18px 44px -16px rgba(0,0,0,.85);
+}
+.cookieBanner__text{ flex:1 1 360px; min-width:0; }
+.cookieBanner__text strong{
+  font-family:var(--display); font-weight:600; font-size:15px;
+  letter-spacing:.04em; text-transform:uppercase; color:var(--text);
+}
+.cookieBanner__text p{ margin:6px 0 0; font-size:13.5px; line-height:1.55; color:var(--text-soft); }
+.cookieBanner__actions{ display:flex; flex:0 0 auto; gap:10px; }
+.cookieBtn{
+  font-family:var(--display); font-size:13.5px; font-weight:600;
+  letter-spacing:.06em; text-transform:uppercase;
+  padding:11px 22px; border-radius:999px; cursor:pointer;
+  transition:filter .15s, background .15s, color .15s, border-color .15s;
+}
+.cookieBtn--primary{ background:var(--orange); color:#fff; border:1px solid var(--orange); }
+.cookieBtn--primary:hover{ filter:brightness(1.08); }
+.cookieBtn--ghost{ background:transparent; color:var(--muted); border:1px solid var(--line); }
+.cookieBtn--ghost:hover{ color:var(--text); border-color:var(--muted); }
+
+/* Lien « Cookies » du pied de page : rend un <button> visuellement identique aux liens. */
+.footerCookieLink{
+  background:none; border:none; padding:0; cursor:pointer;
+  font:inherit; color:inherit; text-decoration:underline;
+}
+.footerCookieLink:hover{ color:var(--brand-fg); }
+
+@media (max-width:640px){
+  .cookieBanner{ left:10px; right:10px; bottom:10px; padding:16px; gap:14px; }
+  .cookieBanner__actions{ width:100%; }
+  .cookieBtn{ flex:1 1 0; padding:12px 10px; }
+}

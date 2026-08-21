@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { REOPEN_EVENT } from "../lib/gtag";
 
 const FB =
   "https://fr-fr.facebook.com/pages/category/Amateur-Sports-Team/Reims-Universit%C3%A9-Club-Basket-150181285527456/";
@@ -74,7 +75,15 @@ const FooterPage = () => {
       <div className="footerCopyright footer-copyright">
         <span>© {new Date().getFullYear()} RUC Basket Reims — Tous droits réservés</span>
         <span>
-          Développé par Mansuy Maxime · <Link href="/admin">Espace admin</Link>
+          Développé par Mansuy Maxime ·{" "}
+          <button
+            type="button"
+            className="footerCookieLink"
+            onClick={() => window.dispatchEvent(new Event(REOPEN_EVENT))}
+          >
+            Cookies
+          </button>{" "}
+          · <Link href="/admin">Espace admin</Link>
         </span>
       </div>
     </footer>

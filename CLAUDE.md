@@ -23,6 +23,7 @@ Supabase config lives in `.env.local` (untracked); legacy Sanity/Auth0 config li
 - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Supabase (planning, actus, comité, partenaires + admin). `lib/supabaseClient.ts` falls back to placeholders so the build never crashes when these are unset; real data needs the real keys.
 - `NEXT_PUBLIC_SANITY_PROJECT_ID` — Sanity (still used by the legacy pages below; dataset hardcoded to `production` in `src/client.ts`).
 - `SUPABASE_SERVICE_ROLE_KEY` — **server-only** (jamais `NEXT_PUBLIC_`). Utilisée uniquement par `pages/api/admin/users.ts` pour créer/supprimer des comptes admin. Sans elle, cette route renvoie 500 ; le reste du site fonctionne.
+- `NEXT_PUBLIC_GA_MEASUREMENT_ID` — ID de mesure Google Analytics 4 (`G-XXXXXXXXXX`). Public (visible dans le HTML). Le script GA n'est chargé qu'après consentement explicite via `components/CookieConsent.tsx` ; variable vide → ni script Google ni bandeau cookies (cas du dev local).
 - `AUTH0_*` — legacy Auth0 OAuth routes, now **orphaned** (admin auth moved to Supabase; the `pages/api/auth/*` routes remain but nothing links to them).
 
 ## Architecture
