@@ -23,6 +23,7 @@ Supabase config lives in `.env.local` (untracked); legacy Sanity/Auth0 config li
 - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Supabase (planning, actus, comité, partenaires + admin). `lib/supabaseClient.ts` falls back to placeholders so the build never crashes when these are unset; real data needs the real keys.
 - `NEXT_PUBLIC_SANITY_PROJECT_ID` — Sanity (still used by the legacy pages below; dataset hardcoded to `production` in `src/client.ts`).
 - `AUTH0_*` — legacy Auth0 OAuth routes, now **orphaned** (admin auth moved to Supabase; the `pages/api/auth/*` routes remain but nothing links to them).
+- `CONTACT_TO`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` — formulaire de contact (`pages/api/contact.ts`). **Server-side only, jamais `NEXT_PUBLIC_`.** Défaut destinataire : `rucb.contact@gmail.com`. Avec Gmail, `SMTP_PASSWORD` doit être un *mot de passe d'application* (2FA requise), pas le mot de passe du compte. Sans ces variables la route répond 503 avec un message clair et le site continue de builder.
 
 ## Architecture
 
@@ -39,6 +40,7 @@ Public pages read **client-side in `useEffect`** through the shared client `lib/
 Still GROQ-fetched client-side via `src/client.ts` + `urlFor()` (`src/fonctions/urlImageSanity.ts`): `pages/qui/historique.tsx` (`historiqueRucb`), `pages/qui/entraineurs.tsx` (`entraineurs`), `pages/formation.tsx` (`formations`), `pages/partenaires/mecenat.tsx` (`mecenat`). `pages/qui/complexe.tsx` is static. Sanity deps stay installed until these are migrated too.
 
 ### API routes
+- `pages/api/contact.ts` — reçoit le formulaire de `pages/contact.tsx` (POST JSON) et envoie l'email via **Nodemailer/SMTP** vers `CONTACT_TO`. Le destinataire et les identifiants SMTP restent côté serveur ; l'adresse du visiteur part en `Reply-To`. Anti-spam : honeypot (`website`) + rate-limit 3 messages / 15 min / IP (en mémoire, donc partiel en serverless). Les CTA « Demander un essai » (accueil) et « Nous rejoindre » (NavBar) pointent vers `/contact`.
 - `pages/api/sitemap.js` — sitemap from a **hardcoded URL list** (add new public pages here manually).
 - `pages/api/auth/*` — legacy Auth0 flow, now unused (see Environment).
 
