@@ -86,7 +86,7 @@ export default function NavBar() {
                 Mécénat
               </NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link className="navCta" href="/planning">
+            <Nav.Link className="navCta" href="/contact">
               Nous rejoindre
             </Nav.Link>
           </div>

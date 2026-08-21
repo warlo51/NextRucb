@@ -848,7 +848,7 @@ const Home: NextPage = () => {
         </p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center" }}>
           <Link
-            href="/qui/historique"
+            href="/contact"
             className="btnHover"
             style={{
               background: "#fff",

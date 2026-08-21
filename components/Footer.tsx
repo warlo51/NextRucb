@@ -62,6 +62,7 @@ const FooterPage = () => {
             <br />
             Reims (51100)
           </div>
+          <Link href="/contact">Nous écrire</Link>
           <a href={IG} target="_blank" rel="noreferrer">
             Instagram @reims_universite_club_basket
           </a>
