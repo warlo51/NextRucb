@@ -22,6 +22,8 @@ npm run lint    # next lint (eslint-config-next, config in .eslintrc.json)
 Supabase config lives in `.env.local` (untracked); legacy Sanity/Auth0 config lives in `.env`.
 - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Supabase (planning, actus, comité, partenaires + admin). `lib/supabaseClient.ts` falls back to placeholders so the build never crashes when these are unset; real data needs the real keys.
 - `NEXT_PUBLIC_SANITY_PROJECT_ID` — Sanity (still used by the legacy pages below; dataset hardcoded to `production` in `src/client.ts`).
+- `SUPABASE_SERVICE_ROLE_KEY` — **server-only** (jamais `NEXT_PUBLIC_`). Utilisée uniquement par `pages/api/admin/users.ts` pour créer/supprimer des comptes admin. Sans elle, cette route renvoie 500 ; le reste du site fonctionne.
+- `NEXT_PUBLIC_GA_MEASUREMENT_ID` — ID de mesure Google Analytics 4 (`G-XXXXXXXXXX`). Public (visible dans le HTML). Le script GA n'est chargé qu'après consentement explicite via `components/CookieConsent.tsx` ; variable vide → ni script Google ni bandeau cookies (cas du dev local).
 - `AUTH0_*` — legacy Auth0 OAuth routes, now **orphaned** (admin auth moved to Supabase; the `pages/api/auth/*` routes remain but nothing links to them).
 - `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM`, `CONTACT_TO` (+ `MAILJET_API_KEY`/`MAILJET_API_SECRET`/`CONTACT_FROM` en repli) — formulaire de contact (`pages/api/contact.ts`). **Server-side only, jamais `NEXT_PUBLIC_`.** Destinataire par défaut : `rucb.contact@gmail.com`. L'envoi passe par le **SMTP Gmail de la boîte du club** (`smtp.gmail.com`:465) dès que host/user/password sont remplis : `SMTP_PASSWORD` est un *mot de passe d'application* (2FA requise sur le compte), pas le mot de passe du compte. C'est le seul moyen d'expédier depuis un `@gmail.com` sans finir en spam — testé : via un relais tiers (Mailjet), DKIM/SPF ne peuvent pas s'aligner avec `gmail.com` et le message est classé indésirable. Contrepartie cosmétique : Gmail affiche « moi », expéditeur et destinataire étant la même boîte. Sans mot de passe d'application, la route retombe sur la **Send API Mailjet** (`envoyerViaMailjet`, auth Basic clé/secret) ; sans aucun des deux elle répond 503 et le site continue de builder. Détails dans les commentaires de `.env.local`.
 
@@ -34,7 +36,14 @@ Public pages read **client-side in `useEffect`** through the shared client `lib/
 - Tables: `gymnase`, `creneau` (planning) · `actu` (actualités) · `partenaire`, `comite`. SQL to provision them is in `supabase/01_…`, `02_…`, `03_…` (run in order in the Supabase SQL Editor).
 - Storage buckets (public): `actus`, `partenaires`, `comite` — image uploads from the admin.
 - Pages: `pages/planning.tsx`, `pages/actus/index.tsx`, `pages/actus/[slug].tsx` (queries by `slug`), `pages/qui/comite.tsx`, and partner logos on `pages/partenaires/info.tsx`. Each falls back gracefully (placeholder copy or bundled `/public/sponsors` logos) when Supabase is empty/unconfigured.
-- **Admin** `pages/admin/index.tsx`: single page, Supabase-Auth login + left-nav sections (Planning · Actualités · Partenaires · Comité), full CRUD incl. image upload. Create the admin user in Supabase → Authentication → Users.
+- **Admin** `pages/admin/index.tsx`: single page, Supabase-Auth login + left-nav sections, full CRUD incl. image upload.
+
+### Droits d'accès à l'admin (par section)
+Chaque compte Auth doit avoir une ligne dans `admin_profile` (`role` = `superadmin` | `editeur`, `sections text[]`). Sans ligne → aucun accès.
+- **Source de vérité des sections** : `lib/adminSections.ts` (`ADMIN_SECTIONS`, `canAccess`, `allowedSections`) — partagé par la page admin et la route API. Ajouter une section = l'ajouter ici **et** mapper ses tables dans `supabase/04_admin_roles.sql`.
+- **Application des droits** : la RLS, pas seulement l'UI. `supabase/04_admin_roles.sql` remplace les policies « tout authentifié peut écrire » par des policies `public.admin_can('<section>')` sur chaque table, et pose des policies `RESTRICTIVE` sur `storage.objects` par bucket. La sidebar filtrée n'est qu'un confort.
+- **Gestion des comptes** : section « Utilisateurs » (superadmin only) → `pages/api/admin/users.ts` (GET/POST/PATCH/DELETE), qui revérifie le rôle de l'appelant à partir de son bearer token avant d'utiliser la clé `service_role`.
+- Un trigger SQL (`admin_profile_guard`) empêche de supprimer/rétrograder le **dernier superadmin actif**.
 
 ### 2. Sanity CMS (legacy — not yet migrated)
 Still GROQ-fetched client-side via `src/client.ts` + `urlFor()` (`src/fonctions/urlImageSanity.ts`): `pages/qui/historique.tsx` (`historiqueRucb`), `pages/qui/entraineurs.tsx` (`entraineurs`), `pages/formation.tsx` (`formations`), `pages/partenaires/mecenat.tsx` (`mecenat`). `pages/qui/complexe.tsx` is static. Sanity deps stay installed until these are migrated too.

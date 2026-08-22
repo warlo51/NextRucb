@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Layout } from "../components/Layout";
 import { supabase } from "../lib/supabaseClient";
 import { forceDownload } from "../lib/forceDownload";
+import { readActusVues } from "../lib/actusVues";
 
 const JOURS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"];
 
@@ -58,6 +59,7 @@ const formatDate = (d: string) =>
 
 const Home: NextPage = () => {
   const [actus, setActus] = useState<any[]>([]);
+  const [actusRecentes, setActusRecentes] = useState(0);
   const [creneaux, setCreneaux] = useState<any[]>([]);
   const [sponsors, setSponsors] = useState<any[]>(FALLBACK_SPONSORS);
   const [equipes, setEquipes] = useState<any[]>([]);
@@ -77,6 +79,21 @@ const Home: NextPage = () => {
         .order("date_publication", { ascending: false })
         .limit(3);
       setActus(ac || []);
+
+      // Pastille du CTA hero : actus publiées sur les 7 derniers jours que le
+      // visiteur n’a pas encore consultées (cf. lib/actusVues.ts). Requête à
+      // part car la liste ci-dessus est limitée à 3 ; on récupère les ids pour
+      // pouvoir retrancher ce qui a déjà été vu.
+      const depuis = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString().slice(0, 10);
+      const { data: recentes } = await supabase
+        .from("actu")
+        .select("id")
+        .eq("actif", true)
+        .lte("date_publication", today)
+        .gte("date_publication", depuis)
+        .or(`date_fin_publication.is.null,date_fin_publication.gte.${today}`);
+      const vues = readActusVues();
+      setActusRecentes((recentes || []).filter((a: any) => !vues.includes(String(a.id))).length);
 
       const { data: cr } = await supabase.from("creneau").select("jour").eq("actif", true);
       setCreneaux(cr || []);
@@ -201,8 +218,21 @@ const Home: NextPage = () => {
                     <Link href="/qui/historique" className="btnHover" style={{ background: "#dc8d32", color: "#fff", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, boxShadow: "0 12px 30px -10px rgba(220,141,50,.8)" }}>
                         Rejoindre le club
                     </Link>
-                    <Link href="/actus" className="btnHover" style={{ background: "rgba(255,255,255,.1)", border: "1.5px solid rgba(255,255,255,.45)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "16px 30px", borderRadius: 999 }}>
+                    <Link
+                        href="/actus"
+                        className="btnHover btnWhite"
+                        aria-label={actusRecentes > 0 ? `Voir les actualités \u2014 ${actusRecentes} publiée${actusRecentes > 1 ? "s" : ""} cette semaine` : "Voir les actualités"}
+                        style={{ position: "relative", display: "inline-flex", alignItems: "center", background: "#fff", color: "#3d1e7b", fontWeight: 800, fontSize: 16, padding: "16px 30px", borderRadius: 999, boxShadow: "0 12px 30px -10px rgba(255,255,255,.45)" }}
+                    >
                         Voir les actualités
+                        {actusRecentes > 0 && (
+                            <span
+                                aria-hidden="true"
+                                style={{ position: "absolute", top: -8, right: -8, minWidth: 26, height: 26, padding: "0 7px", borderRadius: 999, background: "#dc8d32", border: "2px solid #15141b", color: "#fff", fontFamily: "'Oswald',sans-serif", fontSize: 13, fontWeight: 700, lineHeight: 1, display: "inline-flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 14px -4px rgba(220,141,50,.9)" }}
+                            >
+                                {actusRecentes > 9 ? "9+" : actusRecentes}
+                            </span>
+                        )}
                     </Link>
                 </div>
             </div>

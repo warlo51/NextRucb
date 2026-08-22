@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { Layout } from '../../components/Layout';
 import { supabase } from '../../lib/supabaseClient';
+import { markActusVues } from '../../lib/actusVues';
 
 export default function Actus() {
   const [actus, setActus] = React.useState<any[]>([]);
@@ -18,6 +19,9 @@ export default function Actus() {
         .or(`date_fin_publication.is.null,date_fin_publication.gte.${today}`)
         .order('date_publication', { ascending: false });
       setActus(data || []);
+      // Le visiteur a la liste complète sous les yeux : plus rien de « neuf »
+      // à signaler sur la pastille du CTA d'accueil.
+      markActusVues((data || []).map((a: any) => a.id));
     }
     load();
   }, []);
