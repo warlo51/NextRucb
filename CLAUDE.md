@@ -25,6 +25,7 @@ Supabase config lives in `.env.local` (untracked); legacy Sanity/Auth0 config li
 - `SUPABASE_SERVICE_ROLE_KEY` — **server-only** (jamais `NEXT_PUBLIC_`). Utilisée uniquement par `pages/api/admin/users.ts` pour créer/supprimer des comptes admin. Sans elle, cette route renvoie 500 ; le reste du site fonctionne.
 - `NEXT_PUBLIC_GA_MEASUREMENT_ID` — ID de mesure Google Analytics 4 (`G-XXXXXXXXXX`). Public (visible dans le HTML). Le script GA n'est chargé qu'après consentement explicite via `components/CookieConsent.tsx` ; variable vide → ni script Google ni bandeau cookies (cas du dev local).
 - `AUTH0_*` — legacy Auth0 OAuth routes, now **orphaned** (admin auth moved to Supabase; the `pages/api/auth/*` routes remain but nothing links to them).
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM`, `CONTACT_TO` (+ `MAILJET_API_KEY`/`MAILJET_API_SECRET`/`CONTACT_FROM` en repli) — formulaire de contact (`pages/api/contact.ts`). **Server-side only, jamais `NEXT_PUBLIC_`.** Destinataire par défaut : `rucb.contact@gmail.com`. L'envoi passe par le **SMTP Gmail de la boîte du club** (`smtp.gmail.com`:465) dès que host/user/password sont remplis : `SMTP_PASSWORD` est un *mot de passe d'application* (2FA requise sur le compte), pas le mot de passe du compte. C'est le seul moyen d'expédier depuis un `@gmail.com` sans finir en spam — testé : via un relais tiers (Mailjet), DKIM/SPF ne peuvent pas s'aligner avec `gmail.com` et le message est classé indésirable. Contrepartie cosmétique : Gmail affiche « moi », expéditeur et destinataire étant la même boîte. Sans mot de passe d'application, la route retombe sur la **Send API Mailjet** (`envoyerViaMailjet`, auth Basic clé/secret) ; sans aucun des deux elle répond 503 et le site continue de builder. Détails dans les commentaires de `.env.local`.
 
 ## Architecture
 
@@ -48,6 +49,7 @@ Chaque compte Auth doit avoir une ligne dans `admin_profile` (`role` = `superadm
 Still GROQ-fetched client-side via `src/client.ts` + `urlFor()` (`src/fonctions/urlImageSanity.ts`): `pages/qui/historique.tsx` (`historiqueRucb`), `pages/qui/entraineurs.tsx` (`entraineurs`), `pages/formation.tsx` (`formations`), `pages/partenaires/mecenat.tsx` (`mecenat`). `pages/qui/complexe.tsx` is static. Sanity deps stay installed until these are migrated too.
 
 ### API routes
+- `pages/api/contact.ts` — reçoit le formulaire de `pages/contact.tsx` (POST JSON) et envoie l'email vers `CONTACT_TO` via **Nodemailer/SMTP** (`envoyerViaSmtp`, Gmail), ou la **Send API Mailjet** (`envoyerViaMailjet`) en repli si le bloc SMTP est incomplet. Le destinataire et les identifiants SMTP restent côté serveur ; l'adresse du visiteur part en `Reply-To`. Anti-spam : honeypot (`website`) + rate-limit 3 messages / 15 min / IP (en mémoire, donc partiel en serverless). Les CTA « Demander un essai » (accueil) et « Nous rejoindre » (NavBar) pointent vers `/contact`.
 - `pages/api/sitemap.js` — sitemap from a **hardcoded URL list** (add new public pages here manually).
 - `pages/api/auth/*` — legacy Auth0 flow, now unused (see Environment).
 

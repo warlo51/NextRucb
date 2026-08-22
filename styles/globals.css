@@ -392,6 +392,16 @@ h1,h2,h3{ font-family:var(--display); text-transform:uppercase; letter-spacing:-
    on assombrit donc legerement le fond au survol pour garder un retour visuel. */
 .btnWhite:hover{ background:#f1ecfa!important; transform:translateY(-1px); }
 
+/* Page contact — grille formulaire + colonne infos (champs en styles inline) */
+.contactGrid{ max-width:1080px; margin:0 auto; display:grid; grid-template-columns:1.55fr 1fr; gap:26px; align-items:start; }
+.contactRow{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.contactField:focus{ outline:none; border-color:var(--violet); background:#fff; box-shadow:0 0 0 3px rgba(61,30,123,.12); }
+.contactField::placeholder{ color:#a49bbb; }
+@media (max-width:860px){
+  .contactGrid{ grid-template-columns:1fr; }
+  .contactRow{ grid-template-columns:1fr; }
+}
+
 /* ====================================================================
    MOBILE — Accueil (hero en styles inline) + en-tête collant
    Les sections de l'accueil sont stylées en inline (pas de media query
