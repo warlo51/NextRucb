@@ -6,20 +6,28 @@ import { forceDownload } from '../lib/forceDownload';
 
 const JOURS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
 
-// Une couleur distincte par lieu. Couleurs claires et vives pour ressortir sur
-// le fond sombre du site (--bg #0d0c11 / --paper #15141b) — contraste >= 4.5:1.
-const PALETTE = [
-  '#e6a24a', // orange (accent charte, --brand-fg)
-  '#60a5fa', // bleu ciel
-  '#4ade80', // vert
-  '#f472b6', // rose
-  '#b794f6', // lavande
-  '#2dd4bf', // cyan
-  '#fb7185', // corail
-  '#fcd34d', // ambre
-  '#818cf8', // pervenche
-  '#a3e635', // citron vert
+// Une couleur distincte par lieu, en deux variantes : la légende est posée sur
+// le fond sombre de la page, les cartes de créneaux sont sur fond blanc — une
+// même teinte ne peut pas être lisible sur les deux.
+//   clair → chips de la légende (fond --bg #0d0c11)
+//   fonce → texte et filet des cartes (fond #fff)
+// Chaque variante garde un contraste >= 4.5:1 sur son propre fond.
+type CouleurLieu = { clair: string; fonce: string };
+
+const PALETTE: CouleurLieu[] = [
+  { clair: '#e6a24a', fonce: '#9a5b0a' }, // orange (accent charte)
+  { clair: '#60a5fa', fonce: '#1d4ed8' }, // bleu
+  { clair: '#4ade80', fonce: '#15803d' }, // vert
+  { clair: '#f472b6', fonce: '#be185d' }, // rose
+  { clair: '#b794f6', fonce: '#6d28d9' }, // lavande
+  { clair: '#2dd4bf', fonce: '#0f766e' }, // cyan
+  { clair: '#fb7185', fonce: '#be123c' }, // corail
+  { clair: '#fcd34d', fonce: '#a16207' }, // ambre
+  { clair: '#818cf8', fonce: '#4338ca' }, // pervenche
+  { clair: '#a3e635', fonce: '#4d7c0f' }, // citron vert
 ];
+
+const COULEUR_DEFAUT: CouleurLieu = { clair: '#dc8d32', fonce: '#a2600f' };
 
 export default function Planning() {
   const [creneaux, setCreneaux] = React.useState<any[]>([]);
@@ -49,7 +57,7 @@ export default function Planning() {
   }, []);
 
   const colorByLieu = React.useMemo(() => {
-    const map: Record<string, string> = {};
+    const map: Record<string, CouleurLieu> = {};
     gymnases.forEach((g, i) => {
       map[g.titre] = PALETTE[i % PALETTE.length];
     });
@@ -91,10 +99,10 @@ export default function Planning() {
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 10, marginBottom: 30 }}>
           <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--muted)' }}>Lieux :</span>
           {gymnases.map((g, i) => {
-            const color = colorByLieu[g.titre] || '#dc8d32';
+            const c = colorByLieu[g.titre] || COULEUR_DEFAUT;
             return (
-              <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `${color}14`, border: `1px solid ${color}`, color, fontSize: 12, fontWeight: 700, padding: '6px 12px', borderRadius: 999 }}>
-                <span style={{ width: 7, height: 7, borderRadius: '50%', background: color, display: 'inline-block' }} />{g.titre}
+              <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `${c.clair}14`, border: `1px solid ${c.clair}`, color: c.clair, fontSize: 12.5, fontWeight: 700, padding: '6px 12px', borderRadius: 999 }}>
+                <span style={{ width: 7, height: 7, borderRadius: '50%', background: c.clair, display: 'inline-block' }} />{g.titre}
               </span>
             );
           })}
@@ -105,18 +113,18 @@ export default function Planning() {
             <div key={col.jour} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{ fontFamily: "'Oswald',sans-serif", textTransform: 'uppercase', fontSize: 17, fontWeight: 600, color: 'var(--text)', letterSpacing: '.04em', paddingBottom: 10, borderBottom: '2px solid #dc8d32' }}>{col.jour}</div>
               {col.items.map((s) => {
-                const color = colorByLieu[s.gymnase?.titre] || '#dc8d32';
+                const c = colorByLieu[s.gymnase?.titre] || COULEUR_DEFAUT;
                 return (
-                  <div key={s.id} style={{ background: 'var(--paper)', border: '1px solid var(--line)', borderLeft: `3px solid ${color}`, borderRadius: 12, padding: '13px 15px', boxShadow: '0 10px 24px -22px rgba(23,18,43,.5)' }}>
-                    <div style={{ fontFamily: "'Oswald',sans-serif", fontWeight: 600, fontSize: 14, color: 'var(--brand-fg)', letterSpacing: '.02em' }}>{s.horaire}</div>
-                    <div style={{ fontWeight: 800, fontSize: 15, color: 'var(--text)', marginTop: 3 }}>{(s.equipes || []).map((e: any) => e.nom).join(' · ') || s.categorie}</div>
-                    {s.annees ? <div style={{ fontSize: 12, color: 'var(--muted)', fontWeight: 600, marginTop: 2 }}>{s.annees}</div> : null}
+                  <div key={s.id} style={{ background: '#fff', border: '1px solid #e5e0ee', borderLeft: `4px solid ${c.fonce}`, borderRadius: 12, padding: '14px 16px', boxShadow: '0 14px 30px -22px rgba(0,0,0,.75)' }}>
+                    <div style={{ fontFamily: "'Oswald',sans-serif", fontWeight: 600, fontSize: 15, color: '#3d1e7b', letterSpacing: '.02em' }}>{s.horaire}</div>
+                    <div style={{ fontWeight: 800, fontSize: 16, color: '#17122b', marginTop: 3, lineHeight: 1.3 }}>{(s.equipes || []).map((e: any) => e.nom).join(' · ') || s.categorie}</div>
+                    {s.annees ? <div style={{ fontSize: 13, color: '#655d78', fontWeight: 600, marginTop: 3 }}>{s.annees}</div> : null}
                     {s.gymnase?.titre ? (
-                      <div style={{ marginTop: 9, display: 'inline-flex', alignItems: 'center', gap: 5, background: `${color}14`, color, fontSize: 11, fontWeight: 700, padding: '4px 9px', borderRadius: 999 }}>
-                        <span style={{ width: 6, height: 6, borderRadius: '50%', background: color, display: 'inline-block' }} />{s.gymnase.titre}
+                      <div style={{ marginTop: 10, display: 'inline-flex', alignItems: 'center', gap: 6, background: `${c.fonce}14`, color: c.fonce, fontSize: 12, fontWeight: 700, padding: '5px 10px', borderRadius: 999 }}>
+                        <span style={{ width: 7, height: 7, borderRadius: '50%', background: c.fonce, display: 'inline-block' }} />{s.gymnase.titre}
                       </div>
                     ) : null}
-                    {s.detail ? <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 9, lineHeight: 1.45, fontWeight: 500 }}>{s.detail}</div> : null}
+                    {s.detail ? <div style={{ fontSize: 13, color: '#5c5570', marginTop: 10, lineHeight: 1.5, fontWeight: 500 }}>{s.detail}</div> : null}
                   </div>
                 );
               })}
